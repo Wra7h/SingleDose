@@ -11,6 +11,8 @@
 ```
 Configure and create process injection binaries. 
 
+Single Dose is console application written for the .NET Framework 3.5. Binaries generated with Single Dose are also built for .NET Framework 3.5. Available techniques will inject either DLL or Shellcode (raw format) depending on the technique.
+
 ## Basic Usage:  
 Creating the first binary can be accomplished using the commands below. Just enter the commands below and fill in the brackets as you see fit.  
 ```
@@ -21,6 +23,7 @@ Creating the first binary can be accomplished using the commands below. Just ent
   +--> show techniques
   +--> build [technique name/number]
 ```
+
 ### "What's going on here?"    
 When you first execute Single Dose, you are at the Main Menu. Entering "settings" takes you to the settings submenu where you can configure how Single Dose builds your binary. 
 The next 2 commands are from this submenu. "Output" tells Single Dose where to store your .cs and .exe, and the "mode" command will tell Single Dose whether you plan on embedding injection data or providing data at the time of execution. The "Static" mode will embed all injection data into the binary, "Dynamic" and "Download" will require the user specify flags at execution. **Important: Download mode only supports downloads over http, and not https at this time.** Entering "exit" from the Settings submenu will take you back to Main Menu. "Output" and "Mode" are the only required settings in order to successfully build a technique. Lastly, "show techniques" will display all of the techniques supported, and "build" will start the build process for a binary.  
