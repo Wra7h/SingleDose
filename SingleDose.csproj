@@ -44,10 +44,10 @@
     <Compile Include="SubMenus\Settings.cs" />
     <Compile Include="Misc\TriggerValues_Misc.cs" />
     <Compile Include="Techniques\Suspend_QueueUserAPC.cs" />
-    <Compile Include="Techniques\sRDI.cs" />
-    <Compile Include="Techniques\SC_SYSCALL_CT.cs" />
+    <Compile Include="Techniques\SRDI.cs" />
+    <Compile Include="Techniques\SC_Syscall_CT.cs" />
     <Compile Include="Techniques\EB_QueueUserAPC.cs" />
-    <Compile Include="Techniques\DLL_CRT.cs" />
+    <Compile Include="Techniques\Dll_CRT.cs" />
     <Compile Include="Misc\CSBuilder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
