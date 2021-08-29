@@ -167,7 +167,7 @@ Example Scenarios:
 ## What's next?
 This has been a project built in my spare time. I plan on adding more techniques as time goes on, but I won't have much time to dedicate over the next few weeks.  
 
-## Check these sick references out:  
+### Check these awesome references out:  
   - https://www.ired.team/offensive-security/code-injection-process-injection/dll-injection
   - https://github.com/monoxgas/sRDI
   - https://3xpl01tc0d3r.blogspot.com/2019/12/process-injection-part-v.html
