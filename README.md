@@ -13,6 +13,10 @@ Configure and create process injection binaries.
 
 Single Dose is console application written for the .NET Framework 3.5. Binaries generated with Single Dose are also built for .NET Framework 3.5. Available techniques will inject either DLL or Shellcode (raw format) depending on the technique.
 
+Each technique has been tested with either :  
+1. MessageBox64.dll: https://github.com/enigma0x3/MessageBox
+2. MSFVenom raw shellcode that executes calc  
+
 ## Basic Usage:  
 Creating the first binary can be accomplished using the commands below. Just enter the commands below and fill in the brackets as you see fit.  
 ```
@@ -161,9 +165,9 @@ Example Scenarios:
 ```  
 
 ## What's next?
-This has been a project built in my spare time. I plan on adding more techniques as time goes on, but I won't have much time to dedicate for a few weeks. I suppose now is a good time to drop this here.  
+This has been a project built in my spare time. I plan on adding more techniques as time goes on, but I won't have much time to dedicate over the next few weeks.  
 
-## Check these references out:  
+## Check these sick references out:  
   - https://www.ired.team/offensive-security/code-injection-process-injection/dll-injection
   - https://github.com/monoxgas/sRDI
   - https://3xpl01tc0d3r.blogspot.com/2019/12/process-injection-part-v.html
