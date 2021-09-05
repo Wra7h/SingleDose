@@ -22,7 +22,7 @@ Creating the first binary can be accomplished using the commands below. Just ent
 ```
   +--> settings
   +-->> output [output directory]
-  +-->> mode [mode #] (Static, Dynamic, or Download)
+  +-->> mode [mode #] (1. Static, 2. Dynamic, or 3. Download)
   +-->> exit
   +--> show techniques
   +--> build [technique name/number]
