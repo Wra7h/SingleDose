@@ -105,12 +105,10 @@ namespace {{NAMESPACE}}
     {
         static void Main(string[] args)
         {
-            //{{TRIGGER}}
-
-            //{{MODE}}
+            {{TRIGGER}}
+            {{MODE}}
          
             var SyscallResults = FetchSyscallID();
-
             IntPtr hCurrentProcess = GetCurrentProcess();
             IntPtr pMemoryAllocation = new IntPtr();
             IntPtr pZeroBits = IntPtr.Zero;
@@ -176,7 +174,7 @@ namespace {{NAMESPACE}}
             return;
         }
 
-        //{{ARGS}}
+        {{ARGS}}
 
         public class SyscallIDResults
         {

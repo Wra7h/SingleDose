@@ -245,8 +245,8 @@ namespace {{NAMESPACE}}
 
         static void Main(string[] args)
         {
-            //{{TRIGGER}}
-            //{{MODE}}
+            {{TRIGGER}}
+            {{MODE}}
         }
 
         static void InjectDLL(IntPtr procHandle, string dllName)
@@ -262,8 +262,7 @@ namespace {{NAMESPACE}}
                 Environment.Exit(0);
             }
         }
-
-        //{{ARGS}}
+        {{ARGS}}
     }
 }";
     }

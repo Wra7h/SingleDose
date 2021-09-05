@@ -251,8 +251,8 @@ namespace {{NAMESPACE}}
 
         static void Main(string[] args)
         {
-            //{{TRIGGER}}
-            //{{MODE}}
+            {{TRIGGER}}
+            {{MODE}}
             StartuprocInfo sInfo = new StartuprocInfo();
             ProcessInfo procInfo;
             SecurityAttributes processSec = new SecurityAttributes();
@@ -304,7 +304,7 @@ namespace {{NAMESPACE}}
                 Console.WriteLine(""[!] CreateProcess: {0}"", Marshal.GetLastWin32Error().ToString());
             }
         }
-        //{{ARGS}}
+        {{ARGS}}
     }
 }
 ";

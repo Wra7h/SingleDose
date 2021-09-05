@@ -115,6 +115,7 @@ namespace SingleDose
                     Console.WriteLine("|\t   3) EarlyBird_QueueUserAPC: Inject Shellcode into a newly spawned process. [Shellcode]");
                     Console.WriteLine("|\t   4) Suspend_QueueUserAPC: Inject Shellcode into a process currently running. [Shellcode]");
                     Console.WriteLine("|\t   5) Syscall_CreateThread: Inject Shellcode using direct syscalls. [Shellcode]");
+                    Console.WriteLine("|\t   6) Fiber_Execution: Execute Shellcode via Fibers. [Shellcode]");
                     Console.WriteLine("|\n|              MISC. COMMANDS");
                     Console.WriteLine("|            ------------------");
                     Console.WriteLine("|\tShow :: Display current configuration, or techniques.");
@@ -175,12 +176,20 @@ namespace SingleDose
                                     Settings.SelectedTechnique = "Suspend_QueueUserAPC";
                                     break;
                                 case "SYSCALL_CREATETHREAD":
-                                    Console.WriteLine("|\n|   [*] Building technique: SYSCALL_CREATETHREAD\n|");
+                                    Console.WriteLine("|\n|   [*] Building technique: Syscall_CreateThread\n|");
                                     Settings.SelectedTechnique = "Syscall_CreateThread";
                                     break;
                                 case "5":
-                                    Console.WriteLine("|\n|   [*] Building technique: SYSCALL_CREATETHREAD\n|");
+                                    Console.WriteLine("|\n|   [*] Building technique: Syscall_CreateThread\n|");
                                     Settings.SelectedTechnique = "Syscall_CreateThread";
+                                    break;
+                                case "FIBER_EXECUTION":
+                                    Console.WriteLine("|\n|   [*] Building technique: Fiber_Execution\n|");
+                                    Settings.SelectedTechnique = "Fiber_Execution";
+                                    break;
+                                case "6":
+                                    Console.WriteLine("|\n|   [*] Building technique: Fiber_Execution\n|");
+                                    Settings.SelectedTechnique = "Fiber_Execution";
                                     break;
                                 default:
                                     Console.WriteLine("|\n|   [!] Unknown technique. Techniques can be found in help.");
@@ -220,6 +229,8 @@ namespace SingleDose
                             case "TRIGGERS":
                                 HIBERNATEPROCESSDETAILS = "";
                                 REQUIREDPROCESSDETAILS = "";
+                                AVOIDPROCESSDETAILS = "";
+                                PERSISTPROCESSDETAILS = "";
                                 Console.WriteLine("|\n|   [~] Triggers have been cleared.");
                                 break;
                         }
@@ -243,6 +254,7 @@ namespace SingleDose
                                 Console.WriteLine("|\t   3) EarlyBird_QueueUserAPC: Inject Shellcode into a newly spawned process. [Shellcode]");
                                 Console.WriteLine("|\t   4) Suspend_QueueUserAPC: Inject Shellcode into a process currently running. [Shellcode]");
                                 Console.WriteLine("|\t   5) Syscall_CreateThread: Inject Shellcode using direct syscalls. [Shellcode]");
+                                Console.WriteLine("|\t   6) Fiber_Execution: Execute Shellcode via Fibers. [Shellcode]");
                                 break;
                         }
                     }
@@ -367,6 +379,30 @@ namespace SingleDose
                                 Console.WriteLine("|   References: https://jhalon.github.io/utilizing-syscalls-in-csharp-1/");
                                 Console.WriteLine("|               https://jhalon.github.io/utilizing-syscalls-in-csharp-2/");
                                 Console.WriteLine("|               https://www.solomonsklash.io/syscalls-for-shellcode-injection.html");
+                                break;
+                            case "FIBER_EXECUTION":
+                                Console.WriteLine("|\n|\t   Fiber Exection");
+                                Console.WriteLine("|\t  ----------------------\n|");
+                                Console.WriteLine("|   Inject Source: Shellcode");
+                                Console.WriteLine("|   P/Invoke APIs: ConvertThreadToFiber, VirtualAlloc, CreateFiber,");
+                                Console.WriteLine("|                  SwitchToFiber, VirtualProtectEx\n|");
+                                Console.WriteLine("|   Summary: Fibers are a lightweight thread of execution similar to OS threads.");
+                                Console.WriteLine("|            However, unlike OS threads, they’re cooperatively scheduled as opposed ");
+                                Console.WriteLine("|            to preemptively scheduled.\n|");
+                                Console.WriteLine("|   References: https://www.ired.team/offensive-security/code-injection-process-injection/executing-shellcode-with-createfiber");
+                                Console.WriteLine("|               https://graphitemaster.github.io/fibers/");
+                                break;
+                            case "6":
+                                Console.WriteLine("|\n|\t   Fiber Exection");
+                                Console.WriteLine("|\t  ----------------------\n|");
+                                Console.WriteLine("|   Inject Source: Shellcode");
+                                Console.WriteLine("|   P/Invoke APIs: ConvertThreadToFiber, VirtualAlloc, CreateFiber,");
+                                Console.WriteLine("|                  SwitchToFiber, VirtualProtectEx\n|");
+                                Console.WriteLine("|   Summary: Fibers are a lightweight thread of execution similar to OS threads.");
+                                Console.WriteLine("|            However, unlike OS threads, they’re cooperatively scheduled as opposed ");
+                                Console.WriteLine("|            to preemptively scheduled.\n|");
+                                Console.WriteLine("|   References: https://www.ired.team/offensive-security/code-injection-process-injection/executing-shellcode-with-createfiber");
+                                Console.WriteLine("|               https://graphitemaster.github.io/fibers/");
                                 break;
                             default:
                                 Console.WriteLine("|\n|   [!] Unknown technique. Techniques can be found with \"help\" or \"show techniques\".");

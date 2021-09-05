@@ -22,7 +22,7 @@ namespace SingleDose
         public static List<string> TriggersToUse = new List<string> { };
         public static string REQUIREDPROCESSDETAILS = "";
         public static string REQUIRETRIGGER = @"
-            System.Collections.Generic.List<string> requirements = new System.Collections.Generic.List<string> { //{{REQUIREMENTS}} };
+            System.Collections.Generic.List<string> requirements = new System.Collections.Generic.List<string> { {{REQUIREMENTS}} };
             bool continueInject = false;
             System.Collections.Generic.List<string> matches = new System.Collections.Generic.List<string> {};
             foreach (var p in System.Diagnostics.Process.GetProcesses())
@@ -67,15 +67,14 @@ namespace SingleDose
                 Console.WriteLine(""[!] Requirements not met."");
                 System.Environment.Exit(0);
             }
-
-            //{{TRIGGER}}
+            {{TRIGGER}}
 ";
 
         //Hibernate
         //SLEEP UNTIL ALL CONDITIONS ARE MET
         public static string HIBERNATEPROCESSDETAILS = "";
         public static string HIBERNATETRIGGER = @"
-            System.Collections.Generic.List<string> hibernateRequirements = new System.Collections.Generic.List<string> { //{{REQUIREMENTS}} };
+            System.Collections.Generic.List<string> hibernateRequirements = new System.Collections.Generic.List<string> { {{REQUIREMENTS}} };
             System.Collections.Generic.List<string> hibernateMatches = new System.Collections.Generic.List<string> { };
             do
             {
@@ -129,14 +128,14 @@ namespace SingleDose
 
             } while (hibernateRequirements.Count() != hibernateMatches.Count());
             
-            //{{TRIGGER}}
+            {{TRIGGER}}
 ";
 
         //Avoid
         //AVOID EXECUTION IF ANY REQUIREMENT IS MET
         public static string AVOIDPROCESSDETAILS="";
         public static string AVOIDTRIGGER = @"
-            System.Collections.Generic.List<string> avoid = new System.Collections.Generic.List<string> { //{{REQUIREMENTS}} };
+            System.Collections.Generic.List<string> avoid = new System.Collections.Generic.List<string> { {{REQUIREMENTS}} };
             foreach (var p in System.Diagnostics.Process.GetProcesses())
             {
                 try
@@ -161,13 +160,13 @@ namespace SingleDose
                     continue;
                 }
             }
-            //{{TRIGGER}}";
+            {{TRIGGER}}";
 
         //Persist
         //SLEEP UNTIL CONDITIONS ARE NOT MET
         public static string PERSISTPROCESSDETAILS = "";
         public static string PERSISTTRIGGER = @"
-            System.Collections.Generic.List<string> persistRequirements = new System.Collections.Generic.List<string> { //{{REQUIREMENTS}} };
+            System.Collections.Generic.List<string> persistRequirements = new System.Collections.Generic.List<string> { {{REQUIREMENTS}} };
             int conditionsMet;
             do
             {
@@ -216,8 +215,7 @@ namespace SingleDose
                     Console.WriteLine("": +"");
                 }
 
-            } while (conditionsMet > 0);
-            
-            //{{TRIGGER}}";
+            } while (conditionsMet > 0); 
+            {{TRIGGER}}";
     }
 }
