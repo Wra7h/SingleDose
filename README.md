@@ -22,7 +22,7 @@ Creating the first binary can be accomplished using the commands below. Just ent
 ```
   +--> settings
   +-->> output [output directory]
-  +-->> mode [mode #]
+  +-->> mode [mode #] (Static, Dynamic, or Download)
   +-->> exit
   +--> show techniques
   +--> build [technique name/number]
@@ -52,6 +52,7 @@ The next 2 commands are from this submenu. "Output" tells Single Dose where to s
           3) EarlyBird_QueueUserAPC: Inject Shellcode into a newly spawned process. [Shellcode]
           4) Suspend_QueueUserAPC: Inject Shellcode into a process currently running. [Shellcode]
           5) Syscall_CreateThread: Inject Shellcode using direct syscalls. [Shellcode]
+          6) Fiber_Execution: Execute Shellcode via Fibers. [Shellcode]
 
               MISC. COMMANDS
             ------------------
@@ -100,6 +101,8 @@ Like I mentioned before in the basic usage, this is the submenu that allows you 
 
 ## Triggers Commands:
 The triggers tells the binary to only inject under certain conditions. Triggers are not required but need to be configured before building the binary if you choose to use them.  
+
+The Triggers menu can be accessed by entering "triggers" from Main Menu.  
 
 Example Scenarios:
   1. "I want my binary to exit if notepad.exe is not currently running on the system."  
@@ -174,4 +177,7 @@ This has been a project built in my spare time. I plan on adding more techniques
   - https://sevrosecurity.com/2020/04/13/process-injection-part-2-queueuserapc/
   - https://jhalon.github.io/utilizing-syscalls-in-csharp-1/
   - https://jhalon.github.io/utilizing-syscalls-in-csharp-2/
-  - https://www.solomonsklash.io/syscalls-for-shellcode-injection.html
+  - https://www.solomonsklash.io/syscalls-for-shellcode-injection.html  
+  - https://www.ired.team/offensive-security/code-injection-process-injection/executing-shellcode-with-createfiber  
+  - https://graphitemaster.github.io/fibers/  
+  
