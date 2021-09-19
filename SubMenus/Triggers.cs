@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace SingleDose
 {
@@ -11,6 +9,12 @@ namespace SingleDose
         {
             string triggersInput = null;
             Console.WriteLine("\n  +--------------+\n _|   TRIGGERS   |\n| +--------------+");
+            if (Settings.helpBlurb)
+            {
+                Console.WriteLine("|\n|\tavoid   persist   require   hibernate   show");
+                Console.WriteLine("|\texit    clear     help      settings    blurb");
+            }
+
             do
             {
                 Console.Write("|\n+-->> ");
@@ -28,8 +32,8 @@ namespace SingleDose
             switch (command.ToUpper().Split()[0])
             {
                 case "HELP":
-                    Console.WriteLine("|\n|\t\t\t\t Triggers Commands:");
-                    Console.WriteLine("|\t\t\t\t--------------------");
+                    Console.WriteLine("|\n|\t\t\t\t Triggers Commands");
+                    Console.WriteLine("|\t\t\t\t-------------------");
                     Console.WriteLine("|\t1) Avoid :: Do not execute if condition is met. Binary will exit if condition is met.");
                     Console.WriteLine("|\t           Accepts PID, Module (DLL), or Process name (EXE).");
                     Console.WriteLine("|\t          'Avoid *' will enter an interface allowing you to add multiple conditions.");
@@ -53,13 +57,12 @@ namespace SingleDose
                     Console.WriteLine("|\t              Accepts PID, Module (DLL), or Process name (EXE).");
                     Console.WriteLine("|\t   > Example Usage: persist *");
                     Console.WriteLine("|\t   > Example Usage: persist notepad.exe");
-                    Console.WriteLine("|");
-                    Console.WriteLine("|\n|\tShow :: Display current configuration.");
-                    Console.WriteLine("|\n|\tClear :: Clear the terminal, settings or triggers.");
+                    Console.WriteLine("|\n|\n|\tClear :: Clear the terminal, settings or triggers.");
                     Console.WriteLine("|\t   > Example Usage: clear");
                     Console.WriteLine("|\t   > Example Usage: clear settings");
-                    Console.WriteLine("|");
-                    Console.WriteLine("|\n|\tExit :: Return to Main Menu");
+                    Console.WriteLine("|\tShow :: Display current configuration.");
+                    Console.WriteLine("|\tBlurb :: A switch to display a command blurb when switching between menus. (Default = true)");
+                    Console.WriteLine("|\tExit :: Return to Main Menu");
                     break;
                 case "SETTINGS":
                     Settings.SettingsMenu();
@@ -333,12 +336,26 @@ namespace SingleDose
                                 Console.WriteLine("|\t   3) EarlyBird_QueueUserAPC: Inject Shellcode into a newly spawned process. [Shellcode]");
                                 Console.WriteLine("|\t   4) Suspend_QueueUserAPC: Inject Shellcode into a process currently running. [Shellcode]");
                                 Console.WriteLine("|\t   5) Syscall_CreateThread: Inject Shellcode using direct syscalls. [Shellcode]");
+                                Console.WriteLine("|\t   6) Fiber_Execution: Execute Shellcode via Fibers. [Shellcode]");
                                 break;
                         }
                     }
                     else
                     {
                         Program.PrintSettings();
+                    }
+                    break;
+                case "BLURB":
+                    if (Settings.helpBlurb)
+                    {
+                        Settings.helpBlurb = false;
+                        Console.WriteLine("|\n|   [~] Help blurbs has been disabled.");
+                    }
+                    else if (!Settings.helpBlurb)
+                    {
+                        Settings.helpBlurb = true;
+                        Console.WriteLine("|\n|\tavoid   persist   require   hibernate   show");
+                        Console.WriteLine("|\texit    clear     help      settings    blurb");
                     }
                     break;
                 case "CLEAR":

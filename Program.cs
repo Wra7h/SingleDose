@@ -34,7 +34,8 @@ namespace SingleDose
             Console.WriteLine("\n");
 
             Console.WriteLine("\n  +-------------------+\n _|     MAIN MENU     |\n| +-------------------+");
-
+            Console.WriteLine("|\n|\tsettings   triggers   build   describe   show");
+            Console.WriteLine("|\texit       clear      help    blurb");
             string input;
             while (true)
             {
@@ -126,15 +127,40 @@ namespace SingleDose
                     Console.WriteLine("|\tClear :: Clear the terminal, settings or triggers.");
                     Console.WriteLine("|\t   > Example Usage: clear");
                     Console.WriteLine("|\t   > Example Usage: clear settings");
+                    Console.WriteLine("|\tBlurb :: A switch to display a command blurb when switching between menus. (Default = true)");
+                    Console.WriteLine("|\tHelp :: Display this help.");
                     Console.WriteLine("|\tExit :: Exit the program.");
                     break;
                 case "SETTINGS":
                     Settings.SettingsMenu();
                     Console.WriteLine("\n  +-------------------+\n _|     MAIN MENU     |\n| +-------------------+");
+                    if (Settings.helpBlurb)
+                    {
+                        Console.WriteLine("|\n|\tsettings   triggers   build   describe   show");
+                        Console.WriteLine("|\texit       clear      help    blurb");
+                    }
                     break;
                 case "TRIGGERS":
                     Triggers.TriggersMenu();
                     Console.WriteLine("\n  +-------------------+\n _|     MAIN MENU     |\n| +-------------------+");
+                    if (Settings.helpBlurb)
+                    {
+                        Console.WriteLine("|\n|\tsettings   triggers   build   describe   show");
+                        Console.WriteLine("|\texit       clear      help    blurb");
+                    }
+                    break;
+                case "BLURB":
+                    if (Settings.helpBlurb)
+                    {
+                        Settings.helpBlurb = false;
+                        Console.WriteLine("|\n|   [~] Help blurbs has been disabled.");
+                    }
+                    else if (!Settings.helpBlurb)
+                    {
+                        Settings.helpBlurb = true;
+                        Console.WriteLine("|\n|\tsettings   triggers   build   describe   show");
+                        Console.WriteLine("|\texit       clear      help    blurb");
+                    }
                     break;
                 case "BUILD":
                     if (Settings.InjectMode != null && Settings.OutputDirectory != null)
@@ -381,28 +407,30 @@ namespace SingleDose
                                 Console.WriteLine("|               https://www.solomonsklash.io/syscalls-for-shellcode-injection.html");
                                 break;
                             case "FIBER_EXECUTION":
-                                Console.WriteLine("|\n|\t   Fiber Exection");
-                                Console.WriteLine("|\t  ----------------------\n|");
+                                Console.WriteLine("|\n|\t   Fiber Execution");
+                                Console.WriteLine("|\t  -----------------\n|");
                                 Console.WriteLine("|   Inject Source: Shellcode");
                                 Console.WriteLine("|   P/Invoke APIs: ConvertThreadToFiber, VirtualAlloc, CreateFiber,");
-                                Console.WriteLine("|                  SwitchToFiber, VirtualProtectEx\n|");
+                                Console.WriteLine("|                  VirtualProtectEx, SwitchToFiber\n|");
                                 Console.WriteLine("|   Summary: Fibers are a lightweight thread of execution similar to OS threads.");
                                 Console.WriteLine("|            However, unlike OS threads, they’re cooperatively scheduled as opposed ");
-                                Console.WriteLine("|            to preemptively scheduled.\n|");
+                                Console.WriteLine("|            to preemptively scheduled. A Fiber has it's own stack and instruction pointer.\n|");
                                 Console.WriteLine("|   References: https://www.ired.team/offensive-security/code-injection-process-injection/executing-shellcode-with-createfiber");
                                 Console.WriteLine("|               https://graphitemaster.github.io/fibers/");
+                                Console.WriteLine("|               https://stackoverflow.com/questions/796217/what-is-the-difference-between-a-thread-and-a-fiber");
                                 break;
                             case "6":
-                                Console.WriteLine("|\n|\t   Fiber Exection");
-                                Console.WriteLine("|\t  ----------------------\n|");
+                                Console.WriteLine("|\n|\t   Fiber Execution");
+                                Console.WriteLine("|\t  -----------------\n|");
                                 Console.WriteLine("|   Inject Source: Shellcode");
                                 Console.WriteLine("|   P/Invoke APIs: ConvertThreadToFiber, VirtualAlloc, CreateFiber,");
-                                Console.WriteLine("|                  SwitchToFiber, VirtualProtectEx\n|");
+                                Console.WriteLine("|                  VirtualProtectEx, SwitchToFiber\n|");
                                 Console.WriteLine("|   Summary: Fibers are a lightweight thread of execution similar to OS threads.");
                                 Console.WriteLine("|            However, unlike OS threads, they’re cooperatively scheduled as opposed ");
-                                Console.WriteLine("|            to preemptively scheduled.\n|");
+                                Console.WriteLine("|            to preemptively scheduled. A Fiber has it's own stack and instruction pointer.\n|");
                                 Console.WriteLine("|   References: https://www.ired.team/offensive-security/code-injection-process-injection/executing-shellcode-with-createfiber");
                                 Console.WriteLine("|               https://graphitemaster.github.io/fibers/");
+                                Console.WriteLine("|               https://stackoverflow.com/questions/796217/what-is-the-difference-between-a-thread-and-a-fiber");
                                 break;
                             default:
                                 Console.WriteLine("|\n|   [!] Unknown technique. Techniques can be found with \"help\" or \"show techniques\".");

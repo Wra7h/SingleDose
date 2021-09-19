@@ -10,11 +10,18 @@ namespace SingleDose
         public static string InjectMode = null;
         public static bool CompileBinary = true;
         public static string OutputDirectory = null;
-
+        public static bool helpBlurb = true;
         public static void SettingsMenu()
         {
             string settingsInput = null;
             Console.WriteLine("\n  +--------------+\n _|   SETTINGS   |\n| +--------------+");
+
+            if (helpBlurb)
+            {
+                Console.WriteLine("|\n|\tmode   output   show   compile   show");
+                Console.WriteLine("|\texit   clear    help   triggers  blurb");
+            }
+
             do
             {
                 Console.Write("|\n+-->> ");
@@ -34,8 +41,8 @@ namespace SingleDose
                 case "":
                     break;
                 case "HELP":
-                    Console.WriteLine("|\n|\t Settings Commands:");
-                    Console.WriteLine("|\t---------------------");
+                    Console.WriteLine("|\n|\t\t\t\t Settings Commands");
+                    Console.WriteLine("|\t\t\t\t-------------------");
                     Console.WriteLine("|\tMode :: Select whether to embed injection content or provide it at execution.");
                     Console.WriteLine("|\t   1) Static: Injection content will be embedded in binary.");
                     Console.WriteLine("|\t   2) Dynamic: Injection content will be provided at execution with -PID and -DLL/-Bin.");
@@ -46,19 +53,33 @@ namespace SingleDose
                     Console.WriteLine("|\n|\tOutput :: Set the output directory. The directory will be created if necessary.");
                     Console.WriteLine("|\t   > Example Usage: output .\\binaries");
                     Console.WriteLine("|\t   > Example Usage: output C:\\Users\\user\\Desktop\\output");
-                    Console.WriteLine("|\n|\tShow :: Display current configuration.");
                     Console.WriteLine("|\n|\tCompile :: a switch to compile the generated .cs file. If this command is executed while true,");
                     Console.WriteLine("|\t           the value becomes false and vice versa. (Default = true)");
                     Console.WriteLine("|\t   > Example Usage: compile");
-                    Console.WriteLine("|\n|\tClear :: Clear the terminal, settings or triggers.");
+                    Console.WriteLine("|\n|\n|\tClear :: Clear the terminal, settings or triggers.");
                     Console.WriteLine("|\t   > Example Usage: clear");
                     Console.WriteLine("|\t   > Example Usage: clear settings");
-                    Console.WriteLine("|");
-                    Console.WriteLine("|\n|\tTriggers :: Enter the triggers submenu");
-                    Console.WriteLine("|\n|\tExit :: Return to Main Menu");
+                    //Console.WriteLine("|");
+                    Console.WriteLine("|\tShow :: Display current configuration.");
+                    Console.WriteLine("|\tBlurb :: A switch to display a command blurb when switching between menus. (Default = true)");
+                    Console.WriteLine("|\tTriggers :: Enter the triggers submenu");
+                    Console.WriteLine("|\tExit :: Return to Main Menu");
                     break;
                 case "TRIGGERS":
                     Triggers.TriggersMenu();
+                    break;
+                case "BLURB":
+                    if (Settings.helpBlurb)
+                    {
+                        Settings.helpBlurb = false;
+                        Console.WriteLine("|\n|   [~] Help blurbs has been disabled.");
+                    } 
+                    else if (!Settings.helpBlurb)
+                    {
+                        helpBlurb = true;
+                        Console.WriteLine("|\n|\tmode   output   show   compile   show");
+                        Console.WriteLine("|\texit   clear    help   triggers  blurb");
+                    }
                     break;
                 case "MODE":
                     if (command.Split().Count() > 1)
@@ -172,6 +193,7 @@ namespace SingleDose
                                 Console.WriteLine("|\t   3) EarlyBird_QueueUserAPC: Inject Shellcode into a newly spawned process. [Shellcode]");
                                 Console.WriteLine("|\t   4) Suspend_QueueUserAPC: Inject Shellcode into a process currently running. [Shellcode]");
                                 Console.WriteLine("|\t   5) Syscall_CreateThread: Inject Shellcode using direct syscalls. [Shellcode]");
+                                Console.WriteLine("|\t   6) Fiber_Execution: Execute Shellcode via Fibers. [Shellcode]");
                                 break;
                         }
                     }
