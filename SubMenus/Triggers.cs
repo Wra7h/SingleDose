@@ -337,6 +337,10 @@ namespace SingleDose
                                 Console.WriteLine("|\t   4) Suspend_QueueUserAPC: Inject Shellcode into a process currently running. [Shellcode]");
                                 Console.WriteLine("|\t   5) Syscall_CreateThread: Inject Shellcode using direct syscalls. [Shellcode]");
                                 Console.WriteLine("|\t   6) Fiber_Execution: Execute Shellcode via Fibers. [Shellcode]");
+                                Console.WriteLine("|\t   7) EnumWindows: Execute Shellcode via Callback. [Shellcode]");
+                                Console.WriteLine("|\t   8) EnumChildWindows: Execute Shellcode via Callback. [Shellcode]");
+                                Console.WriteLine("|\t   9) EnumDateFormatsEx: Execute Shellcode via Callback. [Shellcode]");
+                                Console.WriteLine("|\t  10) EnumDesktops: Execute Shellcode via Callback. [Shellcode]");
                                 break;
                         }
                     }

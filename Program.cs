@@ -110,13 +110,17 @@ namespace SingleDose
                     Console.WriteLine("|\t   > Example Usage: build <technique>");
                     Console.WriteLine("|\t   > Example Usage: build 3");
                     Console.WriteLine("|\n|                TECHNIQUES");
-                    Console.WriteLine("|              --------------");
+                    Console.WriteLine("|            ------------------");
                     Console.WriteLine("|\t   1) CreateRemoteThread: Inject a DLL into a remote process and execute with CreateRemoteThread. [DLL]");
                     Console.WriteLine("|\t   2) SRDI: Convert DLL into shellcode and inject. [DLL]");
                     Console.WriteLine("|\t   3) EarlyBird_QueueUserAPC: Inject Shellcode into a newly spawned process. [Shellcode]");
                     Console.WriteLine("|\t   4) Suspend_QueueUserAPC: Inject Shellcode into a process currently running. [Shellcode]");
                     Console.WriteLine("|\t   5) Syscall_CreateThread: Inject Shellcode using direct syscalls. [Shellcode]");
                     Console.WriteLine("|\t   6) Fiber_Execution: Execute Shellcode via Fibers. [Shellcode]");
+                    Console.WriteLine("|\t   7) EnumWindows: Execute Shellcode via Callback. [Shellcode]");
+                    Console.WriteLine("|\t   8) EnumChildWindows: Execute Shellcode via Callback. [Shellcode]");
+                    Console.WriteLine("|\t   9) EnumDateFormatsEx: Execute Shellcode via Callback. [Shellcode]");
+                    Console.WriteLine("|\t  10) EnumDesktops: Execute Shellcode via Callback. [Shellcode]");
                     Console.WriteLine("|\n|              MISC. COMMANDS");
                     Console.WriteLine("|            ------------------");
                     Console.WriteLine("|\tShow :: Display current configuration, or techniques.");
@@ -217,6 +221,38 @@ namespace SingleDose
                                     Console.WriteLine("|\n|   [*] Building technique: Fiber_Execution\n|");
                                     Settings.SelectedTechnique = "Fiber_Execution";
                                     break;
+                                case "ENUMWINDOWS":
+                                    Console.WriteLine("|\n|   [*] Building technique: EnumWindows\n|");
+                                    Settings.SelectedTechnique = "EnumWindows";
+                                    break;
+                                case "7":
+                                    Console.WriteLine("|\n|   [*] Building technique: EnumWindows\n|");
+                                    Settings.SelectedTechnique = "EnumWindows";
+                                    break;
+                                case "ENUMCHILDWINDOWS":
+                                    Console.WriteLine("|\n|   [*] Building technique: EnumChildWindows\n|");
+                                    Settings.SelectedTechnique = "EnumChildWindows";
+                                    break;
+                                case "8":
+                                    Console.WriteLine("|\n|   [*] Building technique: EnumChildWindows\n|");
+                                    Settings.SelectedTechnique = "EnumChildWindows";
+                                    break;
+                                case "ENUMDATEFORMATSEX":
+                                    Console.WriteLine("|\n|   [*] Building technique: EnumDateFormatsEx\n|");
+                                    Settings.SelectedTechnique = "EnumDateFormatsEx";
+                                    break;
+                                case "9":
+                                    Console.WriteLine("|\n|   [*] Building technique: EnumDateFormatsEx\n|");
+                                    Settings.SelectedTechnique = "EnumDateFormatsEx";
+                                    break;
+                                case "ENUMDESKTOPS":
+                                    Console.WriteLine("|\n|   [*] Building technique: EnumDesktops\n|");
+                                    Settings.SelectedTechnique = "EnumDesktops";
+                                    break;
+                                case "10":
+                                    Console.WriteLine("|\n|   [*] Building technique: EnumDesktops\n|");
+                                    Settings.SelectedTechnique = "EnumDesktops";
+                                    break;
                                 default:
                                     Console.WriteLine("|\n|   [!] Unknown technique. Techniques can be found in help.");
                                     break;
@@ -273,14 +309,18 @@ namespace SingleDose
                         switch (command.Split()[1].ToUpper())
                         {
                             case "TECHNIQUES":
-                                Console.WriteLine("|\n|                TECHNIQUES");
-                                Console.WriteLine("|              --------------");
+                                Console.WriteLine("|\n|\t                TECHNIQUES");
+                                Console.WriteLine("|\t            ------------------");
                                 Console.WriteLine("|\t   1) CreateRemoteThread: Inject a DLL into a remote process and execute with CreateRemoteThread. [DLL]");
                                 Console.WriteLine("|\t   2) SRDI: Convert DLL into shellcode and inject. [DLL]");
                                 Console.WriteLine("|\t   3) EarlyBird_QueueUserAPC: Inject Shellcode into a newly spawned process. [Shellcode]");
                                 Console.WriteLine("|\t   4) Suspend_QueueUserAPC: Inject Shellcode into a process currently running. [Shellcode]");
                                 Console.WriteLine("|\t   5) Syscall_CreateThread: Inject Shellcode using direct syscalls. [Shellcode]");
                                 Console.WriteLine("|\t   6) Fiber_Execution: Execute Shellcode via Fibers. [Shellcode]");
+                                Console.WriteLine("|\t   7) EnumWindows: Execute Shellcode via Callback. [Shellcode]");
+                                Console.WriteLine("|\t   8) EnumChildWindows: Execute Shellcode via Callback. [Shellcode]");
+                                Console.WriteLine("|\t   9) EnumDateFormatsEx: Execute Shellcode via Callback. [Shellcode]");
+                                Console.WriteLine("|\t  10) EnumDesktops: Execute Shellcode via Callback. [Shellcode]");
                                 break;
                         }
                     }
@@ -431,6 +471,72 @@ namespace SingleDose
                                 Console.WriteLine("|   References: https://www.ired.team/offensive-security/code-injection-process-injection/executing-shellcode-with-createfiber");
                                 Console.WriteLine("|               https://graphitemaster.github.io/fibers/");
                                 Console.WriteLine("|               https://stackoverflow.com/questions/796217/what-is-the-difference-between-a-thread-and-a-fiber");
+                                break;
+                            case "ENUMWINDOWS":
+                                Console.WriteLine("|\n|\t     EnumWindows");
+                                Console.WriteLine("|\t  -----------------\n|");
+                                Console.WriteLine("|   Inject Source: Shellcode");
+                                Console.WriteLine("|   P/Invoke APIs: VirtualAlloc, VirtualProtectEx, EnumWindows\n|");
+                                Console.WriteLine("|   Summary: Unavailable at this time.\n|");
+                                Console.WriteLine("|   References: https://vx-underground.org/papers/VXUG/Mirrors/Injection/callbackinjection/EnumWindows.cpp");
+                                break;
+                            case "7":
+                                Console.WriteLine("|\n|\t     EnumWindows");
+                                Console.WriteLine("|\t  -----------------\n|");
+                                Console.WriteLine("|   Inject Source: Shellcode");
+                                Console.WriteLine("|   P/Invoke APIs: VirtualAlloc, VirtualProtectEx, EnumWindows\n|");
+                                Console.WriteLine("|   Summary: Unavailable at this time.\n|");
+                                Console.WriteLine("|   References: https://vx-underground.org/papers/VXUG/Mirrors/Injection/callbackinjection/EnumWindows.cpp");
+                                break;
+                            case "ENUMCHILDWINDOWS":
+                                Console.WriteLine("|\n|\t    EnumChildWindows");
+                                Console.WriteLine("|\t  --------------------\n|");
+                                Console.WriteLine("|   Inject Source: Shellcode");
+                                Console.WriteLine("|   P/Invoke APIs: VirtualAlloc, VirtualProtectEx, EnumChildWindows\n|");
+                                Console.WriteLine("|   Summary: Unavailable at this time.\n|");
+                                Console.WriteLine("|   References: https://vx-underground.org/papers/VXUG/Mirrors/Injection/callbackinjection/EnumChildWindows.cpp");
+                                break;
+                            case "8":
+                                Console.WriteLine("|\n|\t    EnumChildWindows");
+                                Console.WriteLine("|\t  --------------------\n|");
+                                Console.WriteLine("|   Inject Source: Shellcode");
+                                Console.WriteLine("|   P/Invoke APIs: VirtualAlloc, VirtualProtectEx, EnumChildWindows\n|");
+                                Console.WriteLine("|   Summary: Unavailable at this time.\n|");
+                                Console.WriteLine("|   References: https://vx-underground.org/papers/VXUG/Mirrors/Injection/callbackinjection/EnumChildWindows.cpp");
+                                break;
+                            case "ENUMDATEFORMATSEX":
+                                Console.WriteLine("|\n|\t    EnumDateFormatsEx");
+                                Console.WriteLine("|\t   -------------------\n|");
+                                Console.WriteLine("|   Inject Source: Shellcode");
+                                Console.WriteLine("|   P/Invoke APIs: VirtualAlloc, VirtualProtectEx, EnumDateFormatsEx\n|");
+                                Console.WriteLine("|   Summary: Unavailable at this time.\n|");
+                                Console.WriteLine("|   References: https://vx-underground.org/papers/VXUG/Mirrors/Injection/callbackinjection/EnumDateFormatsA.cpp");
+                                break;
+                            case "9":
+                                Console.WriteLine("|\n|\t    EnumDateFormatsEx");
+                                Console.WriteLine("|\t   -------------------\n|");
+                                Console.WriteLine("|   Inject Source: Shellcode");
+                                Console.WriteLine("|   P/Invoke APIs: VirtualAlloc, VirtualProtectEx, EnumDateFormatsEx\n|");
+                                Console.WriteLine("|   Summary: Unavailable at this time.\n|");
+                                Console.WriteLine("|   References: https://vx-underground.org/papers/VXUG/Mirrors/Injection/callbackinjection/EnumDateFormatsA.cpp");
+                                break;
+                            case "ENUMDESKTOPS":
+                                Console.WriteLine("|\n|\t     EnumDesktops");
+                                Console.WriteLine("|\t  -----------------\n|");
+                                Console.WriteLine("|   Inject Source: Shellcode");
+                                Console.WriteLine("|   P/Invoke APIs: VirtualAlloc, VirtualProtectEx, GetCurrentThreadId,d");
+                                Console.WriteLine("|                  GetThreadDesktop, EnumDesktopWindows\n|");
+                                Console.WriteLine("|   Summary: Unavailable at this time.\n|");
+                                Console.WriteLine("|   References: https://vx-underground.org/papers/VXUG/Mirrors/Injection/callbackinjection/EnumDesktopW.cpp");
+                                break;
+                            case "10":
+                                Console.WriteLine("|\n|\t     EnumDesktops");
+                                Console.WriteLine("|\t  -----------------\n|");
+                                Console.WriteLine("|   Inject Source: Shellcode");
+                                Console.WriteLine("|   P/Invoke APIs: VirtualAlloc, VirtualProtectEx, GetCurrentThreadId,");
+                                Console.WriteLine("|                  GetThreadDesktop, EnumDesktopWindows\n|");
+                                Console.WriteLine("|   Summary: Unavailable at this time.\n|");
+                                Console.WriteLine("|   References: https://vx-underground.org/papers/VXUG/Mirrors/Injection/callbackinjection/EnumDesktopW.cpp");
                                 break;
                             default:
                                 Console.WriteLine("|\n|   [!] Unknown technique. Techniques can be found with \"help\" or \"show techniques\".");

