@@ -53,6 +53,10 @@ The next 2 commands are from this submenu. "Output" tells Single Dose where to s
           4) Suspend_QueueUserAPC: Inject Shellcode into a process currently running. [Shellcode]
           5) Syscall_CreateThread: Inject Shellcode using direct syscalls. [Shellcode]
           6) Fiber_Execution: Execute Shellcode via Fibers. [Shellcode]
+          7) EnumWindows: Execute Shellcode via Callback. [Shellcode]
+          8) EnumChildWindows: Execute Shellcode via Callback. [Shellcode]
+          9) EnumDateFormatsEx: Execute Shellcode via Callback. [Shellcode]
+         10) EnumDesktops: Execute Shellcode via Callback. [Shellcode]
 
               MISC. COMMANDS
             ------------------
