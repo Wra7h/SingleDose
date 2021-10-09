@@ -375,7 +375,8 @@ namespace SingleDose
                         {
                             Console.WriteLine("|\n|\tmode      output   show   ");
                             Console.WriteLine("|\tcompile   blurb    triggers");
-                            Console.WriteLine("|\texit      clear    help");
+                            Console.WriteLine("|\tversion   clear    help");
+                            Console.WriteLine("|\tlog       exit");
                         }
                     }
                     break;
