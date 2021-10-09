@@ -13,7 +13,8 @@ namespace SingleDose
 
         static void Run()
         {
-            
+            Settings.availableCSCVersions = Settings.FetchCSCVersions();
+
             Console.WriteLine(@"
          _____ _____ _   _  _____ _      ______    _____   ____   _____ ______ 
         / ____|_   _| \ | |/ ____| |    |  ____|  |  __ \ / __ \ / ____|  ____|
@@ -33,9 +34,25 @@ namespace SingleDose
           Additional options displayed with ""help"" command in each menu.");
             Console.WriteLine("\n");
 
-            Console.WriteLine("\n  +-------------------+\n _|     MAIN MENU     |\n| +-------------------+");
-            Console.WriteLine("|\n|\tsettings   triggers   build   describe   show");
-            Console.WriteLine("|\texit       clear      help    blurb");
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("[*] Total CSC Versions Found: ");
+            if (Settings.availableCSCVersions.Count > 0)
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("{0}", Settings.availableCSCVersions.Count);
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("{0}", Settings.availableCSCVersions.Count);
+            }
+            Console.ResetColor();
+
+            Console.WriteLine("\n       +---------------------------+\n ______|         MAIN MENU         |\n|      +---------------------------+");
+            Console.WriteLine("|\n|\tsettings   triggers   build");
+            Console.WriteLine("|\tdescribe   show       blurb");
+            Console.WriteLine("|\thelp       clear      exit");
+
             string input;
             while (true)
             {
@@ -56,11 +73,28 @@ namespace SingleDose
             Console.WriteLine("|\t      |   CURRENT SETTINGS   |   ");
             Console.WriteLine("|\t      +----------------------+  ");
             Console.WriteLine("|\t   Output Directory = {0}", Settings.OutputDirectory);
+            Console.WriteLine("|\t   CSC Version      = {0}", Settings.SelectedCscVersion);
+            if (Settings.SelectedCscVersion.ToLower() == "custom")
+            {
+                Console.WriteLine("|\t   CSC Path         = {0}", Settings.SelectedCompilerPath);
+            }
+
+            if (Settings.CurrentLogFile != "")
+            {
+                Console.WriteLine("|\t   Log File         = {0}", Settings.CurrentLogFile);
+            }
+
+            if (Settings.Logging)
+            {
+                Console.WriteLine("|\t   Logging          = Enabled");
+            }
+            else if (!Settings.Logging)
+            {
+                Console.WriteLine("|\t   Logging          = Disabled");
+            }
             Console.WriteLine("|\t   Compile          = {0}", Settings.CompileBinary);
             Console.WriteLine("|\t   Mode             = {0}", Settings.InjectMode);
 
-
-            
             Console.WriteLine("|\n|\t              Triggers");
             Console.WriteLine("|\t          +--------------+");
             if (REQUIREDPROCESSDETAILS == "" && HIBERNATEPROCESSDETAILS == "" && AVOIDPROCESSDETAILS == "" && PERSISTPROCESSDETAILS == "")
@@ -85,7 +119,6 @@ namespace SingleDose
             {
                 Console.WriteLine("|\t   Persist Reqs   = {0}", PERSISTPROCESSDETAILS);
             }
-
         }
         
         /// <summary>
@@ -99,7 +132,7 @@ namespace SingleDose
                 case "":
                     break;
                 case "HELP":
-                    Console.WriteLine("|\n|____________+-------------------+\n ____________|     Main Help     |\n|            +-------------------+");
+                    Console.WriteLine("|\n|_______+---------------------------+\n _______|         Main Help         |\n|       +---------------------------+");
                     Console.WriteLine("|\n|                 SUBMENUS");
                     Console.WriteLine("|            ------------------");
                     Console.WriteLine("|\tSettings :: Enter submenu for configuring settings");
@@ -137,20 +170,23 @@ namespace SingleDose
                     break;
                 case "SETTINGS":
                     Settings.SettingsMenu();
-                    Console.WriteLine("\n  +-------------------+\n _|     MAIN MENU     |\n| +-------------------+");
+                    Console.WriteLine("\n       +---------------------------+\n ______|         MAIN MENU         |\n|      +---------------------------+");
                     if (Settings.helpBlurb)
                     {
-                        Console.WriteLine("|\n|\tsettings   triggers   build   describe   show");
-                        Console.WriteLine("|\texit       clear      help    blurb");
+                        Console.WriteLine("|\n|\tsettings   triggers   build");
+                        Console.WriteLine("|\tdescribe   show       blurb");
+                        Console.WriteLine("|\thelp       clear      exit");
+
                     }
                     break;
                 case "TRIGGERS":
                     Triggers.TriggersMenu();
-                    Console.WriteLine("\n  +-------------------+\n _|     MAIN MENU     |\n| +-------------------+");
+                    Console.WriteLine("\n       +---------------------------+\n ______|         MAIN MENU         |\n|      +---------------------------+");
                     if (Settings.helpBlurb)
                     {
-                        Console.WriteLine("|\n|\tsettings   triggers   build   describe   show");
-                        Console.WriteLine("|\texit       clear      help    blurb");
+                        Console.WriteLine("|\n|\tsettings   triggers   build");
+                        Console.WriteLine("|\tdescribe   show       blurb");
+                        Console.WriteLine("|\thelp       clear      exit");
                     }
                     break;
                 case "BLURB":
@@ -162,8 +198,9 @@ namespace SingleDose
                     else if (!Settings.helpBlurb)
                     {
                         Settings.helpBlurb = true;
-                        Console.WriteLine("|\n|\tsettings   triggers   build   describe   show");
-                        Console.WriteLine("|\texit       clear      help    blurb");
+                        Console.WriteLine("|\n|\tsettings   triggers   build");
+                        Console.WriteLine("|\tdescribe   show       blurb");
+                        Console.WriteLine("|\thelp       clear      exit");
                     }
                     break;
                 case "BUILD":
@@ -267,7 +304,7 @@ namespace SingleDose
                             else
                             {
                                 if (Settings.CompileBinary) {
-                                    Console.WriteLine("|\n|   [!] Error building binary. Check A/V, retry building, or build manually.");
+                                    Console.WriteLine("|\n|   [!] Error building binary. Check A/V, retry building with a different version, or build manually.");
                                 } 
                             }
                         }
@@ -300,7 +337,13 @@ namespace SingleDose
                     else
                     {
                         Console.Clear();
-                        Console.WriteLine("\n  +-------------------+\n _|     MAIN MENU     |\n| +-------------------+");
+                        Console.WriteLine("\n       +---------------------------+\n ______|         MAIN MENU         |\n|      +---------------------------+");
+                        if (Settings.helpBlurb)
+                        {
+                            Console.WriteLine("|\n|\tsettings   triggers   build");
+                            Console.WriteLine("|\tdescribe   show       blurb");
+                            Console.WriteLine("|\thelp       clear      exit");
+                        }
                     }
                     break;
                 case "SHOW":
@@ -321,6 +364,10 @@ namespace SingleDose
                                 Console.WriteLine("|\t   8) EnumChildWindows: Execute Shellcode via Callback. [Shellcode]");
                                 Console.WriteLine("|\t   9) EnumDateFormatsEx: Execute Shellcode via Callback. [Shellcode]");
                                 Console.WriteLine("|\t  10) EnumDesktops: Execute Shellcode via Callback. [Shellcode]");
+                                break;
+                            case "VERSION":
+                                break;
+                            default:
                                 break;
                         }
                     }

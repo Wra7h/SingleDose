@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -11,15 +12,23 @@ namespace SingleDose
         public static bool CompileBinary = true;
         public static string OutputDirectory = null;
         public static bool helpBlurb = true;
+        public static Dictionary<string,string> availableCSCVersions;
+        public static string SelectedCompilerPath = @"C:\Windows\Microsoft.NET\Framework64\v3.5\csc.exe";
+        public static string SelectedCscVersion = "v3.5";
+        public static bool Logging = true;
+        public static string CurrentLogFile = "";
+        public static string LogBuffer = "";
+
         public static void SettingsMenu()
         {
             string settingsInput = null;
-            Console.WriteLine("\n  +--------------+\n _|   SETTINGS   |\n| +--------------+");
-
+            Console.WriteLine("\n       +---------------------------+\n ______|         SETTINGS          |\n|      +---------------------------+");
             if (helpBlurb)
             {
-                Console.WriteLine("|\n|\tmode   output   show   compile   show");
-                Console.WriteLine("|\texit   clear    help   triggers  blurb");
+                Console.WriteLine("|\n|\tmode      output   show   ");
+                Console.WriteLine("|\tcompile   blurb    triggers");
+                Console.WriteLine("|\tversion   clear    help");
+                Console.WriteLine("|\tlog       exit");
             }
 
             do
@@ -40,6 +49,82 @@ namespace SingleDose
             {
                 case "":
                     break;
+                case "VERSION":
+                    int element;
+                    if (command.Split().Count() > 1)
+                    {
+                        if (availableCSCVersions.Any(CSCVersions => CSCVersions.Key == command.Split()[1]))
+                        {
+                            if (availableCSCVersions.TryGetValue(command.Split()[1], out SelectedCompilerPath))
+                            {
+                                SelectedCscVersion = command.Split()[1];
+                                Program.WriteLog("Set Compiler: " + SelectedCscVersion + " :: " + SelectedCompilerPath, true);
+                            }
+                        }
+                        else if (int.TryParse(command.Split()[1], out element) && element <= availableCSCVersions.Count()) //int.TryParse() sets the value of the "element" variable which will be evaluated in the next if statement if necessary
+                        {
+                            SelectedCscVersion = availableCSCVersions.ElementAt(element - 1).Key;
+                            SelectedCompilerPath = availableCSCVersions.ElementAt(element - 1).Value;
+                            Console.WriteLine("|");
+                            Console.WriteLine("|   [~] Selected Version: {0}", SelectedCscVersion);
+                            Console.WriteLine("|   [~] Compiler Path: {0}", SelectedCompilerPath);
+                            Program.WriteLog("Set Compiler: " + SelectedCscVersion + " :: " + SelectedCompilerPath, true);
+                        }
+                        else if (command.Split()[1].ToUpper() == "CUSTOM" || element == (availableCSCVersions.Count() + 1))
+                        {
+                            Console.WriteLine(element.ToString());
+                            string customPathInput = "";
+                            Console.WriteLine("|   [~] Enter absolute path to csc: ");
+                            do
+                            {
+                                Console.Write("|       > ");
+                                customPathInput = Console.ReadLine();
+                            } while (!File.Exists(customPathInput) && customPathInput.ToLower() != "exit");
+
+                            if (customPathInput.ToLower() == "exit")
+                            {
+                                break;
+                            }
+
+                            if (customPathInput.ToLower().EndsWith("csc.exe"))
+                            {
+                                SelectedCscVersion = "Custom";
+                                SelectedCompilerPath = customPathInput;
+                            }
+                            else
+                            {
+                                Console.WriteLine("|   [!] Path must point to a \"csc.exe\" ");
+                            }
+                            Program.WriteLog("Set Compiler: " + SelectedCscVersion + " :: " + SelectedCompilerPath, true);
+                        }
+                        else
+                        {
+                            Console.WriteLine("|   [~] Version not found.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("|");
+                        for (int i = 0; i < availableCSCVersions.Count(); i++)
+                        {
+                            Console.WriteLine("|\t{0}) {1}", (i + 1).ToString(), availableCSCVersions.ElementAt(i).Key);
+                        }
+                        Console.WriteLine("|\t{0}) {1}", (availableCSCVersions.Count() + 1).ToString(), "Custom");
+                    }
+                    break;
+                case "LOG":
+                    if (Settings.Logging)
+                    {
+                        Settings.Logging = false;
+                        Console.WriteLine("|\n|   [~] Logging Disabled");
+                    }
+                    else if (!Settings.Logging)
+                    {
+                        Settings.Logging = true;
+                        Console.WriteLine("|\n|   [~] Logging Enabled");
+                        Program.WriteLog("Logging enabled", true);
+                    }
+                    break;
                 case "HELP":
                     Console.WriteLine("|\n|\t\t\t\t Settings Commands");
                     Console.WriteLine("|\t\t\t\t-------------------");
@@ -59,7 +144,11 @@ namespace SingleDose
                     Console.WriteLine("|\n|\n|\tClear :: Clear the terminal, settings or triggers.");
                     Console.WriteLine("|\t   > Example Usage: clear");
                     Console.WriteLine("|\t   > Example Usage: clear settings");
-                    //Console.WriteLine("|");
+                    Console.WriteLine("|\tVersion :: Change the version used for compiling. (Default = v3.5)");
+                    Console.WriteLine("|\t   > Example Usage: version");
+                    Console.WriteLine("|\t   > Example Usage: version Roslyn");
+                    Console.WriteLine("|\t   > Example Usage: version v4.0.30319");
+                    Console.WriteLine("|\tLog :: Enable/Disable logging. (Default = true)");
                     Console.WriteLine("|\tShow :: Display current configuration.");
                     Console.WriteLine("|\tBlurb :: A switch to display a command blurb when switching between menus. (Default = true)");
                     Console.WriteLine("|\tTriggers :: Enter the triggers submenu");
@@ -77,8 +166,10 @@ namespace SingleDose
                     else if (!Settings.helpBlurb)
                     {
                         helpBlurb = true;
-                        Console.WriteLine("|\n|\tmode   output   show   compile   show");
-                        Console.WriteLine("|\texit   clear    help   triggers  blurb");
+                        Console.WriteLine("|\n|\tmode      output   show   ");
+                        Console.WriteLine("|\tcompile   blurb    triggers");
+                        Console.WriteLine("|\tversion   clear    help");
+                        Console.WriteLine("|\tlog       exit");
                     }
                     break;
                 case "MODE":
@@ -150,11 +241,26 @@ namespace SingleDose
                             if (Directory.Exists(Settings.OutputDirectory))
                             {
                                 Console.WriteLine("|\n|\t[*] Created directory: {0}", Settings.OutputDirectory);
+                                Program.WriteLog("### New Session Started ###",false);
+                                if (Settings.LogBuffer != "")
+                                {
+                                    Program.WriteLog(Settings.LogBuffer, false);
+                                    Settings.LogBuffer = "";
+                                }
                             }
                             else
                             {
                                 Console.WriteLine("|\n|\t[!] Error creating directory: {0}", Settings.OutputDirectory);
                             }
+                        }
+                        else
+                        {
+                            Program.WriteLog("### New Session Started ###", false);
+                            if (Settings.LogBuffer != "") 
+                            {
+                                Program.WriteLog(Settings.LogBuffer, false);
+                                Settings.LogBuffer = "";
+                            } 
                         }
                     }
                     else
@@ -162,12 +268,19 @@ namespace SingleDose
                         Console.Write("\n   [~] Please enter output directory: ");
                         Settings.OutputDirectory = Console.ReadLine();
                         Settings.OutputDirectory = Path.GetFullPath(Settings.OutputDirectory);
+
+                        if (Settings.OutputDirectory.ToLower() == "exit")
+                        {
+                            break;
+                        }
+
                         if (!Directory.Exists(Settings.OutputDirectory))
                         {
                             Directory.CreateDirectory(Settings.OutputDirectory);
                             if (Directory.Exists(Settings.OutputDirectory))
                             {
                                 Console.WriteLine("   [*] Created directory: {0}", Settings.OutputDirectory);
+                                Program.WriteLog("New Session Started", false);
                             }
                             else
                             {
@@ -199,6 +312,22 @@ namespace SingleDose
                                 Console.WriteLine("|\t   9) EnumDateFormatsEx: Execute Shellcode via Callback. [Shellcode]");
                                 Console.WriteLine("|\t  10) EnumDesktops: Execute Shellcode via Callback. [Shellcode]");
                                 break;
+                            case "VERSION":
+                                Console.WriteLine("|");
+                                for (int i = 0; i <availableCSCVersions.Count(); i++)
+                                {
+                                    Console.WriteLine("|\t{0}) {1}", (i + 1).ToString(), availableCSCVersions.ElementAt(i).Key);
+                                }
+                                Console.WriteLine("|\t{0}) {1}", (availableCSCVersions.Count() + 1).ToString(), "Custom");
+                                break;
+                            case "VERSIONS":
+                                Console.WriteLine("|");
+                                for (int i = 0; i < availableCSCVersions.Count(); i++)
+                                {
+                                    Console.WriteLine("|\t{0}) {1}", (i + 1).ToString(), availableCSCVersions.ElementAt(i).Key);
+                                }
+                                Console.WriteLine("|\t{0}) {1}", (availableCSCVersions.Count() + 1).ToString(), "Custom");
+                                break;
                         }
                     }
                     else
@@ -211,11 +340,13 @@ namespace SingleDose
                     {
                         Settings.CompileBinary = false;
                         Console.WriteLine("|\n|   [~] Compile has been set to false.");
+                        Program.WriteLog("Compiling Disabled", true);
                     }
                     else if (!Settings.CompileBinary)
                     {
                         Settings.CompileBinary = true;
                         Console.WriteLine("|\n|   [~] Compile has been set to true.");
+                        Program.WriteLog("Compiling Enabled", true);
                     }
                     break;
                 case "CLEAR":
@@ -239,7 +370,13 @@ namespace SingleDose
                     else
                     {
                         Console.Clear();
-                        Console.WriteLine("\n  +--------------+\n _|   SETTINGS   |\n| +--------------+");
+                        Console.WriteLine("\n       +---------------------------+\n ______|         SETTINGS          |\n|      +---------------------------+");
+                        if (helpBlurb)
+                        {
+                            Console.WriteLine("|\n|\tmode      output   show   ");
+                            Console.WriteLine("|\tcompile   blurb    triggers");
+                            Console.WriteLine("|\texit      clear    help");
+                        }
                     }
                     break;
                 case "EXIT":
@@ -248,6 +385,32 @@ namespace SingleDose
                     Console.WriteLine("|\n|\t[!] Unknown Command: {0}", command);
                     break;
             }
+        }
+
+        public static Dictionary<string, string> FetchCSCVersions()
+        {
+            Dictionary<string, string> cscDictionary = new Dictionary<string, string>();
+            foreach (string folder in Directory.GetDirectories(@"C:\Windows\Microsoft.NET\Framework64\"))
+            {
+                if (File.Exists(folder + @"\csc.exe"))
+                {
+                    if (folder.Split('\\')[4] != "v2.0.50727") // No technique compiles with v2.0.50727 :(
+                    { 
+                        cscDictionary.Add(folder.Split('\\')[4], folder + @"\csc.exe");
+                    }
+                }
+            }
+            string[] RoslynPaths = new string[]{@"C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\Roslyn\csc.exe", @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\Roslyn\csc.exe"};
+
+            foreach (string path in RoslynPaths)
+            {
+                if (File.Exists(path))
+                {
+                    cscDictionary.Add("Roslyn", path);
+                    break;
+                }
+            }
+            return cscDictionary;
         }
 
     }

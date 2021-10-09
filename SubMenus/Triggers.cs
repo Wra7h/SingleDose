@@ -8,11 +8,13 @@ namespace SingleDose
         public static void TriggersMenu()
         {
             string triggersInput = null;
-            Console.WriteLine("\n  +--------------+\n _|   TRIGGERS   |\n| +--------------+");
+            Console.WriteLine("\n       +---------------------------+\n ______|         TRIGGERS          |\n|      +---------------------------+");
             if (Settings.helpBlurb)
             {
-                Console.WriteLine("|\n|\tavoid   persist   require   hibernate   show");
-                Console.WriteLine("|\texit    clear     help      settings    blurb");
+                Console.WriteLine("|\n|\tavoid      persist  require");
+                Console.WriteLine("|\thibernate  show     blurb");
+                Console.WriteLine("|\tsettings   clear    help");
+                Console.WriteLine("|\texit");
             }
 
             do
@@ -358,8 +360,10 @@ namespace SingleDose
                     else if (!Settings.helpBlurb)
                     {
                         Settings.helpBlurb = true;
-                        Console.WriteLine("|\n|\tavoid   persist   require   hibernate   show");
-                        Console.WriteLine("|\texit    clear     help      settings    blurb");
+                        Console.WriteLine("|\n|\tavoid      persist  require");
+                        Console.WriteLine("|\thibernate  show     blurb");
+                        Console.WriteLine("|\tsettings   clear    help");
+                        Console.WriteLine("|\texit");
                     }
                     break;
                 case "CLEAR":
@@ -383,7 +387,14 @@ namespace SingleDose
                     else
                     {
                         Console.Clear();
-                        Console.WriteLine("\n  +--------------+\n _|   TRIGGERS   |\n| +--------------+");
+                        Console.WriteLine("\n       +---------------------------+\n ______|         TRIGGERS          |\n|      +---------------------------+");
+                        if (Settings.helpBlurb)
+                        {
+                            Console.WriteLine("|\n|\tavoid      persist  require");
+                            Console.WriteLine("|\thibernate  show     blurb");
+                            Console.WriteLine("|\tsettings   clear    help");
+                            Console.WriteLine("|\texit");
+                        }
                     }
                     break;
                 case "EXIT":
@@ -393,6 +404,5 @@ namespace SingleDose
                     break;
             }
         }
-
     }
 }

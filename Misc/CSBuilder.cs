@@ -51,6 +51,8 @@ namespace SingleDose
                         return false;
                     }
 
+                    Program.WriteLog(injMode + ": " + injTechnique + " - Target Process: "+ targetProcess + " - DLL: " + targetDLLPath, true);
+
                     string CSContents = DLL_CRT.BODY;
                     Regex DLLCRTPattern;
                     foreach (var trig in TriggersToUse)
@@ -120,7 +122,12 @@ namespace SingleDose
                     {
                         Console.Write("|       > ");
                         spawnProcess = Console.ReadLine();
-                    } while (string.IsNullOrEmpty(spawnProcess));
+                    } while (string.IsNullOrEmpty(spawnProcess) && spawnProcess.ToLower() != "exit");
+
+                    if (spawnProcess.ToLower() == "exit")
+                    {
+                        return false;
+                    }
 
                     string shellCodePath;
                     Console.WriteLine("|   [~] Enter path to shellcode: ");
@@ -128,7 +135,14 @@ namespace SingleDose
                     {
                         Console.Write("|       > ");
                         shellCodePath = Console.ReadLine();
-                    } while (!File.Exists(shellCodePath));
+                    } while (!File.Exists(shellCodePath) && shellCodePath.ToLower() != "exit");
+
+                    if (shellCodePath.ToLower() == "exit")
+                    {
+                        return false;
+                    }
+
+                    Program.WriteLog(injMode + ": " + injTechnique + " - Spawn: " + spawnProcess + " - Shellcode: " + shellCodePath, true);
 
                     byte[] shellCode = File.ReadAllBytes(shellCodePath);
                     string byteToString = "0x" + ByteArrayToString(shellCode);
@@ -201,7 +215,12 @@ namespace SingleDose
                     {
                         Console.Write("|       > ");
                         setPID = Console.ReadLine();
-                    } while (string.IsNullOrEmpty(setPID));
+                    } while (string.IsNullOrEmpty(setPID) && setPID.ToLower() != "exit");
+
+                    if (setPID.ToLower() == "exit")
+                    {
+                        return false;
+                    }
 
                     string shellCodePath;
                     Console.WriteLine("|   [~] Enter path to shellcode: ");
@@ -209,7 +228,14 @@ namespace SingleDose
                     {
                         Console.Write("|       > ");
                         shellCodePath = Console.ReadLine();
-                    } while (!File.Exists(shellCodePath));
+                    } while (!File.Exists(shellCodePath) && shellCodePath.ToLower() != "exit");
+
+                    if (shellCodePath.ToLower() == "exit")
+                    {
+                        return false;
+                    }
+
+                    Program.WriteLog(injMode + ": " + injTechnique + " - Target PID: " + setPID + " - Shellcode: " + shellCodePath, true);
 
                     byte[] shellCode = File.ReadAllBytes(shellCodePath);
                     string byteToString = "0x" + ByteArrayToString(shellCode);
@@ -252,7 +278,6 @@ namespace SingleDose
                     //Clear remaining trigger.
                     QueuePattern = new Regex("{{TRIGGER}}");
                     CSContents = QueuePattern.Replace(CSContents, "");
-
                     QueuePattern = new Regex("{{MODE}}");
                     CSContents = QueuePattern.Replace(CSContents, Suspend_QueueUserAPC.STATICMODE);
                     QueuePattern = new Regex("{{SHELLCODE}}");
@@ -283,7 +308,14 @@ namespace SingleDose
                     {
                         Console.Write("|       > ");
                         shellCodePath = Console.ReadLine();
-                    } while (!File.Exists(shellCodePath));
+                    } while (!File.Exists(shellCodePath) && shellCodePath.ToLower() != "exit");
+
+                    if (shellCodePath.ToLower() == "exit")
+                    {
+                        return false;
+                    }
+
+                    Program.WriteLog(injMode+": " + injTechnique + " - Shellcode:" + shellCodePath, true);
 
                     byte[] shellCode = File.ReadAllBytes(shellCodePath);
                     string byteToString = "0x" + ByteArrayToString(shellCode);
@@ -328,7 +360,6 @@ namespace SingleDose
                     //Clear remaining trigger.
                     syscallPattern = new Regex("{{TRIGGER}}");
                     CSContents = syscallPattern.Replace(CSContents, "");
-
                     syscallPattern = new Regex("{{MODE}}");
                     CSContents = syscallPattern.Replace(CSContents, SYSCALL_CT.STATIC);
                     syscallPattern = new Regex("{{SHELLCODE}}");
@@ -349,14 +380,18 @@ namespace SingleDose
                 else if (injTechnique == "SRDI")
                 {
                     SRDIClass srdiClass = new SRDIClass();
-
                     string dllPath;
                     Console.WriteLine("|   [~] Please enter absolute path to DLL. This can be on this host or the target:");
                     do
                     {
                         Console.Write("|       > ");
                         dllPath = Console.ReadLine();
-                    } while (!dllPath.Contains(":\\"));
+                    } while (!dllPath.Contains(":\\") && dllPath.ToLower() != "exit");
+
+                    if (dllPath.ToLower() == "exit")
+                    {
+                        return false;
+                    }
 
                     if (File.Exists(dllPath))
                     {
@@ -367,7 +402,6 @@ namespace SingleDose
                     {
                         srdiClass.DLLFilepath = dllPath;
                     }
-
                     string functionName;
                     Console.WriteLine("|\n|   [OPTIONAL] Enter the name of an exported function to call after DLLMain:");
                     Console.Write("|       > ");
@@ -394,7 +428,12 @@ namespace SingleDose
                     {
                         Console.Write("|       > ");
                         obfuscateImports = Console.ReadLine();
-                    } while (obfuscateImports.ToUpper() != "Y" && obfuscateImports.ToUpper() != "N" && obfuscateImports != "");
+                    } while (obfuscateImports.ToUpper() != "Y" && obfuscateImports.ToUpper() != "N" && obfuscateImports != "" && obfuscateImports.ToLower() != "exit");
+
+                    if (obfuscateImports.ToLower() == "exit")
+                    {
+                        return false;
+                    }
 
                     if (obfuscateImports.ToUpper() == "Y")
                     {
@@ -415,7 +454,12 @@ namespace SingleDose
                             Console.Write("|       > ");
                             importDelay = Console.ReadLine();
 
-                        } while (!int.TryParse(importDelay, out parsedInt) && importDelay != "");
+                        } while (!int.TryParse(importDelay, out parsedInt) && importDelay != "" && importDelay.ToLower() != "exit");
+
+                        if (importDelay.ToLower() == "exit")
+                        {
+                            return false;
+                        }
 
                         if (importDelay != "0")
                         {
@@ -433,7 +477,12 @@ namespace SingleDose
                     {
                         Console.Write("|       > ");
                         clearHeader = Console.ReadLine();
-                    } while (clearHeader.ToUpper() != "Y" && clearHeader.ToUpper() != "N" && clearHeader != "");
+                    } while (clearHeader.ToUpper() != "Y" && clearHeader.ToUpper() != "N" && clearHeader != "" && clearHeader.ToLower() != "exit");
+
+                    if (clearHeader.ToLower() == "exit")
+                    {
+                        return false;
+                    }
 
                     if (clearHeader.ToUpper() == "Y")
                     {
@@ -444,8 +493,9 @@ namespace SingleDose
                         srdiClass.ClearHeader = false;
                     }
 
-                    string CSContents = sRDI.BODY;
+                    Program.WriteLog(injMode + ": " + injTechnique + " - DLL: " + dllPath, true);
 
+                    string CSContents = sRDI.BODY;
                     Regex replacePattern;
                     foreach (var trig in TriggersToUse)
                     {
@@ -482,7 +532,6 @@ namespace SingleDose
                     //Clear remaining trigger.
                     replacePattern = new Regex("{{TRIGGER}}");
                     CSContents = replacePattern.Replace(CSContents, "");
-
                     replacePattern = new Regex("{{MODE}}");
                     CSContents = replacePattern.Replace(CSContents, sRDI.STATICMODE);
                     replacePattern = new Regex("{{DLLCONTENTS}}");
@@ -567,7 +616,14 @@ namespace SingleDose
                     {
                         Console.Write("|       > ");
                         shellCodePath = Console.ReadLine();
-                    } while (!File.Exists(shellCodePath));
+                    } while (!File.Exists(shellCodePath) && shellCodePath.ToLower() != "exit");
+
+                    if (shellCodePath.ToLower() == "exit")
+                    {
+                        return false;
+                    }
+
+                    Program.WriteLog(injMode + ": " + injTechnique + " - Shellcode: " + shellCodePath, true);
 
                     byte[] shellCode = File.ReadAllBytes(shellCodePath);
                     string byteToString = "0x" + ByteArrayToString(shellCode);
@@ -636,7 +692,14 @@ namespace SingleDose
                     {
                         Console.Write("|       > ");
                         shellCodePath = Console.ReadLine();
-                    } while (!File.Exists(shellCodePath));
+                    } while (!File.Exists(shellCodePath) && shellCodePath.ToLower() != "exit");
+
+                    if (shellCodePath.ToLower() == "exit")
+                    {
+                        return false;
+                    }
+
+                    Program.WriteLog(injMode + ": " + injTechnique + " - Shellcode: " + shellCodePath, true);
 
                     byte[] shellCode = File.ReadAllBytes(shellCodePath);
                     string byteToString = "0x" + ByteArrayToString(shellCode);
@@ -705,7 +768,14 @@ namespace SingleDose
                     {
                         Console.Write("|       > ");
                         shellCodePath = Console.ReadLine();
-                    } while (!File.Exists(shellCodePath));
+                    } while (!File.Exists(shellCodePath) && shellCodePath.ToLower() != "exit");
+                    
+                    if (shellCodePath.ToLower() == "exit")
+                    {
+                        return false;
+                    }
+
+                    Program.WriteLog(injMode + ": " + injTechnique + " - Shellcode: " + shellCodePath, true);
 
                     byte[] shellCode = File.ReadAllBytes(shellCodePath);
                     string byteToString = "0x" + ByteArrayToString(shellCode);
@@ -774,7 +844,14 @@ namespace SingleDose
                     {
                         Console.Write("|       > ");
                         shellCodePath = Console.ReadLine();
-                    } while (!File.Exists(shellCodePath));
+                    } while (!File.Exists(shellCodePath) && shellCodePath.ToLower() != "exit");
+
+                    if (shellCodePath.ToLower() == "exit")
+                    {
+                        return false;
+                    }
+
+                    Program.WriteLog(injMode + ": " + injTechnique + " - Shellcode: " + shellCodePath, true);
 
                     byte[] shellCode = File.ReadAllBytes(shellCodePath);
                     string byteToString = "0x" + ByteArrayToString(shellCode);
@@ -843,8 +920,14 @@ namespace SingleDose
                     {
                         Console.Write("|       > ");
                         shellCodePath = Console.ReadLine();
-                    } while (!File.Exists(shellCodePath));
+                    } while (!File.Exists(shellCodePath) && shellCodePath.ToLower() != "exit");
 
+                    if (shellCodePath.ToLower() == "exit")
+                    {
+                        return false;
+                    }
+
+                    Program.WriteLog(injMode + ": " + injTechnique + " - Shellcode: " + shellCodePath, true);
                     byte[] shellCode = File.ReadAllBytes(shellCodePath);
                     string byteToString = "0x" + ByteArrayToString(shellCode);
                     string CSContents = EnumDesktops.Body;
@@ -901,12 +984,13 @@ namespace SingleDose
                         return false;
                     }
                 }
-
             }
             else if (injMode == "DYNAMIC")
             {
                 if (injTechnique == "CreateRemoteThread")
                 {
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
+
                     string CSContents = DLL_CRT.BODY;
                     Regex DLLCRTPattern;
                     foreach (var trig in TriggersToUse)
@@ -943,7 +1027,6 @@ namespace SingleDose
 
                     DLLCRTPattern = new Regex("{{TRIGGER}}");
                     CSContents = DLLCRTPattern.Replace(CSContents, "");
-
                     DLLCRTPattern = new Regex("{{MODE}}");
                     CSContents = DLLCRTPattern.Replace(CSContents, DLL_CRT.DYNAMICMODE);
                     DLLCRTPattern = new Regex("{{NAMESPACE}}");
@@ -962,6 +1045,8 @@ namespace SingleDose
                 }
                 else if (injTechnique == "EarlyBird_QueueUserAPC")
                 {
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
+
                     string CSContents = EB_QUAPC.BODY;
                     Regex QueuePattern;
                     foreach (var trig in TriggersToUse) {
@@ -1019,6 +1104,8 @@ namespace SingleDose
                 }
                 else if (injTechnique == "Suspend_QueueUserAPC")
                 {
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
+
                     string CSContents = Suspend_QueueUserAPC.BODY;
                     Regex QueuePattern;
                     foreach (var trig in TriggersToUse)
@@ -1077,6 +1164,7 @@ namespace SingleDose
                 }
                 else if (injTechnique == "Syscall_CreateThread")
                 {
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
 
                     string CSContents = SYSCALL_CT.BODY;
                     Regex syscallPattern;
@@ -1136,6 +1224,8 @@ namespace SingleDose
                 }
                 else if (injTechnique == "SRDI")
                 {
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
+
                     string CSContents = sRDI.BODY;
                     Regex replacePattern;
                     foreach (var trig in TriggersToUse)
@@ -1192,6 +1282,8 @@ namespace SingleDose
                 }
                 else if (injTechnique == "Fiber_Execution")
                 {
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
+
                     string CSContents = FiberInject.Body;
                     Regex regPattern;
                     foreach (var trig in TriggersToUse)
@@ -1247,6 +1339,8 @@ namespace SingleDose
                 }
                 else if (injTechnique == "EnumWindows")
                 {
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
+
                     string CSContents = EnumWindows.Body;
                     Regex regPattern;
                     foreach (var trig in TriggersToUse)
@@ -1302,6 +1396,8 @@ namespace SingleDose
                 }
                 else if (injTechnique == "EnumChildWindows")
                 {
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
+
                     string CSContents = EnumChildWindows.Body;
                     Regex regPattern;
                     foreach (var trig in TriggersToUse)
@@ -1357,6 +1453,8 @@ namespace SingleDose
                 }
                 else if (injTechnique == "EnumDateFormatsEx")
                 {
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
+
                     string CSContents = EnumDateFormatsEx.Body;
                     Regex regPattern;
                     foreach (var trig in TriggersToUse)
@@ -1412,6 +1510,8 @@ namespace SingleDose
                 }
                 else if (injTechnique == "EnumDesktops")
                 {
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
+
                     string CSContents = EnumDesktops.Body;
                     Regex regPattern;
                     foreach (var trig in TriggersToUse)
@@ -1470,6 +1570,7 @@ namespace SingleDose
             {
                 if (injTechnique == "CreateRemoteThread")
                 {
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
 
                     string CSContents = DLL_CRT.BODY;
                     Regex DLLCRTPattern;
@@ -1526,6 +1627,8 @@ namespace SingleDose
                 } 
                 else if (injTechnique == "EarlyBird_QueueUserAPC")
                 {
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
+
                     string CSContents = EB_QUAPC.BODY;
                     Regex QueuePattern;
                     foreach (var trig in TriggersToUse)
@@ -1585,6 +1688,8 @@ namespace SingleDose
                 }
                 else if (injTechnique == "Suspend_QueueUserAPC")
                 {
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
+
                     string CSContents = Suspend_QueueUserAPC.BODY;
                     Regex QueuePattern;
                     foreach (var trig in TriggersToUse)
@@ -1643,6 +1748,7 @@ namespace SingleDose
                 }
                 else if (injTechnique == "Syscall_CreateThread")
                 {
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
 
                     string CSContents = SYSCALL_CT.BODY;
                     Regex syscallPattern;
@@ -1700,8 +1806,9 @@ namespace SingleDose
                 }
                 else if (injTechnique == "SRDI")
                 {
-                    string CSContents = sRDI.BODY;
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
 
+                    string CSContents = sRDI.BODY;
                     Regex replacePattern;
                     foreach (var trig in TriggersToUse)
                     {
@@ -1757,6 +1864,8 @@ namespace SingleDose
                 }
                 else if (injTechnique == "Fiber_Execution")
                 {
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
+
                     string CSContents = FiberInject.Body;
                     Regex regPattern;
                     foreach (var trig in TriggersToUse)
@@ -1812,6 +1921,8 @@ namespace SingleDose
                 }
                 else if (injTechnique == "EnumWindows")
                 {
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
+
                     string CSContents = EnumWindows.Body;
                     Regex regPattern;
                     foreach (var trig in TriggersToUse)
@@ -1866,6 +1977,8 @@ namespace SingleDose
                 }
                 else if (injTechnique == "EnumChildWindows")
                 {
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
+
                     string CSContents = EnumChildWindows.Body;
                     Regex regPattern;
                     foreach (var trig in TriggersToUse)
@@ -1920,6 +2033,8 @@ namespace SingleDose
                 }
                 else if (injTechnique == "EnumDateFormatsEx")
                 {
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
+
                     string CSContents = EnumDateFormatsEx.Body;
                     Regex regPattern;
                     foreach (var trig in TriggersToUse)
@@ -1974,6 +2089,8 @@ namespace SingleDose
                 }
                 else if (injTechnique == "EnumDesktops")
                 {
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
+
                     string CSContents = EnumDesktops.Body;
                     Regex regPattern;
                     foreach (var trig in TriggersToUse)
@@ -2052,8 +2169,11 @@ namespace SingleDose
                 File.WriteAllText(Output_Path, CSContents);
                 if (File.Exists(Output_Path))
                 {
+                    string hash = BytesToString(CalculateSHA256(Output_Path));
                     Console.WriteLine("|\n|   [*] Created: {0}", Output_Path);
-                    Console.WriteLine("|       SHA256: {0}\n|", BytesToString(CalculateSHA256(Output_Path)));
+                    Console.WriteLine("|       SHA256: {0}\n|", hash);
+                    WriteLog(String.Join(" ", new string[] { "Created", Output_Path, "::", hash }), true);
+
 
                     if (Settings.CompileBinary)
                     {
@@ -2090,13 +2210,13 @@ namespace SingleDose
         /// <returns></returns>
         public static bool CompileCS(string filepath, bool unsafeCode)
         {
-            if (File.Exists(@"C:\Windows\Microsoft.NET\Framework64\v3.5\csc.exe"))
+            if (File.Exists(Settings.SelectedCompilerPath))
             {
                 try
                 {
                     var binaryOutput = filepath.Split('.')[0] + ".exe";
                     var p = new System.Diagnostics.Process();
-                    p.StartInfo.FileName = @"C:\Windows\Microsoft.NET\Framework64\v3.5\csc.exe";
+                    p.StartInfo.FileName = Settings.SelectedCompilerPath;
                     if (!unsafeCode)
                     {
                         p.StartInfo.Arguments = string.Format(" -out:{0} {1}", binaryOutput, filepath);
@@ -2112,9 +2232,15 @@ namespace SingleDose
                     p.StandardOutput.ReadToEnd();
                     
                     if (File.Exists(binaryOutput)) {
+                        string hash = BytesToString(CalculateSHA256(binaryOutput));
                         Console.WriteLine("|   [*] Compiling: {0}", binaryOutput);
-                        Console.WriteLine("|       SHA256: {0}\n|", BytesToString(CalculateSHA256(binaryOutput)));
-                        
+                        Console.WriteLine("|       SHA256: {0}\n|", hash);
+                        WriteLog(String.Join(" ",new string[] { "Compiled", binaryOutput,"::",hash }), true);
+                        //WriteLog("SHA256 {0}", hash);
+                    }
+                    else
+                    {
+                        WriteLog(String.Join(" ", new string[] { "[!] Error Compiling:", binaryOutput}), true);
                     }
                     return true;
                 }
@@ -2125,7 +2251,7 @@ namespace SingleDose
             }
             else
             {
-                Console.WriteLine("|\n|   [!] Compile Error: C:\\Windows\\Microsoft.NET\\Framework64\\v3.5\\csc.exe not found.");
+                Console.WriteLine("|\n|   [!] Compile Error: {0} not found.", Settings.SelectedCompilerPath);
                 return false;
             }
         }
@@ -2141,6 +2267,47 @@ namespace SingleDose
             {
                 return Sha256.ComputeHash(stream);
             }
+        }
+
+        public static void WriteLog(string entry, bool timestamp)
+        {
+            if (!Settings.Logging)
+            {
+                return;
+            }
+
+            
+
+            DateTime today = DateTime.Now;
+            string logName = "Single_Dose[" + today.Month.ToString() + "-" + today.Day.ToString() + "-" + today.Year.ToString() + "].log";
+
+            if (Settings.OutputDirectory == null)
+            {
+                Settings.LogBuffer = Settings.LogBuffer + String.Join(" ", new string[] { DateTime.UtcNow.ToString(), ":", entry });
+                return;
+            }
+
+            if (Settings.CurrentLogFile != Settings.OutputDirectory + "\\" + logName)
+            {
+                Settings.CurrentLogFile = logName;
+            }
+            //if (!File.Exists(Settings.OutputDirectory + "\\" + logName))
+            //{
+            //    File.Create(Settings.OutputDirectory + "\\" + logName);
+            //}
+            using (StreamWriter writer = File.AppendText(Settings.OutputDirectory +"\\" + logName))
+            {
+                if (timestamp)
+                {
+                    writer.WriteLine("{0}: {1}", DateTime.UtcNow, entry);
+                }
+                else
+                {
+                    writer.WriteLine("{0}", entry);
+                }
+                writer.Close();
+            }
+            
         }
 
         /// <summary>

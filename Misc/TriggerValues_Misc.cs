@@ -7,8 +7,8 @@ namespace SingleDose
     {
         public class SRDIClass
         {
-            public string HashFunction { get; set; } // Would you like to call another exported function to call after DLLMain?
-            public string AdditionalData { get; set; } // Any additional data to provide to DLL?
+            public string HashFunction { get; set; } 
+            public string AdditionalData { get; set; }
             public bool ObfuscateImports { get; set; }
             public int ImportDelay { get; set; }
             public bool ClearHeader { get; set; }
