@@ -72,7 +72,7 @@ namespace SingleDose
                         }
                         else if (command.Split()[1].ToUpper() == "CUSTOM" || element == (availableCSCVersions.Count() + 1))
                         {
-                            Console.WriteLine(element.ToString());
+                            Console.WriteLine("|");
                             string customPathInput = "";
                             Console.WriteLine("|   [~] Enter absolute path to csc: ");
                             do
