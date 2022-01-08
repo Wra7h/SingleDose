@@ -380,7 +380,10 @@ namespace SingleDose
                             case "TRIGGERS":
                                 Program.HIBERNATEPROCESSDETAILS = "";
                                 Program.REQUIREDPROCESSDETAILS = "";
-                                Console.WriteLine("|   [~] Triggers have been cleared.");
+                                Program.AVOIDPROCESSDETAILS = "";
+                                Program.PERSISTPROCESSDETAILS = "";
+                                Program.TriggersToUse.Clear();
+                                Console.WriteLine("|\n|   [~] Triggers have been cleared.");
                                 break;
                         }
                     }

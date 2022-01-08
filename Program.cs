@@ -211,83 +211,83 @@ namespace SingleDose
                             switch (command.Split()[1].ToUpper())
                             {
                                 case "CREATEREMOTETHREAD":
-                                    Console.WriteLine("|\n|   [*] Building technique: DLL CreateRemoteThread\n|");
+                                    Console.WriteLine("|\n|   [*] Building technique: DLL CreateRemoteThread");
                                     Settings.SelectedTechnique = "CreateRemoteThread";
                                     break;
                                 case "1":
-                                    Console.WriteLine("|\n|   [*] Building technique: DLL CreateRemoteThread\n|");
+                                    Console.WriteLine("|\n|   [*] Building technique: DLL CreateRemoteThread");
                                     Settings.SelectedTechnique = "CreateRemoteThread";
                                     break;
                                 case "SRDI":
-                                    Console.WriteLine("|\n|   [*] Building technique: Shellcode Reflective DLL Injection (SRDI)\n|");
+                                    Console.WriteLine("|\n|   [*] Building technique: Shellcode Reflective DLL Injection (SRDI)");
                                     Settings.SelectedTechnique = "SRDI";
                                     break;
                                 case "2":
-                                    Console.WriteLine("|\n|   [*] Building technique: Shellcode Reflective DLL Injection (SRDI)\n|");
+                                    Console.WriteLine("|\n|   [*] Building technique: Shellcode Reflective DLL Injection (SRDI)");
                                     Settings.SelectedTechnique = "SRDI";
                                     break;
                                 case "EARLYBIRD_QUEUEUSERAPC":
-                                    Console.WriteLine("|\n|   [*] Building technique: EarlyBird_QueueUserAPC\n|");
+                                    Console.WriteLine("|\n|   [*] Building technique: EarlyBird_QueueUserAPC");
                                     Settings.SelectedTechnique = "EarlyBird_QueueUserAPC";
                                     break;
                                 case "3":
-                                    Console.WriteLine("|\n|   [*] Building technique: EarlyBird_QueueUserAPC\n|");
+                                    Console.WriteLine("|\n|   [*] Building technique: EarlyBird_QueueUserAPC");
                                     Settings.SelectedTechnique = "EarlyBird_QueueUserAPC";
                                     break;
                                 case "SUSPEND_QUEUEUSERAPC":
-                                    Console.WriteLine("|\n|   [*] Building technique: Suspend_QueueUserAPC\n|");
+                                    Console.WriteLine("|\n|   [*] Building technique: Suspend_QueueUserAPC");
                                     Settings.SelectedTechnique = "Suspend_QueueUserAPC";
                                     break;
                                 case "4":
-                                    Console.WriteLine("|\n|   [*] Building technique: Suspend_QueueUserAPC\n|");
+                                    Console.WriteLine("|\n|   [*] Building technique: Suspend_QueueUserAPC");
                                     Settings.SelectedTechnique = "Suspend_QueueUserAPC";
                                     break;
                                 case "SYSCALL_CREATETHREAD":
-                                    Console.WriteLine("|\n|   [*] Building technique: Syscall_CreateThread\n|");
+                                    Console.WriteLine("|\n|   [*] Building technique: Syscall_CreateThread");
                                     Settings.SelectedTechnique = "Syscall_CreateThread";
                                     break;
                                 case "5":
-                                    Console.WriteLine("|\n|   [*] Building technique: Syscall_CreateThread\n|");
+                                    Console.WriteLine("|\n|   [*] Building technique: Syscall_CreateThread");
                                     Settings.SelectedTechnique = "Syscall_CreateThread";
                                     break;
                                 case "FIBER_EXECUTION":
-                                    Console.WriteLine("|\n|   [*] Building technique: Fiber_Execution\n|");
+                                    Console.WriteLine("|\n|   [*] Building technique: Fiber_Execution");
                                     Settings.SelectedTechnique = "Fiber_Execution";
                                     break;
                                 case "6":
-                                    Console.WriteLine("|\n|   [*] Building technique: Fiber_Execution\n|");
+                                    Console.WriteLine("|\n|   [*] Building technique: Fiber_Execution");
                                     Settings.SelectedTechnique = "Fiber_Execution";
                                     break;
                                 case "ENUMWINDOWS":
-                                    Console.WriteLine("|\n|   [*] Building technique: EnumWindows\n|");
+                                    Console.WriteLine("|\n|   [*] Building technique: EnumWindows");
                                     Settings.SelectedTechnique = "EnumWindows";
                                     break;
                                 case "7":
-                                    Console.WriteLine("|\n|   [*] Building technique: EnumWindows\n|");
+                                    Console.WriteLine("|\n|   [*] Building technique: EnumWindows");
                                     Settings.SelectedTechnique = "EnumWindows";
                                     break;
                                 case "ENUMCHILDWINDOWS":
-                                    Console.WriteLine("|\n|   [*] Building technique: EnumChildWindows\n|");
+                                    Console.WriteLine("|\n|   [*] Building technique: EnumChildWindows");
                                     Settings.SelectedTechnique = "EnumChildWindows";
                                     break;
                                 case "8":
-                                    Console.WriteLine("|\n|   [*] Building technique: EnumChildWindows\n|");
+                                    Console.WriteLine("|\n|   [*] Building technique: EnumChildWindows");
                                     Settings.SelectedTechnique = "EnumChildWindows";
                                     break;
                                 case "ENUMDATEFORMATSEX":
-                                    Console.WriteLine("|\n|   [*] Building technique: EnumDateFormatsEx\n|");
+                                    Console.WriteLine("|\n|   [*] Building technique: EnumDateFormatsEx");
                                     Settings.SelectedTechnique = "EnumDateFormatsEx";
                                     break;
                                 case "9":
-                                    Console.WriteLine("|\n|   [*] Building technique: EnumDateFormatsEx\n|");
+                                    Console.WriteLine("|\n|   [*] Building technique: EnumDateFormatsEx");
                                     Settings.SelectedTechnique = "EnumDateFormatsEx";
                                     break;
                                 case "ENUMDESKTOPS":
-                                    Console.WriteLine("|\n|   [*] Building technique: EnumDesktops\n|");
+                                    Console.WriteLine("|\n|   [*] Building technique: EnumDesktops");
                                     Settings.SelectedTechnique = "EnumDesktops";
                                     break;
                                 case "10":
-                                    Console.WriteLine("|\n|   [*] Building technique: EnumDesktops\n|");
+                                    Console.WriteLine("|\n|   [*] Building technique: EnumDesktops");
                                     Settings.SelectedTechnique = "EnumDesktops";
                                     break;
                                 default:
@@ -296,17 +296,7 @@ namespace SingleDose
                             }
 
                             //Build the .cs
-                            if (CSConstructor(Settings.InjectMode, Settings.SelectedTechnique))
-                            {
-                                Console.WriteLine("|   [*] Construction Complete.");
-                                Settings.SelectedTechnique = null;
-                            }
-                            else
-                            {
-                                if (Settings.CompileBinary) {
-                                    Console.WriteLine("|\n|   [!] Error building binary. Check A/V, retry building with a different version, or build manually.");
-                                } 
-                            }
+                            CSConstructor(Settings.InjectMode, Settings.SelectedTechnique);
                         }
                     }
                     else
@@ -330,6 +320,7 @@ namespace SingleDose
                                 REQUIREDPROCESSDETAILS = "";
                                 AVOIDPROCESSDETAILS = "";
                                 PERSISTPROCESSDETAILS = "";
+                                TriggersToUse.Clear();
                                 Console.WriteLine("|\n|   [~] Triggers have been cleared.");
                                 break;
                         }

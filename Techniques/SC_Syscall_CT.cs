@@ -2,11 +2,12 @@
 {
     class SYSCALL_CT
     {
-
         public static string STATIC = @"
-            System.Collections.Generic.List<byte> payloadList = new System.Collections.Generic.List<byte> { {{SHELLCODE}} };
+            System.Collections.Generic.List<byte> payloadList = new System.Collections.Generic.List<byte>();
+            {{SHELLCODE}}
             byte[] payload = payloadList.ToArray();
             ";
+
         public static string DYNAMIC_ARGPARSE = @"
         public class ArgValues
         {

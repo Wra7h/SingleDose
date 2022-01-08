@@ -2,8 +2,9 @@
 {
     class FiberInject
     {
-        public static string STATIC= @"
-            List<byte> payloadList = new List<byte> { {{SHELLCODE}} };
+        public static string STATIC = @"
+            List<byte> payloadList = new List<byte>();
+            {{SHELLCODE}}
             byte[] payload = payloadList.ToArray();";
 
         public static string DYNAMIC = @"
