@@ -119,9 +119,6 @@ Example Scenarios:
        Command: `persist explorer.exe`. This means the binary will only inject, if explorer.exe is _not_ running on the system when the conditions
        are reevaluated.   
 
-## What's next?
-This has been a project built in my spare time. I plan on adding more techniques as time goes on. Constructive criticism is welcome and appreciated! Feel free to message me on Twitter @_Wra7h  
-
 ### Check these awesome references out:  
   - https://github.com/monoxgas/sRDI
   - https://3xpl01tc0d3r.blogspot.com/2019/12/process-injection-part-v.html
