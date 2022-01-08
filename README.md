@@ -15,7 +15,7 @@ Single Dose was built to run using .NET Framework v3.5. Binaries generated with 
 
 Each technique has been tested with either :  
 1. MessageBox64.dll: https://github.com/enigma0x3/MessageBox
-2. Raw shellcode from MSFVenom that executes calc  
+2. Raw shellcode - MSFVenom Pop Calc (Shellcode Size: 272 bytes) and Mythic C2 Apollo Agent (Shellcode Size: 2.82 MB)
 
 ## Basic Usage:  
 Creating the first binary can be accomplished using the commands below. Just enter the commands below and fill in the brackets as you see fit.  
