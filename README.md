@@ -57,6 +57,7 @@ The next 2 commands are from this submenu. "Output" tells Single Dose where to s
 | EnumChildWindows | Execute Shellcode via Callback. | Shellcode |
 | EnumDateFormatsEx | Execute Shellcode via Callback. | Shellcode |
 | EnumDesktops | Execute Shellcode via Callback. | Shellcode |
+| AddressOfEntryPoint | Inject Shellcode into a suspended process's entrypoint. | Shellcode |
 
 
 ## Settings Commands:  
