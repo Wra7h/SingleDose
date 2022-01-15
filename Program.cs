@@ -154,7 +154,7 @@ namespace SingleDose
                     Console.WriteLine("|\t   8) EnumChildWindows: Execute Shellcode via Callback. [Shellcode]");
                     Console.WriteLine("|\t   9) EnumDateFormatsEx: Execute Shellcode via Callback. [Shellcode]");
                     Console.WriteLine("|\t  10) EnumDesktops: Execute Shellcode via Callback. [Shellcode]");
-                    Console.WriteLine("|\t  11) AddressOfEntryPoint: Inject Shellcode into a suspended processes entrypoint. [Shellcode]");
+                    Console.WriteLine("|\t  11) AddressOfEntryPoint: Inject Shellcode into a suspended process's entrypoint. [Shellcode]");
                     Console.WriteLine("|\n|              MISC. COMMANDS");
                     Console.WriteLine("|            ------------------");
                     Console.WriteLine("|\tShow :: Display current configuration, or techniques.");
@@ -364,7 +364,7 @@ namespace SingleDose
                                 Console.WriteLine("|\t   8) EnumChildWindows: Execute Shellcode via Callback. [Shellcode]");
                                 Console.WriteLine("|\t   9) EnumDateFormatsEx: Execute Shellcode via Callback. [Shellcode]");
                                 Console.WriteLine("|\t  10) EnumDesktops: Execute Shellcode via Callback. [Shellcode]");
-                                Console.WriteLine("|\t  11) AddressOfEntryPoint: Inject Shellcode into a suspended processes entrypoint. [Shellcode]");
+                                Console.WriteLine("|\t  11) AddressOfEntryPoint: Inject Shellcode into a suspended process's entrypoint. [Shellcode]");
                                 break;
                             case "VERSION":
                                 break;
