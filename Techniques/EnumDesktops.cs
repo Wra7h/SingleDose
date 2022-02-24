@@ -55,7 +55,8 @@
 
         public static string DOWNLOAD = @"
             if (args.Contains(""-h"", StringComparer.OrdinalIgnoreCase) || !args.Contains(""-uri"", StringComparer.OrdinalIgnoreCase)){
-                Console.WriteLine(""-URI: URI to download"");
+                Console.WriteLine(""-URI: URI 
+wnload"");
                 Environment.Exit(0);
             }
 

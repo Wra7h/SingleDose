@@ -18,6 +18,7 @@ namespace SingleDose
         public static bool Logging = true;
         public static string CurrentLogFile = "";
         public static string LogBuffer = "";
+        public static int MaxHistorySize = 3;
 
         public static void SettingsMenu()
         {
@@ -28,7 +29,7 @@ namespace SingleDose
                 Console.WriteLine("|\n|\tmode      output   show   ");
                 Console.WriteLine("|\tcompile   blurb    triggers");
                 Console.WriteLine("|\tversion   clear    help");
-                Console.WriteLine("|\tlog       exit");
+                Console.WriteLine("|\thistory   log      exit");
             }
 
             do
@@ -141,7 +142,9 @@ namespace SingleDose
                     Console.WriteLine("|\n|\tCompile :: a switch to compile the generated .cs file. If this command is executed while true,");
                     Console.WriteLine("|\t           the value becomes false and vice versa. (Default = true)");
                     Console.WriteLine("|\t   > Example Usage: compile");
-                    Console.WriteLine("|\n|\n|\tClear :: Clear the terminal, settings or triggers.");
+                    Console.WriteLine("|\n|\tHistory :: change the maximum amount of entries kept in history. (Default = 3)");
+                    Console.WriteLine("|\t   > Example Usage: history 5");
+                    Console.WriteLine("|\n|\tClear :: Clear the terminal, settings or triggers.");
                     Console.WriteLine("|\t   > Example Usage: clear");
                     Console.WriteLine("|\t   > Example Usage: clear settings");
                     Console.WriteLine("|\tVersion :: Change the version used for compiling. (Default = v3.5)");
@@ -169,7 +172,7 @@ namespace SingleDose
                         Console.WriteLine("|\n|\tmode      output   show   ");
                         Console.WriteLine("|\tcompile   blurb    triggers");
                         Console.WriteLine("|\tversion   clear    help");
-                        Console.WriteLine("|\tlog       exit");
+                        Console.WriteLine("|\thistory   log      exit");
                     }
                     break;
                 case "MODE":
@@ -182,25 +185,19 @@ namespace SingleDose
                                 Settings.InjectMode = "STATIC";
                                 break;
                             case "1":
-                                Console.WriteLine("|\n|\t[*] Mode: Static. Injection content will be embedded in binary.");
-                                Settings.InjectMode = "STATIC";
-                                break;
+                                goto case "STATIC";
                             case "DYNAMIC":
                                 Console.WriteLine("|\n|\t[*] Mode: Dynamic. Injection content will be provided at execution with -PID and -DLL/-Bin.");
                                 Settings.InjectMode = "DYNAMIC";
                                 break;
                             case "2":
-                                Console.WriteLine("|\n|\t[*] Mode: Dynamic. Injection content will be provided at execution with -PID and -DLL/-Bin.");
-                                Settings.InjectMode = "DYNAMIC";
-                                break;
+                                goto case "DYNAMIC";
                             case "DOWNLOAD":
                                 Console.WriteLine("|\n|\t[*] Mode: Download. Injection content will be provided at execution with -PID and -URI.");
                                 Settings.InjectMode = "DOWNLOAD";
                                 break;
                             case "3":
-                                Console.WriteLine("|\n|\t[*] Mode: Download. Injection content will be provided at execution with -PID and -URI.");
-                                Settings.InjectMode = "DOWNLOAD";
-                                break;
+                                goto case "DOWNLOAD";
                             default:
                                 break;
                         }
@@ -360,26 +357,22 @@ namespace SingleDose
                                 Settings.CompileBinary = true;
                                 Console.WriteLine("|\n|   [~] Output and Mode have been cleared.");
                                 break;
-                            case "TRIGGERS":
-                                Program.HIBERNATEPROCESSDETAILS = "";
-                                Program.REQUIREDPROCESSDETAILS = "";
-                                Program.AVOIDPROCESSDETAILS = "";
-                                Program.PERSISTPROCESSDETAILS = "";
-                                Program.TriggersToUse.Clear();
-                                Console.WriteLine("|\n|   [~] Triggers have been cleared.");
-                                break;
                         }
                     }
                     else
                     {
                         Console.Clear();
-                        Console.WriteLine("\n       +---------------------------+\n ______|         SETTINGS          |\n|      +---------------------------+");
-                        if (helpBlurb)
+                    }
+                    break;
+                case "HISTORY":
+                    if (command.Split().Count() > 1)
+                    {
+                        int newMax = 0;
+                        bool success = int.TryParse(command.Split()[1], out newMax);
+                        if (success)
                         {
-                            Console.WriteLine("|\n|\tmode      output   show   ");
-                            Console.WriteLine("|\tcompile   blurb    triggers");
-                            Console.WriteLine("|\tversion   clear    help");
-                            Console.WriteLine("|\tlog       exit");
+                            Console.WriteLine("|\n|\t[*] Max history count set to {0}", newMax);
+                            Settings.MaxHistorySize = newMax;
                         }
                     }
                     break;

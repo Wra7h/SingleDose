@@ -5,17 +5,6 @@ namespace SingleDose
 {
     partial class Program
     {
-        public class SRDIClass
-        {
-            public string HashFunction { get; set; } 
-            public string AdditionalData { get; set; }
-            public bool ObfuscateImports { get; set; }
-            public int ImportDelay { get; set; }
-            public bool ClearHeader { get; set; }
-            public string DLLFilepath { get; set; }
-            public byte[] DLLData { get; set; }
-        }
-
         //Triggers//
 
         //Require
