@@ -39,6 +39,7 @@ The next 2 commands are from this submenu. "Output" tells Single Dose where to s
 | Triggers      | Enter Triggers submenu | `triggers`|
 | Show          | Display techniques, current settings | `show` or `show techniques` |
 | Build         | Build a technique      | `build 2` or ` build SRDI` |
+| Save          | Save a payload from history. Useful after a dll has been converted to shellcode. Payloads are saved to a "payload" folder under the specified output directory.      | `save` or `save h1` |
 | Describe      | Describe a technique   | `describe 4` or `describe Suspend_QueueUserAPC` |
 | Clear         | Clear the console, settings, or triggers | `clear`, `clear settings`, or `clear triggers` |
 | Blurb         | Enable/Disable the display of available commands when switching between menus | `blurb` |
@@ -71,6 +72,7 @@ The next 2 commands are from this submenu. "Output" tells Single Dose where to s
 | Blurb         | Enable/Disable the display of available commands when switching between menus | `blurb` |
 | Show          | Display techniques, current settings | `show` or `show techniques` |
 | Version       | Display/Set available versions of csc.exe on the host. This allows you to compile binaries for various versions of the .NET Framework. If the version is not displayed, the user can specify the absolute path with the "Custom" option. \[Default: v3.5] | `version`, `version #`, `version Roslyn`, or `version Custom` |
+| History       | change the max entries kept in history | `history 5`|
 | Clear         | Clear the console, settings, or triggers | `clear`, `clear settings`, or `clear triggers` |
 | Triggers      | Enter Triggers submenu | `triggers`|
 | Exit          | Return to Main Menu | `exit` |
