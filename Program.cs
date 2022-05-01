@@ -99,27 +99,29 @@ namespace SingleDose
 
             Console.WriteLine("|\n|\t              Triggers");
             Console.WriteLine("|\t          +--------------+");
-            if (REQUIREDPROCESSDETAILS == "" && HIBERNATEPROCESSDETAILS == "" && AVOIDPROCESSDETAILS == "" && PERSISTPROCESSDETAILS == "")
+            if (REQUIREDPROCESSDETAILS == "" && HIBERNATEPROCESSDETAILS == "" && AVOIDPROCESSDETAILS == "" && PERSISTPROCESSDETAILS == "" && TIMERSECONDS == "")
             {
                 Console.WriteLine("|\t      No triggers configured.");
             }
-
             if (REQUIREDPROCESSDETAILS != "")
             {
-                Console.WriteLine("|\t   Requirements     = {0}", REQUIREDPROCESSDETAILS);
+                Console.WriteLine("|\t   Requirements     = {0}", REQUIREDPROCESSDETAILS.ToLower());
             }
-
             if (HIBERNATEPROCESSDETAILS != "")
             {
-                Console.WriteLine("|\t   Hibernate Reqs   = {0}", HIBERNATEPROCESSDETAILS);
+                Console.WriteLine("|\t   Hibernate Reqs   = {0}", HIBERNATEPROCESSDETAILS.ToLower());
             }
             if (AVOIDPROCESSDETAILS != "")
             {
-                Console.WriteLine("|\t   Avoid Reqs   = {0}", AVOIDPROCESSDETAILS);
+                Console.WriteLine("|\t   Avoid Reqs   = {0}", AVOIDPROCESSDETAILS.ToLower());
             }
             if (PERSISTPROCESSDETAILS != "")
             {
-                Console.WriteLine("|\t   Persist Reqs   = {0}", PERSISTPROCESSDETAILS);
+                Console.WriteLine("|\t   Persist Reqs   = {0}", PERSISTPROCESSDETAILS.ToLower());
+            }
+            if (TIMERSECONDS != "")
+            {
+                Console.WriteLine("|\t   Timer = {0} seconds", TIMERSECONDS);
             }
         }
         
@@ -134,46 +136,47 @@ namespace SingleDose
                 case "":
                     break;
                 case "HELP":
-                    Console.WriteLine("|\n|_______+---------------------------+\n _______|         Main Help         |\n|       +---------------------------+");
-                    Console.WriteLine("|\n|                 SUBMENUS");
-                    Console.WriteLine("|            ------------------");
-                    Console.WriteLine("|\tSettings :: Enter submenu for configuring settings");
-                    Console.WriteLine("|\tTriggers :: Enter submenu for configuring execution conditions.");
-                    Console.WriteLine("|\n|                  BUILD");
-                    Console.WriteLine("|            ------------------");
-                    Console.WriteLine("|\tBuild :: Build a binary using the configured settings and triggers.");
-                    Console.WriteLine("|\t   > Example Usage: build <technique>");
-                    Console.WriteLine("|\t   > Example Usage: build 3");
-                    Console.WriteLine("|\tSave :: save an item from shellcode history. Payload will be written to a folder called \"Payload\".");
-                    Console.WriteLine("|\t   > Example Usage: save");
-                    Console.WriteLine("|\t   > Example Usage: save h1");
-                    Console.WriteLine("|\n|                TECHNIQUES");
-                    Console.WriteLine("|            ------------------");
-                    Console.WriteLine("|\t   1) CreateRemoteThread: Inject a DLL into a remote process and execute with CreateRemoteThread. [DLL]");
-                    Console.WriteLine("|\t   2) SRDI: Convert DLL into shellcode and inject. [DLL]");
-                    Console.WriteLine("|\t   3) EarlyBird_QueueUserAPC: Inject Shellcode into a newly spawned process. [Shellcode]");
-                    Console.WriteLine("|\t   4) Suspend_QueueUserAPC: Inject Shellcode into a process currently running. [Shellcode]");
-                    Console.WriteLine("|\t   5) Syscall_CreateThread: Inject Shellcode using direct syscalls. [Shellcode]");
-                    Console.WriteLine("|\t   6) Fiber_Execution: Execute Shellcode via Fibers. [Shellcode]");
-                    Console.WriteLine("|\t   7) EnumWindows: Execute Shellcode via Callback. [Shellcode]");
-                    Console.WriteLine("|\t   8) EnumChildWindows: Execute Shellcode via Callback. [Shellcode]");
-                    Console.WriteLine("|\t   9) EnumDateFormatsEx: Execute Shellcode via Callback. [Shellcode]");
-                    Console.WriteLine("|\t  10) EnumDesktops: Execute Shellcode via Callback. [Shellcode]");
-                    Console.WriteLine("|\t  11) AddressOfEntryPoint: Inject Shellcode into a suspended process's entrypoint. [Shellcode]");
-                    Console.WriteLine("|\n|              MISC. COMMANDS");
-                    Console.WriteLine("|            ------------------");
-                    Console.WriteLine("|\tShow :: Display current configuration, techniques or shellcode history.");
-                    Console.WriteLine("|\t   > Example Usage: show");
-                    Console.WriteLine("|\t   > Example Usage: show techniques");
-                    Console.WriteLine("|\t   > Example Usage: show history");
-                    Console.WriteLine("|\tDescribe :: Describe techniques.");
-                    Console.WriteLine("|\t   > Example Usage: describe <technique>");
-                    Console.WriteLine("|\tClear :: Clear the terminal, settings or triggers.");
-                    Console.WriteLine("|\t   > Example Usage: clear");
-                    Console.WriteLine("|\t   > Example Usage: clear settings");
-                    Console.WriteLine("|\tBlurb :: A switch to display a command blurb when switching between menus. (Default = true)");
-                    Console.WriteLine("|\tHelp :: Display this help.");
-                    Console.WriteLine("|\tExit :: Exit the program.");
+                    Console.WriteLine("|\n|             +------------+----------------------------------------------------------+----------------------+");
+                    Console.WriteLine("|             |                                     MAIN HELP                                                |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+----------------------+");
+                    Console.WriteLine("|             |  Command   |                       Description                        |     Example Usage    |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+----------------------+");
+                    Console.WriteLine("|             |  Settings  | Enter the Settings submenu                               | > Settings           |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+----------------------+");
+                    Console.WriteLine("|             |  Triggers  | Enter the Triggers submenu                               | > Triggers           |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+----------------------+");
+                    Console.WriteLine("|             |  Build     | Build a loader/inject technique (See techniques below.)  | > build r1           |");
+                    Console.WriteLine("|             |            |                                                          | > build CreateFiber  |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+----------------------+");
+                    Console.WriteLine("|             |  Save      | Save an entry from history to a file.                    | > save  h1           |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+----------------------+");
+                    Console.WriteLine("|             |  Show      | Display current config, techniques or history entries    | > show               |");
+                    Console.WriteLine("|             |            |                                                          | > show history       |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+----------------------+");
+                    Console.WriteLine("|             |  Describe  | See a description for a technique                        | > describe r5        |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+----------------------+");
+                    Console.WriteLine("|             |  Clear     | Clear the terminal, settings, or triggers                | > clear              |");
+                    Console.WriteLine("|             |            |                                                          | > clear triggers     |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+----------------------+");
+                    Console.WriteLine("|             |  Blurb     | Display available commands when switching/clearing menus | > blurb              |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+----------------------+");
+                    Console.WriteLine("|             |  Help      | Display this help                                        | > help               |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+----------------------+");
+                    Console.WriteLine("|             |  Exit      | Exit Single Dose                                         | > exit               |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+----------------------+\n|\n|");
+                    Console.WriteLine("|                          +-----------------------------------------------------------------+");
+                    Console.WriteLine("|                          +                     AVAILABLE TECHNIQUES                        +");
+                    Console.WriteLine("|                          +-----------------------------+-----------------------------------+");
+                    Console.WriteLine("|                          |      Shellcode Loaders      |          Process Injects          |");
+                    Console.WriteLine("|                          +-----------------------------+-----------------------------------+");
+                    Console.WriteLine("|                          |  L1. Syscall_CreateThread   | R1. CreateRemoteThread-DLL [DLL]  |");
+                    Console.WriteLine("|                          |  L2. SRDI-Loader            | R2. EarlyBird_QueueUserAPC        |");
+                    Console.WriteLine("|                          |  L3. CreateFiber            | R3. Suspend_QueueUserAPC          |");
+                    Console.WriteLine("|                          |  L4. EnumWindows            | R4. AddressOfEntryPoint           |");
+                    Console.WriteLine("|                          |  L5. EnumChildWindows       | R5. KernelCallbackTable           |");
+                    Console.WriteLine("|                          |  L6. EnumDateFormatsEx      |                                   |");
+                    Console.WriteLine("|                          |  L7. EnumDesktops           |                                   |");
+                    Console.WriteLine("|                          +-----------------------------+-----------------------------------+");
                     break;
                 case "SETTINGS":
                     Settings.SettingsMenu();
@@ -219,72 +222,78 @@ namespace SingleDose
                         {
                             switch (command.Split()[1].ToUpper())
                             {
-                                case "CREATEREMOTETHREAD":
+                                case "CREATEREMOTETHREAD-DLL":
                                     Console.WriteLine("|\n|   [*] Building technique: DLL CreateRemoteThread");
-                                    Settings.SelectedTechnique = "CreateRemoteThread";
+                                    Settings.SelectedTechnique = "CreateRemoteThread-DLL";
                                     break;
-                                case "1":
-                                    goto case "CREATEREMOTETHREAD";
-                                case "SRDI":
+                                case "R1":
+                                    goto case "CREATEREMOTETHREAD-DLL";
+                                case "SRDI-LOADER":
                                     Console.WriteLine("|\n|   [*] Building technique: Shellcode Reflective DLL Injection (SRDI)");
-                                    Settings.SelectedTechnique = "SRDI";
+                                    Settings.SelectedTechnique = "SRDI-Loader";
                                     break;
-                                case "2":
-                                    goto case "SRDI";
+                                case "L2":
+                                    goto case "SRDI-LOADER";
                                 case "EARLYBIRD_QUEUEUSERAPC":
                                     Console.WriteLine("|\n|   [*] Building technique: EarlyBird_QueueUserAPC");
                                     Settings.SelectedTechnique = "EarlyBird_QueueUserAPC";
                                     break;
-                                case "3":
+                                case "R2":
                                     goto case "EARLYBIRD_QUEUEUSERAPC";
                                 case "SUSPEND_QUEUEUSERAPC":
                                     Console.WriteLine("|\n|   [*] Building technique: Suspend_QueueUserAPC");
                                     Settings.SelectedTechnique = "Suspend_QueueUserAPC";
                                     break;
-                                case "4":
+                                case "R3":
                                     goto case "SUSPEND_QUEUEUSERAPC";
                                 case "SYSCALL_CREATETHREAD":
                                     Console.WriteLine("|\n|   [*] Building technique: Syscall_CreateThread");
                                     Settings.SelectedTechnique = "Syscall_CreateThread";
                                     break;
-                                case "5":
+                                case "L1":
                                     goto case "SYSCALL_CREATETHREAD";
-                                case "FIBER_EXECUTION":
-                                    Console.WriteLine("|\n|   [*] Building technique: Fiber_Execution");
-                                    Settings.SelectedTechnique = "Fiber_Execution";
+                                case "CREATEFIBER":
+                                    Console.WriteLine("|\n|   [*] Building technique: CREATEFIBER");
+                                    Settings.SelectedTechnique = "CreateFiber";
                                     break;
-                                case "6":
-                                    goto case "FIBER_EXECUTION";
+                                case "L3":
+                                    goto case "CREATEFIBER";
                                 case "ENUMWINDOWS":
                                     Console.WriteLine("|\n|   [*] Building technique: EnumWindows");
                                     Settings.SelectedTechnique = "EnumWindows";
                                     break;
-                                case "7":
+                                case "L4":
                                     goto case "ENUMWINDOWS";
                                 case "ENUMCHILDWINDOWS":
                                     Console.WriteLine("|\n|   [*] Building technique: EnumChildWindows");
                                     Settings.SelectedTechnique = "EnumChildWindows";
                                     break;
-                                case "8":
+                                case "L5":
                                     goto case "ENUMCHILDWINDOWS";
                                 case "ENUMDATEFORMATSEX":
                                     Console.WriteLine("|\n|   [*] Building technique: EnumDateFormatsEx");
                                     Settings.SelectedTechnique = "EnumDateFormatsEx";
                                     break;
-                                case "9":
+                                case "L6":
                                     goto case "ENUMDATEFORMATSEX";
                                 case "ENUMDESKTOPS":
                                     Console.WriteLine("|\n|   [*] Building technique: EnumDesktops");
                                     Settings.SelectedTechnique = "EnumDesktops";
                                     break;
-                                case "10":
+                                case "L7":
                                     goto case "ENUMDESKTOPS";
                                 case "ADDRESSOFENTRYPOINT":
                                     Console.WriteLine("|\n|   [*] Building technique: AddressOfEntryPoint");
                                     Settings.SelectedTechnique = "AddressOfEntryPoint";
                                     break;
-                                case "11":
+                                case "R4":
                                     goto case "ADDRESSOFENTRYPOINT";
+                                case "KERNELCALLBACKTABLE":
+                                    Console.WriteLine("|\n|   [*] Building technique: KernelCallbackTable");
+                                    Settings.SelectedTechnique = "KernelCallbackTable";
+                                    break;
+                                case "R5":
+                                    goto case "KERNELCALLBACKTABLE";
                                 default:
                                     Console.WriteLine("|\n|   [!] Unknown technique. Techniques can be found in help.");
                                     break;
@@ -321,6 +330,7 @@ namespace SingleDose
                                 REQUIREDPROCESSDETAILS = "";
                                 AVOIDPROCESSDETAILS = "";
                                 PERSISTPROCESSDETAILS = "";
+                                TIMERSECONDS = "";
                                 TriggersToUse.Clear();
                                 Console.WriteLine("|\n|   [~] Triggers have been cleared.");
                                 break;
@@ -344,19 +354,17 @@ namespace SingleDose
                         switch (command.Split()[1].ToUpper())
                         {
                             case "TECHNIQUES":
-                                Console.WriteLine("|\n|\t                TECHNIQUES");
-                                Console.WriteLine("|\t            ------------------");
-                                Console.WriteLine("|\t   1) CreateRemoteThread: Inject a DLL into a remote process and execute with CreateRemoteThread. [DLL]");
-                                Console.WriteLine("|\t   2) SRDI: Convert DLL into shellcode and inject. [DLL]");
-                                Console.WriteLine("|\t   3) EarlyBird_QueueUserAPC: Inject Shellcode into a newly spawned process. [Shellcode]");
-                                Console.WriteLine("|\t   4) Suspend_QueueUserAPC: Inject Shellcode into a process currently running. [Shellcode]");
-                                Console.WriteLine("|\t   5) Syscall_CreateThread: Inject Shellcode using direct syscalls. [Shellcode]");
-                                Console.WriteLine("|\t   6) Fiber_Execution: Execute Shellcode via Fibers. [Shellcode]");
-                                Console.WriteLine("|\t   7) EnumWindows: Execute Shellcode via Callback. [Shellcode]");
-                                Console.WriteLine("|\t   8) EnumChildWindows: Execute Shellcode via Callback. [Shellcode]");
-                                Console.WriteLine("|\t   9) EnumDateFormatsEx: Execute Shellcode via Callback. [Shellcode]");
-                                Console.WriteLine("|\t  10) EnumDesktops: Execute Shellcode via Callback. [Shellcode]");
-                                Console.WriteLine("|\t  11) AddressOfEntryPoint: Inject Shellcode into a suspended process's entrypoint. [Shellcode]");
+                                Console.WriteLine("|\n|\t   +--------------------------+-----------------------------------+");
+                                Console.WriteLine("|\t   |    Shellcode Loaders     |          Process Injects          |");
+                                Console.WriteLine("|\t   +--------------------------+-----------------------------------+");
+                                Console.WriteLine("|\t   | L1. Syscall_CreateThread | R1. CreateRemoteThread-DLL [DLL]  |");
+                                Console.WriteLine("|\t   | L2. SRDI-Loader          | R2. EarlyBird_QueueUserAPC        |");
+                                Console.WriteLine("|\t   | L3. CreateFiber          | R3. Suspend_QueueUserAPC          |");
+                                Console.WriteLine("|\t   | L4. EnumWindows          | R4. AddressOfEntryPoint           |");
+                                Console.WriteLine("|\t   | L5. EnumChildWindows     | R5. KernelCallbackTable           |");
+                                Console.WriteLine("|\t   | L6. EnumDateFormatsEx    |                                   |");
+                                Console.WriteLine("|\t   | L7. EnumDesktops         |                                   |");
+                                Console.WriteLine("|\t   +--------------------------+-----------------------------------+");
                                 break;
                             case "HISTORY":
                                 Shellcode.DisplayHistory();
@@ -442,7 +450,7 @@ namespace SingleDose
                     {
                         switch (command.Split()[1].ToUpper())
                         {
-                            case "CREATEREMOTETHREAD":
+                            case "CREATEREMOTETHREAD-DLL":
                                 Console.WriteLine("|\n|\t CreateRemoteThread");
                                 Console.WriteLine("|\t--------------------\n|");
                                 Console.WriteLine("|   Inject Source: DLL");
@@ -450,9 +458,9 @@ namespace SingleDose
                                 Console.WriteLine("|                  WriteProcessMemory, CreateRemoteThread\n|");
                                 Console.WriteLine("|   References: https://www.ired.team/offensive-security/code-injection-process-injection/dll-injection \n|");
                                 break;
-                            case "1":
-                                goto case "CREATEREMOTETHREAD";
-                            case "SRDI":
+                            case "R1":
+                                goto case "CREATEREMOTETHREAD-DLL";
+                            case "SRDI-Loader":
                                 Console.WriteLine("|\n|\t Shellcode Reflective DLL Injection");
                                 Console.WriteLine("|\t------------------------------------\n|");
                                 Console.WriteLine("|   Inject Source: DLL");
@@ -463,8 +471,8 @@ namespace SingleDose
                                 Console.WriteLine("|            code for injection.\n|");
                                 Console.WriteLine("|   References: https://github.com/monoxgas/sRDI \n|");
                                 break;
-                            case "2":
-                                goto case "SRDI";
+                            case "L2":
+                                goto case "SRDI-Loader";
                             case "EARLYBIRD_QUEUEUSERAPC":
                                 Console.WriteLine("|\n|\t   EarlyBird QueueUserAPC");
                                 Console.WriteLine("|\t  ------------------------\n|");
@@ -475,7 +483,7 @@ namespace SingleDose
                                 Console.WriteLine("|            the shellcode is executed. Has a higher potential of circumventing AV/EDR hooks.\n|");
                                 Console.WriteLine("|   References: https://3xpl01tc0d3r.blogspot.com/2019/12/process-injection-part-v.html");
                                 break;
-                            case "3":
+                            case "R2":
                                 goto case "EARLYBIRD_QUEUEUSERAPC";
                             case "SUSPEND_QUEUEUSERAPC":
                                 Console.WriteLine("|\n|\t   Suspend QueueUserAPC");
@@ -490,7 +498,7 @@ namespace SingleDose
                                 Console.WriteLine("|            in the .cs generated before compiling the final binary yourself.\n|");
                                 Console.WriteLine("|   References: https://sevrosecurity.com/2020/04/13/process-injection-part-2-queueuserapc/");
                                 break;
-                            case "4":
+                            case "R3":
                                 goto case "SUSPEND_QUEUEUSERAPC";
                             case "SYSCALL_CREATETHREAD":
                                 Console.WriteLine("|\n|\t   Syscall CreateThread");
@@ -506,10 +514,10 @@ namespace SingleDose
                                 Console.WriteLine("|               https://jhalon.github.io/utilizing-syscalls-in-csharp-2/");
                                 Console.WriteLine("|               https://www.solomonsklash.io/syscalls-for-shellcode-injection.html");
                                 break;
-                            case "5":
+                            case "L1":
                                 goto case "SYSCALL_CREATETHREAD";
-                            case "FIBER_EXECUTION":
-                                Console.WriteLine("|\n|\t   Fiber Execution");
+                            case "CREATEFIBER":
+                                Console.WriteLine("|\n|\t   CreateFiber ");
                                 Console.WriteLine("|\t  -----------------\n|");
                                 Console.WriteLine("|   Inject Source: Shellcode");
                                 Console.WriteLine("|   P/Invoke APIs: ConvertThreadToFiber, VirtualAlloc, CreateFiber,");
@@ -521,8 +529,8 @@ namespace SingleDose
                                 Console.WriteLine("|               https://graphitemaster.github.io/fibers/");
                                 Console.WriteLine("|               https://stackoverflow.com/questions/796217/what-is-the-difference-between-a-thread-and-a-fiber");
                                 break;
-                            case "6":
-                                goto case "FIBER_EXECUTION";
+                            case "L3":
+                                goto case "CREATEFIBER";
                             case "ENUMWINDOWS":
                                 Console.WriteLine("|\n|\t     EnumWindows");
                                 Console.WriteLine("|\t  -----------------\n|");
@@ -531,7 +539,7 @@ namespace SingleDose
                                 Console.WriteLine("|   Summary: Unavailable at this time.\n|");
                                 Console.WriteLine("|   References: https://vx-underground.org/papers/VXUG/Mirrors/Injection/callbackinjection/EnumWindows.cpp");
                                 break;
-                            case "7":
+                            case "L4":
                                 goto case "ENUMWINDOWS";
                             case "ENUMCHILDWINDOWS":
                                 Console.WriteLine("|\n|\t    EnumChildWindows");
@@ -541,7 +549,7 @@ namespace SingleDose
                                 Console.WriteLine("|   Summary: Unavailable at this time.\n|");
                                 Console.WriteLine("|   References: https://vx-underground.org/papers/VXUG/Mirrors/Injection/callbackinjection/EnumChildWindows.cpp");
                                 break;
-                            case "8":
+                            case "L5":
                                 goto case "ENUMCHILDWINDOWS";
                             case "ENUMDATEFORMATSEX":
                                 Console.WriteLine("|\n|\t    EnumDateFormatsEx");
@@ -551,7 +559,7 @@ namespace SingleDose
                                 Console.WriteLine("|   Summary: Unavailable at this time.\n|");
                                 Console.WriteLine("|   References: https://vx-underground.org/papers/VXUG/Mirrors/Injection/callbackinjection/EnumDateFormatsA.cpp");
                                 break;
-                            case "9":
+                            case "L6":
                                 goto case "ENUMDATEFORMATSEX";
                             case "ENUMDESKTOPS":
                                 Console.WriteLine("|\n|\t     EnumDesktops");
@@ -562,7 +570,7 @@ namespace SingleDose
                                 Console.WriteLine("|   Summary: Unavailable at this time.\n|");
                                 Console.WriteLine("|   References: https://vx-underground.org/papers/VXUG/Mirrors/Injection/callbackinjection/EnumDesktopW.cpp");
                                 break;
-                            case "10":
+                            case "L7":
                                 goto case "ENUMDESKTOPS";
                             case "ADDRESSOFENTRYPOINT":
                                 Console.WriteLine("|\n|\t     AddressOfEntryPoint");
@@ -574,8 +582,19 @@ namespace SingleDose
                                 Console.WriteLine("|            This method avoids calling VirtualAllocEx to allocate pages as RWX.\n|");
                                 Console.WriteLine("|   References: https://www.ired.team/offensive-security/code-injection-process-injection/addressofentrypoint-code-injection-without-virtualallocex-rwx");
                                 break;
-                            case "11":
+                            case "R4":
                                 goto case "ADDRESSOFENTRYPOINT";
+                            case "KERNELCALLBACKTABLE":
+                                Console.WriteLine("|\n|\t     KernelCallbackTable");
+                                Console.WriteLine("|\t   -----------------------\n|");
+                                Console.WriteLine("|   Inject Source: Shellcode");
+                                Console.WriteLine("|   P/Invoke APIs: NtQueryInformationProcess, ReadProcessMemory, WriteProcessMemory");
+                                Console.WriteLine("|                  SendMessage\n|");
+                                Console.WriteLine("|   Summary: This technique was used by the FinFisher/FinSpy surveillance spyware.\n|");
+                                Console.WriteLine("|   References: https://modexp.wordpress.com/2019/05/25/windows-injection-finspy/");
+                                break;
+                            case "R5":
+                                goto case "KERNELCALLBACKTABLE";
                             default:
                                 Console.WriteLine("|\n|   [!] Unknown technique. Techniques can be found with \"help\" or \"show techniques\".");
                                 break;

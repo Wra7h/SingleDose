@@ -12,9 +12,9 @@ namespace SingleDose
             if (Settings.helpBlurb)
             {
                 Console.WriteLine("|\n|\tavoid      persist  require");
-                Console.WriteLine("|\thibernate  show     blurb");
+                Console.WriteLine("|\thibernate  timer     blurb");
                 Console.WriteLine("|\tsettings   clear    help");
-                Console.WriteLine("|\texit");
+                Console.WriteLine("|\tshow       exit");
             }
 
             do
@@ -34,40 +34,72 @@ namespace SingleDose
             switch (command.ToUpper().Split()[0])
             {
                 case "HELP":
-                    Console.WriteLine("|\n|\t\t\t\t Triggers Commands");
-                    Console.WriteLine("|\t\t\t\t-------------------");
-                    Console.WriteLine("|\t1) Avoid :: Do not execute if condition is met. Binary will exit if condition is met.");
-                    Console.WriteLine("|\t           Accepts PID, Module (DLL), or Process name (EXE).");
-                    Console.WriteLine("|\t          'Avoid *' will enter an interface allowing you to add multiple conditions.");
-                    Console.WriteLine("|\t   > Example Usage: avoid *");
-                    Console.WriteLine("|\t   > Example Usage: avoid iexplore.exe");
-                    Console.WriteLine("|");
-                    Console.WriteLine("|\t2) Require :: Only execute if all conditions are met. Binary will exit if conditions are not met.");
-                    Console.WriteLine("|\t           Accepts PID, Module (DLL), or Process name (EXE).");
-                    Console.WriteLine("|\t          'Require *' will enter an interface allowing you to add multiple conditions.");
-                    Console.WriteLine("|\t   > Example Usage: require *");
-                    Console.WriteLine("|\t   > Example Usage: require notepad.exe");
-                    Console.WriteLine("|");
-                    Console.WriteLine("|\t3) Hibernate :: Similar to the require trigger, but with sleeping while the condition is not met.");
-                    Console.WriteLine("|\t             The sleep value is a random value between 90 seconds and 5 min.");
-                    Console.WriteLine("|\t             Accepts PID, Module (DLL), or Process name (EXE).");
-                    Console.WriteLine("|\t            'Hibernate *' will enter an interface allowing you to add multiple conditions.");
-                    Console.WriteLine("|\t   > Example Usage: hibernate *");
-                    Console.WriteLine("|\t   > Example Usage: hibernate notepad.exe");
-                    Console.WriteLine("|");
-                    Console.WriteLine("|\t4) Persist :: Similar to the avoid trigger, but with sleeping while the condition is met.");
-                    Console.WriteLine("|\t              Accepts PID, Module (DLL), or Process name (EXE).");
-                    Console.WriteLine("|\t   > Example Usage: persist *");
-                    Console.WriteLine("|\t   > Example Usage: persist notepad.exe");
-                    Console.WriteLine("|\n|\n|\tClear :: Clear the terminal, settings or triggers.");
-                    Console.WriteLine("|\t   > Example Usage: clear");
-                    Console.WriteLine("|\t   > Example Usage: clear settings");
-                    Console.WriteLine("|\tShow :: Display current configuration.");
-                    Console.WriteLine("|\tBlurb :: A switch to display a command blurb when switching between menus. (Default = true)");
-                    Console.WriteLine("|\tExit :: Return to Main Menu");
+                    Console.WriteLine("|\n|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |                                   TRIGGERS HELP                                               |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |  Command   |                       Description                        |     Example Usage     |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |  Settings  | Enter the Settings submenu                               | >> settings           |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |  Avoid     | Do not execute if condition is met. Binary will exit if  | >> Avoid iexplore.exe |");
+                    Console.WriteLine("|             |            | the condition is met. Accepts PID, Module (DLL),         | >> avoid *            |");
+                    Console.WriteLine("|             |            | or Process name (EXE). 'Avoid *' will enter a prompt     |                       |");
+                    Console.WriteLine("|             |            | for multiple inputs.                                     |                       |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |  Require   | Only execute if condition is met. Binary will exit if    | >> require 1204       |");
+                    Console.WriteLine("|             |            | the condition is not met. Accepts PID, Module (DLL),     | >> require excel.exe  |");
+                    Console.WriteLine("|             |            | or Process name (EXE). 'Require *' will enter a prompt   |                       |");
+                    Console.WriteLine("|             |            | for multiple inputs.                                     |                       |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |  Hibernate | Similar to the require trigger, but with sleeping while  | >> Hibernate 2408     |");
+                    Console.WriteLine("|             |            | the condition is not met. Accepts PID, Module (DLL),     | >> hibernate *        |");
+                    Console.WriteLine("|             |            | or Process name (EXE). 'Hibernate *' will enter a prompt |                       |");
+                    Console.WriteLine("|             |            | for multiple inputs.                                     |                       |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |  Persist   | Similar to the avoid trigger, but with sleeping while    | >> persist 3612       |");
+                    Console.WriteLine("|             |            | the condition is met. Accepts PID, Module (DLL),         | >> persist *          |");
+                    Console.WriteLine("|             |            | or Process name (EXE). 'Persist *' will enter a prompt   |                       |");
+                    Console.WriteLine("|             |            | for multiple inputs. This trigger is useful as a backup  |                       |");
+                    Console.WriteLine("|             |            | since you can have it wait until previous techniques     |                       |");
+                    Console.WriteLine("|             |            | used have been killed.                                   |                       |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |  Timer     | Set a timer to pause execution for a certain amount of   | >> timer 5            |");
+                    Console.WriteLine("|             |            | seconds before executing the payload.                    |                       |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |  Show      | Display current config, techniques or history entries    | > show                |");
+                    Console.WriteLine("|             |            |                                                          | > show history        |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |  Clear     | Clear the terminal, settings, or triggers                | >> clear              |");
+                    Console.WriteLine("|             |            |                                                          | >> clear triggers     |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |  Blurb     | Display available commands when switching/clearing menus | >> blurb              |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |  Help      | Display this help                                        | >> help               |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |  Exit      | Return to Main Menu                                      | >> exit               |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+\n|\n|");
                     break;
                 case "SETTINGS":
                     Settings.SettingsMenu();
+                    break;
+                case "TIMER":
+                    if (command.Split().Count() > 1)
+                    {
+                        decimal intholder = 0;
+                        if (Decimal.TryParse(command.Split()[1], out intholder))
+                        {
+                            Program.TIMERSECONDS = command.Split()[1];
+                            Console.WriteLine("|\n|     [~] Timer set for {0} seconds.", Program.TIMERSECONDS);
+                            if (!Program.TriggersToUse.Contains("TIMERTRIGGER"))
+                            {
+                                Program.TriggersToUse.Add("TIMERTRIGGER");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("|\n|   [~] Timer Usage: timer <seconds>");
+                    }
                     break;
                 case "REQUIRE":
                     if (command.Split().Count() > 1)
@@ -331,18 +363,17 @@ namespace SingleDose
                         switch (command.Split()[1].ToUpper())
                         {
                             case "TECHNIQUES":
-                                Console.WriteLine("|\n|                TECHNIQUES");
-                                Console.WriteLine("|              --------------");
-                                Console.WriteLine("|\t   1) CreateRemoteThread: Inject a DLL into a remote process and execute with CreateRemoteThread. [DLL]");
-                                Console.WriteLine("|\t   2) SRDI: Convert DLL into shellcode and inject. [DLL]");
-                                Console.WriteLine("|\t   3) EarlyBird_QueueUserAPC: Inject Shellcode into a newly spawned process. [Shellcode]");
-                                Console.WriteLine("|\t   4) Suspend_QueueUserAPC: Inject Shellcode into a process currently running. [Shellcode]");
-                                Console.WriteLine("|\t   5) Syscall_CreateThread: Inject Shellcode using direct syscalls. [Shellcode]");
-                                Console.WriteLine("|\t   6) Fiber_Execution: Execute Shellcode via Fibers. [Shellcode]");
-                                Console.WriteLine("|\t   7) EnumWindows: Execute Shellcode via Callback. [Shellcode]");
-                                Console.WriteLine("|\t   8) EnumChildWindows: Execute Shellcode via Callback. [Shellcode]");
-                                Console.WriteLine("|\t   9) EnumDateFormatsEx: Execute Shellcode via Callback. [Shellcode]");
-                                Console.WriteLine("|\t  10) EnumDesktops: Execute Shellcode via Callback. [Shellcode]");
+                                Console.WriteLine("|\n|\t   +--------------------------+-----------------------------------+");
+                                Console.WriteLine("|\t   |    Shellcode Loaders     |          Process Injects          |");
+                                Console.WriteLine("|\t   +--------------------------+-----------------------------------+");
+                                Console.WriteLine("|\t   | L1. Syscall_CreateThread | R1. CreateRemoteThread-DLL [DLL]  |");
+                                Console.WriteLine("|\t   | L2. SRDI-Loader          | R2. EarlyBird_QueueUserAPC        |");
+                                Console.WriteLine("|\t   | L3. CreateFiber          | R3. Suspend_QueueUserAPC          |");
+                                Console.WriteLine("|\t   | L4. EnumWindows          | R4. AddressOfEntryPoint           |");
+                                Console.WriteLine("|\t   | L5. EnumChildWindows     | R5. KernelCallbackTable           |");
+                                Console.WriteLine("|\t   | L6. EnumDateFormatsEx    |                                   |");
+                                Console.WriteLine("|\t   | L7. EnumDesktops         |                                   |");
+                                Console.WriteLine("|\t   +--------------------------+-----------------------------------+");
                                 break;
                         }
                     }
@@ -361,9 +392,9 @@ namespace SingleDose
                     {
                         Settings.helpBlurb = true;
                         Console.WriteLine("|\n|\tavoid      persist  require");
-                        Console.WriteLine("|\thibernate  show     blurb");
+                        Console.WriteLine("|\thibernate  timer     blurb");
                         Console.WriteLine("|\tsettings   clear    help");
-                        Console.WriteLine("|\texit");
+                        Console.WriteLine("|\tshow       exit");
                     }
                     break;
                 case "CLEAR":
@@ -382,8 +413,11 @@ namespace SingleDose
                                 Program.REQUIREDPROCESSDETAILS = "";
                                 Program.AVOIDPROCESSDETAILS = "";
                                 Program.PERSISTPROCESSDETAILS = "";
+                                Program.TIMERSECONDS = "";
                                 Program.TriggersToUse.Clear();
                                 Console.WriteLine("|\n|   [~] Triggers have been cleared.");
+                                break;
+                            default:
                                 break;
                         }
                     }
@@ -394,9 +428,9 @@ namespace SingleDose
                         if (Settings.helpBlurb)
                         {
                             Console.WriteLine("|\n|\tavoid      persist  require");
-                            Console.WriteLine("|\thibernate  show     blurb");
+                            Console.WriteLine("|\thibernate  timer     blurb");
                             Console.WriteLine("|\tsettings   clear    help");
-                            Console.WriteLine("|\texit");
+                            Console.WriteLine("|\tshow       exit");
                         }
                     }
                     break;

@@ -206,5 +206,11 @@ namespace SingleDose
 
             } while (conditionsMet > 0); 
             {{TRIGGER}}";
+
+        //Timed execution
+        public static string TIMERSECONDS = @"";
+        public static string TIMERTRIGGER = @"
+            System.Threading.Thread.Sleep((int)({{TIME}}*1000));
+            {{TRIGGER}}";
     }
 }

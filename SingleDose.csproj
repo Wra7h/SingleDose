@@ -50,6 +50,7 @@
     <Compile Include="Techniques\EnumWindows.cs" />
     <Compile Include="Techniques\EnumChildWindows.cs" />
     <Compile Include="Techniques\FiberInject.cs" />
+    <Compile Include="Techniques\KernelCallbackTable.cs" />
     <Compile Include="Techniques\Suspend_QueueUserAPC.cs" />
     <Compile Include="Techniques\SRDI.cs" />
     <Compile Include="Techniques\SC_Syscall_CT.cs" />

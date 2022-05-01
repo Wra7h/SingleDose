@@ -127,35 +127,47 @@ namespace SingleDose
                     }
                     break;
                 case "HELP":
-                    Console.WriteLine("|\n|\t\t\t\t Settings Commands");
-                    Console.WriteLine("|\t\t\t\t-------------------");
-                    Console.WriteLine("|\tMode :: Select whether to embed injection content or provide it at execution.");
-                    Console.WriteLine("|\t   1) Static: Injection content will be embedded in binary.");
-                    Console.WriteLine("|\t   2) Dynamic: Injection content will be provided at execution with -PID and -DLL/-Bin.");
-                    Console.WriteLine("|\t   3) Download: Injection content will be provided at execution with -PID and -URI.");
-                    Console.WriteLine("|\t");
-                    Console.WriteLine("|\t   > Example Usage: mode static");
-                    Console.WriteLine("|\t   > Example Usage: mode 2");
-                    Console.WriteLine("|\n|\tOutput :: Set the output directory. The directory will be created if necessary.");
-                    Console.WriteLine("|\t   > Example Usage: output .\\binaries");
-                    Console.WriteLine("|\t   > Example Usage: output C:\\Users\\user\\Desktop\\output");
-                    Console.WriteLine("|\n|\tCompile :: a switch to compile the generated .cs file. If this command is executed while true,");
-                    Console.WriteLine("|\t           the value becomes false and vice versa. (Default = true)");
-                    Console.WriteLine("|\t   > Example Usage: compile");
-                    Console.WriteLine("|\n|\tHistory :: change the maximum amount of entries kept in history. (Default = 3)");
-                    Console.WriteLine("|\t   > Example Usage: history 5");
-                    Console.WriteLine("|\n|\tClear :: Clear the terminal, settings or triggers.");
-                    Console.WriteLine("|\t   > Example Usage: clear");
-                    Console.WriteLine("|\t   > Example Usage: clear settings");
-                    Console.WriteLine("|\tVersion :: Change the version used for compiling. (Default = v3.5)");
-                    Console.WriteLine("|\t   > Example Usage: version");
-                    Console.WriteLine("|\t   > Example Usage: version Roslyn");
-                    Console.WriteLine("|\t   > Example Usage: version v4.0.30319");
-                    Console.WriteLine("|\tLog :: Enable/Disable logging. (Default = true)");
-                    Console.WriteLine("|\tShow :: Display current configuration.");
-                    Console.WriteLine("|\tBlurb :: A switch to display a command blurb when switching between menus. (Default = true)");
-                    Console.WriteLine("|\tTriggers :: Enter the triggers submenu");
-                    Console.WriteLine("|\tExit :: Return to Main Menu");
+                    Console.WriteLine("|\n|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |                                   SETTINGS HELP                                               |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |  Command   |                       Description                        |     Example Usage     |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |  Triggers  | Enter the Triggers submenu                               | >> Triggers           |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |  Mode      | Select the mode to use when compiling                    | >> mode 1             |");
+                    Console.WriteLine("|             |            | 1. Static: Embed injection data into binary              | >> mode download      |");
+                    Console.WriteLine("|             |            | 2. Dynamic: Specify -PID & -DLL/-Bin at execution        |                       |");
+                    Console.WriteLine("|             |            | 3. Download: Specify -PID & -URI at execution            |                       |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |  Ouput     | Set the output directory. Directory will be created      | > output .\\builds     |");
+                    Console.WriteLine("|             |            | if necessary.                                            | > output <path>       |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |  Compile   | Specify whether or not to compile the generated .cs.     | >> compile            |");
+                    Console.WriteLine("|             |            | Default = True                                           |                       |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |  Log       | Specify whether or not to log builds in a txt file.      | >> log                |");
+                    Console.WriteLine("|             |            | Log is stored in the root of the output directory.       |                       |");
+                    Console.WriteLine("|             |            | Default = True                                           |                       |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |  History   | Change the maximum amount of entries kept in history.    | >> history 5          |");
+                    Console.WriteLine("|             |            | Default = 3 entries                                      |                       |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |  Version   | Change the version of .NET used for compiling.           | >> version            |");
+                    Console.WriteLine("|             |            | Just typing version will show versions found on system   | >> version v4.0.30319 |");
+                    Console.WriteLine("|             |            | Default = .NET v3.5                                      | >> version Roslyn     |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |  Show      | Display current config, techniques or history entries    | > show                |");
+                    Console.WriteLine("|             |            |                                                          | > show history        |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |  Clear     | Clear the terminal, settings, or triggers                | >> clear              |");
+                    Console.WriteLine("|             |            |                                                          | >> clear triggers     |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |  Blurb     | Display available commands when switching/clearing menus | >> blurb              |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |  Help      | Display this help                                        | >> help               |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+");
+                    Console.WriteLine("|             |  Exit      | Return to Main Menu                                      | >> exit               |");
+                    Console.WriteLine("|             +------------+----------------------------------------------------------+-----------------------+\n|\n|");
                     break;
                 case "TRIGGERS":
                     Triggers.TriggersMenu();
@@ -296,18 +308,17 @@ namespace SingleDose
                         switch (command.Split()[1].ToUpper())
                         {
                             case "TECHNIQUES":
-                                Console.WriteLine("|\n|                TECHNIQUES");
-                                Console.WriteLine("|              --------------");
-                                Console.WriteLine("|\t   1) CreateRemoteThread: Inject a DLL into a remote process and execute with CreateRemoteThread. [DLL]");
-                                Console.WriteLine("|\t   2) SRDI: Convert DLL into shellcode and inject. [DLL]");
-                                Console.WriteLine("|\t   3) EarlyBird_QueueUserAPC: Inject Shellcode into a newly spawned process. [Shellcode]");
-                                Console.WriteLine("|\t   4) Suspend_QueueUserAPC: Inject Shellcode into a process currently running. [Shellcode]");
-                                Console.WriteLine("|\t   5) Syscall_CreateThread: Inject Shellcode using direct syscalls. [Shellcode]");
-                                Console.WriteLine("|\t   6) Fiber_Execution: Execute Shellcode via Fibers. [Shellcode]");
-                                Console.WriteLine("|\t   7) EnumWindows: Execute Shellcode via Callback. [Shellcode]");
-                                Console.WriteLine("|\t   8) EnumChildWindows: Execute Shellcode via Callback. [Shellcode]");
-                                Console.WriteLine("|\t   9) EnumDateFormatsEx: Execute Shellcode via Callback. [Shellcode]");
-                                Console.WriteLine("|\t  10) EnumDesktops: Execute Shellcode via Callback. [Shellcode]");
+                                Console.WriteLine("|\n|\t   +--------------------------+-----------------------------------+");
+                                Console.WriteLine("|\t   |    Shellcode Loaders     |          Process Injects          |");
+                                Console.WriteLine("|\t   +--------------------------+-----------------------------------+");
+                                Console.WriteLine("|\t   | L1. Syscall_CreateThread | R1. CreateRemoteThread-DLL [DLL]  |");
+                                Console.WriteLine("|\t   | L2. SRDI-Loader          | R2. EarlyBird_QueueUserAPC        |");
+                                Console.WriteLine("|\t   | L3. CreateFiber          | R3. Suspend_QueueUserAPC          |");
+                                Console.WriteLine("|\t   | L4. EnumWindows          | R4. AddressOfEntryPoint           |");
+                                Console.WriteLine("|\t   | L5. EnumChildWindows     | R5. KernelCallbackTable           |");
+                                Console.WriteLine("|\t   | L6. EnumDateFormatsEx    |                                   |");
+                                Console.WriteLine("|\t   | L7. EnumDesktops         |                                   |");
+                                Console.WriteLine("|\t   +--------------------------+-----------------------------------+");
                                 break;
                             case "VERSION":
                                 Console.WriteLine("|");
@@ -357,11 +368,30 @@ namespace SingleDose
                                 Settings.CompileBinary = true;
                                 Console.WriteLine("|\n|   [~] Output and Mode have been cleared.");
                                 break;
+                            case "TRIGGERS":
+                                Program.HIBERNATEPROCESSDETAILS = "";
+                                Program.REQUIREDPROCESSDETAILS = "";
+                                Program.AVOIDPROCESSDETAILS = "";
+                                Program.PERSISTPROCESSDETAILS = "";
+                                Program.TIMERSECONDS = "";
+                                Program.TriggersToUse.Clear();
+                                Console.WriteLine("|\n|   [~] Triggers have been cleared.");
+                                break;
+                            default:
+                                break;
                         }
                     }
                     else
                     {
                         Console.Clear();
+                        Console.WriteLine("\n       +---------------------------+\n ______|         SETTINGS          |\n|      +---------------------------+");
+                        if (helpBlurb)
+                        {
+                            Console.WriteLine("|\n|\tmode      output   show   ");
+                            Console.WriteLine("|\tcompile   blurb    triggers");
+                            Console.WriteLine("|\tversion   clear    help");
+                            Console.WriteLine("|\thistory   log      exit");
+                        }
                     }
                     break;
                 case "HISTORY":
