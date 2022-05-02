@@ -578,8 +578,7 @@ namespace SingleDose
                                 Console.WriteLine("|   Inject Source: Shellcode");
                                 Console.WriteLine("|   P/Invoke APIs: CreateProcess, NtQueryInformationProcess, ReadProcessMemory,");
                                 Console.WriteLine("|                  WriteProcessMemory, ResumeThread\n|");
-                                Console.WriteLine("|   Summary: Writes your shellcode to the entrypoint of the suspended process.");
-                                Console.WriteLine("|            This method avoids calling VirtualAllocEx to allocate pages as RWX.\n|");
+                                Console.WriteLine("|   Summary: Writes your shellcode to the entrypoint of the suspended process.\n|");
                                 Console.WriteLine("|   References: https://www.ired.team/offensive-security/code-injection-process-injection/addressofentrypoint-code-injection-without-virtualallocex-rwx");
                                 break;
                             case "R4":
