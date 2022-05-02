@@ -15,7 +15,7 @@ Single Dose was built to run using .NET Framework v3.5. Binaries generated with 
 
 Each technique has been tested with either :  
 1. MessageBox64.dll: https://github.com/enigma0x3/MessageBox
-2. Raw shellcode - MSFVenom Pop Calc (Shellcode Size: 272 bytes) and Mythic C2 Apollo Agent (Shellcode Size: 2.82 MB)
+2. Raw shellcode - MSFVenom Pop Calc and Mythic C2 Apollo Agent
 
 ## Basic Usage:  
 Creating the first binary can be accomplished using the commands below. Just enter the commands below and fill in the brackets as you see fit.  
@@ -59,6 +59,7 @@ The next 2 commands are from this submenu. "Output" tells Single Dose where to s
 | EnumDateFormatsEx | Execute Shellcode via Callback. | Shellcode |
 | EnumDesktops | Execute Shellcode via Callback. | Shellcode |
 | AddressOfEntryPoint | Inject Shellcode into a suspended process's entrypoint. | Shellcode |
+| KernelCallbackTable | Used by the FinFisher/FinSpy surveillance spyware. | Shellcode |
 
 
 ## Settings Commands:  
@@ -93,6 +94,7 @@ The triggers tells the binary to only inject under certain conditions. Triggers 
 | Require       | Only execute if all conditions are met. Binary will exit if conditions are not met. Accepts PID, Module (DLL), or Process name (EXE). | `require calc.exe`, `require *` |
 | Hibernate     | Similar to the require trigger, but the binary will sleep instead of exit while the condition is not met. The sleep value is a random value between 90 seconds and 5 min. Accepts PID, Module (DLL), or Process name (EXE). | `hibernate ntdll.dll`, `hibernate *` |
 | Persist       | Similar to the avoid trigger, but the binary will sleep instead of exit while the condition is met. The sleep value is a random value between 90 seconds and 5 min. Accepts PID, Module (DLL), or Process name (EXE). | `persist spoolsv.exe`, `persist *` |
+| Timer         | Set a timer to pause execution temporarily | `timer 5` |
 | Show          | Display techniques, current settings | `show` or `show techniques` |
 | Blurb         | Enable/Disable the display of available commands when switching between menus | `blurb` |
 | Clear         | Clear the console, settings, or triggers | `clear`, `clear settings`, or `clear triggers` |
