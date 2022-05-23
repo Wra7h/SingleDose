@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
+using SingleDose.PInvoke;
 using SingleDose.ShellcodeFormats;
 
 
@@ -88,7 +89,7 @@ namespace SingleDose
                 shellcodeHistory.Add(scHistoryEntry);
             }
 
-            if (shellcodeHistory.Count > Settings.MaxHistorySize)
+            if (shellcodeHistory.Count > Settings.cMaxHistorySize)
             {
                 shellcodeHistory.RemoveAt(0);
             }
@@ -96,13 +97,101 @@ namespace SingleDose
             return shellCode;
         }
 
-        /// <summary>
-        /// Builds the contents for the .cs file based on the selected technique. Each technique has a "BODY" with several patterns such as {{MODE}} and {{TRIGGER}}, that will be replaced with
-        /// appropriate information based on settings/triggers set by the user.
-        /// </summary>
-        /// <param name="injMode"> The mode selected by the user in Settings Menu</param>
-        /// <param name="injTechnique"> The technique selected with the "build" command in Main Menu.</param>
-        /// <returns></returns>
+        public static string AddPInvokes(string szCSContents)
+        {
+            Regex regPattern = new Regex("{{PINVOKE}}");
+            foreach (string szRecipeItem in Settings.listPInvokeRecipe)
+            {
+                switch (szRecipeItem)
+                {
+                    case "ConvertThreadToFiber":
+                        szCSContents = regPattern.Replace(szCSContents, Kernel32.ConvertThreadToFiber);
+                        break;
+                    case "CreateProcess":
+                        szCSContents = regPattern.Replace(szCSContents, Kernel32.CreateProcess);
+                        break;
+                    case "CreateRemoteThread":
+                        szCSContents = regPattern.Replace(szCSContents, Kernel32.CreateRemoteThread);
+                        break;
+                    case "CreateFiber":
+                        szCSContents = regPattern.Replace(szCSContents, Kernel32.CreateFiber);
+                        break;
+                    case "EnumChildWindows":
+                        szCSContents = regPattern.Replace(szCSContents, User32.EnumChildWindows);
+                        break;
+                    case "EnumDateFormatsEx":
+                        szCSContents = regPattern.Replace(szCSContents, Kernel32.EnumDateFormatsEx);
+                        break;
+                    case "EnumDesktops":
+                        szCSContents = regPattern.Replace(szCSContents, User32.EnumDesktops);
+                        break;
+                    case "EnumWindows":
+                        szCSContents = regPattern.Replace(szCSContents, User32.EnumWindows);
+                        break;
+                    case "GetProcAddress":
+                        szCSContents = regPattern.Replace(szCSContents, Kernel32.GetProcAddress);
+                        break;
+                    case "GetProcessWindowStation":
+                        szCSContents = regPattern.Replace(szCSContents, User32.GetProcessWindowStation);
+                        break;
+                    case "GetModuleHandle":
+                        szCSContents = regPattern.Replace(szCSContents, Kernel32.GetModuleHandle);
+                        break;
+                    case "NtCreateSection":
+                        szCSContents = regPattern.Replace(szCSContents, Ntdll.NtCreateSection);
+                        break;
+                    case "NtMapViewOfSection":
+                        szCSContents = regPattern.Replace(szCSContents, Ntdll.NtMapViewOfSection);
+                        break;
+                    case "NtQueryInformationProcess":
+                        szCSContents = regPattern.Replace(szCSContents, Ntdll.NtQueryInformationProcess);
+                        break;
+                    case "OpenThread":
+                        szCSContents = regPattern.Replace(szCSContents, Kernel32.OpenThread);
+                        break;
+                    case "QueueUserAPC":
+                        szCSContents = regPattern.Replace(szCSContents, Kernel32.QueueUserAPC);
+                        break;
+                    case "ReadProcessMemory":
+                        szCSContents = regPattern.Replace(szCSContents, Kernel32.ReadProcessMemory);
+                        break;
+                    case "ResumeThread":
+                        szCSContents = regPattern.Replace(szCSContents, Kernel32.ResumeThread);
+                        break;
+                    case "RtlCreateUserThread":
+                        szCSContents = regPattern.Replace(szCSContents, Ntdll.RtlCreateUserThread);
+                        break;
+                    case "SendMessage":
+                        szCSContents = regPattern.Replace(szCSContents, User32.SendMessage);
+                        break;
+                    case "SwitchToFiber":
+                        szCSContents = regPattern.Replace(szCSContents, Kernel32.SwitchToFiber);
+                        break;
+                    case "VirtualAlloc":
+                        szCSContents = regPattern.Replace(szCSContents, Kernel32.VirtualAlloc);
+                        break;
+                    case "VirtualAllocEx":
+                        szCSContents = regPattern.Replace(szCSContents, Kernel32.VirtualAllocEx);
+                        break;
+                    case "VirtualProtectEx":
+                        szCSContents = regPattern.Replace(szCSContents, Kernel32.VirtualProtectEx);
+                        break;
+                    case "WriteProcessMemory_ByteArray":
+                        szCSContents = regPattern.Replace(szCSContents, Kernel32.WriteProcessMemory_ByteArray);
+                        break;
+                    case "WriteProcessMemory_IntPtr":
+                        szCSContents = regPattern.Replace(szCSContents, Kernel32.WriteProcessMemory_IntPtr);
+                        break;                    
+                    default:
+                        break;
+                }
+            }
+
+            //Clear the last remaining "{{PINVOKE}}"
+            szCSContents = regPattern.Replace(szCSContents, "");
+            return szCSContents;
+        }
+
         public static void CSConstructor(string injMode, string injTechnique)
         { 
             if (injMode == "STATIC")
@@ -141,23 +230,22 @@ namespace SingleDose
                     Console.WriteLine("|");
                     Program.WriteLog(injMode + ": " + injTechnique + " - Target Process: "+ targetProcess + " - DLL: " + targetDLLPath, true);
                     string CSContents = DLL_CRT.BODY;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
 
                     Regex DLLCRTPattern;
-                    DLLCRTPattern = new Regex("{{TRIGGER}}");
-                    CSContents = DLLCRTPattern.Replace(CSContents, "");
                     DLLCRTPattern = new Regex("{{MODE}}");
                     CSContents = DLLCRTPattern.Replace(CSContents, DLL_CRT.STATICMODE);
-                    DLLCRTPattern = new Regex("{{0\\}}"); //Targetprocess
+                    DLLCRTPattern = new Regex("{{0\\}}"); //Target Process
                     CSContents = DLLCRTPattern.Replace(CSContents, targetProcess);
-                    DLLCRTPattern = new Regex("{{1\\}}"); //TargetDLL
+                    DLLCRTPattern = new Regex("{{1\\}}"); //Target DLL
                     CSContents = DLLCRTPattern.Replace(CSContents, targetDLLPath);
                     DLLCRTPattern = new Regex("{{NAMESPACE}}");
                     CSContents = DLLCRTPattern.Replace(CSContents, GenRandomString());
+                    CSContents = AddPInvokes(CSContents);
                     DLLCRTPattern = new Regex("{{ARGS}}");
                     CSContents = DLLCRTPattern.Replace(CSContents,"");
 
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 }
                 else if (injTechnique == "EarlyBird_QueueUserAPC")
                 {
@@ -182,12 +270,10 @@ namespace SingleDose
 
                     string byteToString = ShellcodeBytesToString(shellCode, 1000, GenRandomString());
                     string CSContents = EB_QUAPC.BODY;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
 
                     Regex QueuePattern;
-                    //Clear remaining trigger.
-                    QueuePattern = new Regex("{{TRIGGER}}");
-                    CSContents = QueuePattern.Replace(CSContents, "");
                     QueuePattern = new Regex("{{MODE}}");
                     CSContents = QueuePattern.Replace(CSContents,EB_QUAPC.STATICMODE);
                     QueuePattern = new Regex("{{SHELLCODE}}");
@@ -199,7 +285,7 @@ namespace SingleDose
                     QueuePattern = new Regex("{{ARGS}}");
                     CSContents = QueuePattern.Replace(CSContents, "");
 
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 }
                 else if (injTechnique == "Suspend_QueueUserAPC")
                 {
@@ -226,12 +312,10 @@ namespace SingleDose
 
                     string byteToString = ShellcodeBytesToString(shellCode, 1000, GenRandomString());
                     string CSContents = Suspend_QueueUserAPC.BODY;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
 
                     Regex QueuePattern;
-                    //Clear remaining trigger.
-                    QueuePattern = new Regex("{{TRIGGER}}");
-                    CSContents = QueuePattern.Replace(CSContents, "");
                     QueuePattern = new Regex("{{MODE}}");
                     CSContents = QueuePattern.Replace(CSContents, Suspend_QueueUserAPC.STATICMODE);
                     QueuePattern = new Regex("{{SHELLCODE}}");
@@ -243,7 +327,7 @@ namespace SingleDose
                     QueuePattern = new Regex("{{ARGS}}");
                     CSContents = QueuePattern.Replace(CSContents, "");
 
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 }
                 else if (injTechnique == "Syscall_CreateThread")
                 {
@@ -255,11 +339,9 @@ namespace SingleDose
 
                     string byteToString = ShellcodeBytesToString(shellCode, 1000, GenRandomString());
                     string CSContents = SYSCALL_CT.BODY;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+
                     Regex syscallPattern;
-                    //Clear remaining trigger.
-                    syscallPattern = new Regex("{{TRIGGER}}");
-                    CSContents = syscallPattern.Replace(CSContents, "");
                     syscallPattern = new Regex("{{MODE}}");
                     CSContents = syscallPattern.Replace(CSContents, SYSCALL_CT.STATIC);
                     syscallPattern = new Regex("{{SHELLCODE}}");
@@ -269,7 +351,7 @@ namespace SingleDose
                     syscallPattern = new Regex("{{ARGS}}");
                     CSContents = syscallPattern.Replace(CSContents, "");
                     
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, true);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, true);
                 }
                 else if (injTechnique == "SRDI-Loader")
                 {
@@ -389,12 +471,9 @@ namespace SingleDose
 
                     Program.WriteLog(injMode + ": " + injTechnique + " - DLL: " + dllPath, true);
                     string CSContents = sRDI.BODY;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
 
                     Regex replacePattern;
-                    //Clear remaining trigger.
-                    replacePattern = new Regex("{{TRIGGER}}");
-                    CSContents = replacePattern.Replace(CSContents, "");
                     replacePattern = new Regex("{{MODE}}");
                     CSContents = replacePattern.Replace(CSContents, sRDI.STATICMODE);
                     replacePattern = new Regex("{{DLLCONTENTS}}");
@@ -458,7 +537,7 @@ namespace SingleDose
                     replacePattern = new Regex("{{ARGS}}");
                     CSContents = replacePattern.Replace(CSContents,"");
                     
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, true);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, true);
                 }
                 else if (injTechnique == "CreateFiber")
                 {
@@ -469,12 +548,10 @@ namespace SingleDose
                     }
                     string byteToString =  ShellcodeBytesToString(shellCode, 1000, GenRandomString());
                     string CSContents = FiberInject.Body;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
 
                     Regex regPattern;
-                    //Clear remaining trigger.
-                    regPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regPattern.Replace(CSContents, "");
                     regPattern = new Regex("{{MODE}}");
                     CSContents = regPattern.Replace(CSContents, FiberInject.STATIC);
                     regPattern = new Regex("{{SHELLCODE}}");
@@ -484,7 +561,7 @@ namespace SingleDose
                     regPattern = new Regex("{{ARGS}}");
                     CSContents = regPattern.Replace(CSContents, "");
                     
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 }
                 else if (injTechnique == "EnumWindows")
                 {
@@ -496,11 +573,10 @@ namespace SingleDose
 
                     string byteToString = ShellcodeBytesToString(shellCode, 1000, GenRandomString());
                     string CSContents = EnumWindows.Body;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
+
                     Regex regPattern;
-                    //Clear remaining trigger.
-                    regPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regPattern.Replace(CSContents, "");
                     regPattern = new Regex("{{MODE}}");
                     CSContents = regPattern.Replace(CSContents, EnumWindows.STATIC);
                     regPattern = new Regex("{{SHELLCODE}}");
@@ -510,7 +586,7 @@ namespace SingleDose
                     regPattern = new Regex("{{ARGS}}");
                     CSContents = regPattern.Replace(CSContents, "");
                     
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 }
                 else if (injTechnique == "EnumChildWindows")
                 {
@@ -522,20 +598,17 @@ namespace SingleDose
 
                     string byteToString = ShellcodeBytesToString(shellCode, 1000, GenRandomString());
                     string CSContents = EnumChildWindows.Body;
-                    CSContents = ParseTriggers(CSContents);
-                    Regex regPattern;
-                    //Clear remaining trigger.
-                    regPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regPattern.Replace(CSContents, "");
-                    regPattern = new Regex("{{MODE}}");
+                    Regex regPattern = new Regex("{{MODE}}");
                     CSContents = regPattern.Replace(CSContents, EnumChildWindows.STATIC);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
                     regPattern = new Regex("{{SHELLCODE}}");
                     CSContents = regPattern.Replace(CSContents, byteToString);
                     regPattern = new Regex("{{NAMESPACE}}");
                     CSContents = regPattern.Replace(CSContents, GenRandomString());
                     regPattern = new Regex("{{ARGS}}");
                     CSContents = regPattern.Replace(CSContents, "");
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 }
                 else if (injTechnique == "EnumDateFormatsEx")
                 {
@@ -547,11 +620,10 @@ namespace SingleDose
 
                     string byteToString = ShellcodeBytesToString(shellCode, 1000, GenRandomString());
                     string CSContents = EnumDateFormatsEx.Body;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
+
                     Regex regPattern;
-                    //Clear remaining trigger.
-                    regPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regPattern.Replace(CSContents, "");
                     regPattern = new Regex("{{MODE}}");
                     CSContents = regPattern.Replace(CSContents, EnumDateFormatsEx.STATIC);
                     regPattern = new Regex("{{SHELLCODE}}");
@@ -560,7 +632,7 @@ namespace SingleDose
                     CSContents = regPattern.Replace(CSContents, GenRandomString());
                     regPattern = new Regex("{{ARGS}}");
                     CSContents = regPattern.Replace(CSContents, "");
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 }
                 else if (injTechnique == "EnumDesktops")
                 {
@@ -572,11 +644,10 @@ namespace SingleDose
 
                     string byteToString = ShellcodeBytesToString(shellCode, 1000, GenRandomString());
                     string CSContents = EnumDesktops.Body;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
+
                     Regex regPattern;
-                    //Clear remaining trigger.
-                    regPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regPattern.Replace(CSContents, "");
                     regPattern = new Regex("{{MODE}}");
                     CSContents = regPattern.Replace(CSContents, EnumDesktops.STATIC);
                     regPattern = new Regex("{{SHELLCODE}}");
@@ -585,7 +656,7 @@ namespace SingleDose
                     CSContents = regPattern.Replace(CSContents, GenRandomString());
                     regPattern = new Regex("{{ARGS}}");
                     CSContents = regPattern.Replace(CSContents, "");
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 }
                 else if (injTechnique == "AddressOfEntryPoint")
                 {
@@ -610,12 +681,10 @@ namespace SingleDose
 
                     string byteToString = ShellcodeBytesToString(shellCode, 1000, GenRandomString());
                     string CSContents = ADDRESSOFENTRYPOINT.BODY;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
 
                     Regex QueuePattern;
-                    //Clear remaining trigger.
-                    QueuePattern = new Regex("{{TRIGGER}}");
-                    CSContents = QueuePattern.Replace(CSContents, "");
                     QueuePattern = new Regex("{{MODE}}");
                     CSContents = QueuePattern.Replace(CSContents, EB_QUAPC.STATICMODE);
                     QueuePattern = new Regex("{{SHELLCODE}}");
@@ -627,7 +696,7 @@ namespace SingleDose
                     QueuePattern = new Regex("{{ARGS}}");
                     CSContents = QueuePattern.Replace(CSContents, "");
 
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, true);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, true);
                 }
                 else if (injTechnique == "KernelCallbackTable")
                 {
@@ -653,12 +722,11 @@ namespace SingleDose
 
                     string byteToString = ShellcodeBytesToString(shellCode, 1000, GenRandomString());
                     string CSContents = KernelCallbackTable.BODY;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
 
                     Regex QueuePattern;
-                    //Clear remaining trigger.
-                    QueuePattern = new Regex("{{TRIGGER}}");
-                    CSContents = QueuePattern.Replace(CSContents, "");
+
                     QueuePattern = new Regex("{{MODE}}");
                     CSContents = QueuePattern.Replace(CSContents, KernelCallbackTable.STATICMODE);
                     QueuePattern = new Regex("{{SHELLCODE}}");
@@ -670,7 +738,49 @@ namespace SingleDose
                     QueuePattern = new Regex("{{ARGS}}");
                     CSContents = QueuePattern.Replace(CSContents, "");
 
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
+                }
+                else if (injTechnique == "NtCreateSection")
+                {
+                    string setPID;
+                    Console.WriteLine("|   [~] Enter Target PID: ");
+                    do
+                    {
+                        Console.Write("|       > ");
+                        setPID = Console.ReadLine();
+                    } while (string.IsNullOrEmpty(setPID) && setPID.ToLower() != "exit");
+
+                    if (setPID.ToLower() == "exit")
+                    {
+                        return;
+                    }
+                    Console.WriteLine("|");
+
+                    byte[] shellCode = StaticInjectData();
+                    if (shellCode == null)
+                    {
+                        return;
+                    }
+
+                    string byteToString = ShellcodeBytesToString(shellCode, 1000, GenRandomString());
+                    string CSContents = NtCreateSection_NtMapViewOfSection.BODY;
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
+
+                    Regex QueuePattern;
+
+                    QueuePattern = new Regex("{{MODE}}");
+                    CSContents = QueuePattern.Replace(CSContents, NtCreateSection_NtMapViewOfSection.STATICMODE);
+                    QueuePattern = new Regex("{{SHELLCODE}}");
+                    CSContents = QueuePattern.Replace(CSContents, byteToString);
+                    QueuePattern = new Regex("{{PROCESSID}}");
+                    CSContents = QueuePattern.Replace(CSContents, setPID);
+                    QueuePattern = new Regex("{{NAMESPACE}}");
+                    CSContents = QueuePattern.Replace(CSContents, GenRandomString());
+                    QueuePattern = new Regex("{{ARGS}}");
+                    CSContents = QueuePattern.Replace(CSContents, "");
+
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 }
             }
             else if (injMode == "DYNAMIC")
@@ -681,11 +791,9 @@ namespace SingleDose
                     Program.WriteLog(injMode + ": " + injTechnique, true);
 
                     string CSContents = DLL_CRT.BODY;
-                    CSContents = ParseTriggers(CSContents);
-                    
-                    //Clear remaining trigger.
-                    regexPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regexPattern.Replace(CSContents, "");
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
+
                     regexPattern = new Regex("{{MODE}}");
                     CSContents = regexPattern.Replace(CSContents, DLL_CRT.DYNAMICMODE);
                     regexPattern = new Regex("{{NAMESPACE}}");
@@ -693,18 +801,16 @@ namespace SingleDose
                     regexPattern = new Regex("{{ARGS}}");
                     CSContents = regexPattern.Replace(CSContents, DLL_CRT.DYNAMICARGPARSE);
 
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 }
                 else if (injTechnique == "EarlyBird_QueueUserAPC")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
 
                     string CSContents = EB_QUAPC.BODY;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
 
-                    //Clear remaining trigger.
-                    regexPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regexPattern.Replace(CSContents, "");
                     regexPattern = new Regex("{{MODE}}");
                     CSContents = regexPattern.Replace(CSContents, EB_QUAPC.DYNAMICMODE);
                     regexPattern = new Regex("{{ARGS}}");
@@ -713,18 +819,16 @@ namespace SingleDose
                     CSContents = regexPattern.Replace(CSContents, "parsedArgs.Spawn");
                     regexPattern = new Regex("{{NAMESPACE}}");
                     CSContents = regexPattern.Replace(CSContents, GenRandomString());
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 }
                 else if (injTechnique == "Suspend_QueueUserAPC")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
 
                     string CSContents = Suspend_QueueUserAPC.BODY;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
 
-                    //Clear remaining trigger.
-                    regexPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regexPattern.Replace(CSContents, "");
                     regexPattern = new Regex("{{MODE}}");
                     CSContents = regexPattern.Replace(CSContents, Suspend_QueueUserAPC.DYNAMICMODE);
                     regexPattern = new Regex("{{NAMESPACE}}");
@@ -732,17 +836,14 @@ namespace SingleDose
                     regexPattern = new Regex("{{ARGS}}");
                     CSContents = regexPattern.Replace(CSContents, Suspend_QueueUserAPC.DYNAMICARGPARSE);
 
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 }
                 else if (injTechnique == "Syscall_CreateThread")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
                     string CSContents = SYSCALL_CT.BODY;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
 
-                    //Clear remaining trigger.
-                    regexPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regexPattern.Replace(CSContents, "");
                     regexPattern = new Regex("{{MODE}}");
                     CSContents = regexPattern.Replace(CSContents, SYSCALL_CT.DYNAMIC);
                     regexPattern = new Regex("{{NAMESPACE}}");
@@ -750,17 +851,14 @@ namespace SingleDose
                     regexPattern = new Regex("{{ARGS}}");
                     CSContents = regexPattern.Replace(CSContents, SYSCALL_CT.DYNAMIC_ARGPARSE);
 
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, true);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, true);
                 }
                 else if (injTechnique == "SRDI-Loader")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
                     string CSContents = sRDI.BODY;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
 
-                    //Clear remaining trigger.
-                    regexPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regexPattern.Replace(CSContents, "");
                     regexPattern = new Regex("{{MODE}}");
                     CSContents = regexPattern.Replace(CSContents, sRDI.DYNAMICMODE);
                     regexPattern = new Regex("{{NAMESPACE}}");
@@ -768,17 +866,15 @@ namespace SingleDose
                     regexPattern = new Regex("{{ARGS}}");
                     CSContents = regexPattern.Replace(CSContents, sRDI.DYNAMICARGS);
 
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, true);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, true);
                 }
                 else if (injTechnique == "CreateFiber")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
                     string CSContents = FiberInject.Body;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
 
-                    //Clear remaining trigger.
-                    regexPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regexPattern.Replace(CSContents, "");
                     regexPattern = new Regex("{{MODE}}");
                     CSContents = regexPattern.Replace(CSContents, FiberInject.DYNAMIC);
                     regexPattern = new Regex("{{NAMESPACE}}");
@@ -786,17 +882,15 @@ namespace SingleDose
                     regexPattern = new Regex("{{ARGS}}");
                     CSContents = regexPattern.Replace(CSContents, FiberInject.DYNAMIC_ARGPARSE);
 
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false); 
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false); 
                 }
                 else if (injTechnique == "EnumWindows")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
                     string CSContents = EnumWindows.Body;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
 
-                    //Clear remaining trigger.
-                    regexPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regexPattern.Replace(CSContents, "");
                     regexPattern = new Regex("{{MODE}}");
                     CSContents = regexPattern.Replace(CSContents, EnumWindows.DYNAMIC);
                     regexPattern = new Regex("{{NAMESPACE}}");
@@ -804,17 +898,15 @@ namespace SingleDose
                     regexPattern = new Regex("{{ARGS}}");
                     CSContents = regexPattern.Replace(CSContents, EnumWindows.DYNAMIC_ARGPARSE);
                     
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 }
                 else if (injTechnique == "EnumChildWindows")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
                     string CSContents = EnumChildWindows.Body;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
 
-                    //Clear remaining trigger.
-                    regexPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regexPattern.Replace(CSContents, "");
                     regexPattern = new Regex("{{MODE}}");
                     CSContents = regexPattern.Replace(CSContents, EnumChildWindows.DYNAMIC);
                     regexPattern = new Regex("{{NAMESPACE}}");
@@ -822,17 +914,15 @@ namespace SingleDose
                     regexPattern = new Regex("{{ARGS}}");
                     CSContents = regexPattern.Replace(CSContents, EnumChildWindows.DYNAMIC_ARGPARSE);
                     
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 }
                 else if (injTechnique == "EnumDateFormatsEx")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
                     string CSContents = EnumDateFormatsEx.Body;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
 
-                    //Clear remaining trigger.
-                    regexPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regexPattern.Replace(CSContents, "");
                     regexPattern = new Regex("{{MODE}}");
                     CSContents = regexPattern.Replace(CSContents, EnumDateFormatsEx.DYNAMIC);
                     regexPattern = new Regex("{{NAMESPACE}}");
@@ -840,17 +930,15 @@ namespace SingleDose
                     regexPattern = new Regex("{{ARGS}}");
                     CSContents = regexPattern.Replace(CSContents, EnumDateFormatsEx.DYNAMIC_ARGPARSE);
                     
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 }
                 else if (injTechnique == "EnumDesktops")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
                     string CSContents = EnumDesktops.Body;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
 
-                    //Clear remaining trigger.
-                    regexPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regexPattern.Replace(CSContents, "");
                     regexPattern = new Regex("{{MODE}}");
                     CSContents = regexPattern.Replace(CSContents, EnumDesktops.DYNAMIC);
                     regexPattern = new Regex("{{NAMESPACE}}");
@@ -858,18 +946,16 @@ namespace SingleDose
                     regexPattern = new Regex("{{ARGS}}");
                     CSContents = regexPattern.Replace(CSContents, EnumDesktops.DYNAMIC_ARGPARSE);
                     
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 }
                 else if (injTechnique == "AddressOfEntryPoint")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
 
                     string CSContents = ADDRESSOFENTRYPOINT.BODY;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
 
-                    //Clear remaining trigger.
-                    regexPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regexPattern.Replace(CSContents, "");
                     regexPattern = new Regex("{{MODE}}");
                     CSContents = regexPattern.Replace(CSContents, ADDRESSOFENTRYPOINT.DYNAMICMODE);
                     regexPattern = new Regex("{{SPAWN}}");
@@ -878,18 +964,16 @@ namespace SingleDose
                     CSContents = regexPattern.Replace(CSContents, GenRandomString());
                     regexPattern = new Regex("{{ARGS}}");
                     CSContents = regexPattern.Replace(CSContents, ADDRESSOFENTRYPOINT.DYNAMICARGPARSE);
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, true);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, true);
                 }
                 else if (injTechnique == "KernelCallbackTable")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
 
                     string CSContents = KernelCallbackTable.BODY;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
 
-                    //Clear remaining trigger.
-                    regexPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regexPattern.Replace(CSContents, "");
                     regexPattern = new Regex("{{MODE}}");
                     CSContents = regexPattern.Replace(CSContents, KernelCallbackTable.DYNAMICMODE);
                     regexPattern = new Regex("{{NAMESPACE}}");
@@ -897,7 +981,24 @@ namespace SingleDose
                     regexPattern = new Regex("{{ARGS}}");
                     CSContents = regexPattern.Replace(CSContents, KernelCallbackTable.DYNAMICARGPARSE);
 
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
+                }
+                else if (injTechnique == "NtCreateSection")
+                {
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
+
+                    string CSContents = NtCreateSection_NtMapViewOfSection.BODY;
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
+
+                    regexPattern = new Regex("{{MODE}}");
+                    CSContents = regexPattern.Replace(CSContents, NtCreateSection_NtMapViewOfSection.DYNAMICMODE);
+                    regexPattern = new Regex("{{NAMESPACE}}");
+                    CSContents = regexPattern.Replace(CSContents, GenRandomString());
+                    regexPattern = new Regex("{{ARGS}}");
+                    CSContents = regexPattern.Replace(CSContents, NtCreateSection_NtMapViewOfSection.DYNAMICARGPARSE);
+
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 }
             }
             else if (injMode == "DOWNLOAD")
@@ -907,10 +1008,9 @@ namespace SingleDose
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
                     string CSContents = DLL_CRT.BODY;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
 
-                    regexPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regexPattern.Replace(CSContents, "");
                     regexPattern = new Regex("{{MODE}}");
                     CSContents = regexPattern.Replace(CSContents, DLL_CRT.DOWNLOADMODE);
                     regexPattern = new Regex("{{NAMESPACE}}");
@@ -918,17 +1018,15 @@ namespace SingleDose
                     regexPattern = new Regex("{{ARGS}}");
                     CSContents = regexPattern.Replace(CSContents, DLL_CRT.DOWNLOADARGPARSE);
 
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 } 
                 else if (injTechnique == "EarlyBird_QueueUserAPC")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
                     string CSContents = EB_QUAPC.BODY;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
 
-                    //Clear remaining trigger.
-                    regexPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regexPattern.Replace(CSContents, "");
                     regexPattern = new Regex("{{MODE}}");
                     CSContents = regexPattern.Replace(CSContents, EB_QUAPC.DOWNLOADMODE);
                     regexPattern = new Regex("{{SPAWN}}");
@@ -938,17 +1036,15 @@ namespace SingleDose
                     regexPattern = new Regex("{{ARGS}}");
                     CSContents = regexPattern.Replace(CSContents, EB_QUAPC.DOWNLOADARGPARSE);
 
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 }
                 else if (injTechnique == "Suspend_QueueUserAPC")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
                     string CSContents = Suspend_QueueUserAPC.BODY;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
 
-                    //Clear remaining trigger.
-                    regexPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regexPattern.Replace(CSContents, "");
                     regexPattern = new Regex("{{MODE}}");
                     CSContents = regexPattern.Replace(CSContents, Suspend_QueueUserAPC.DOWNLOADMODE);
                     regexPattern = new Regex("{{NAMESPACE}}");
@@ -956,17 +1052,14 @@ namespace SingleDose
                     regexPattern = new Regex("{{ARGS}}");
                     CSContents = regexPattern.Replace(CSContents, Suspend_QueueUserAPC.DOWNLOADARGPARSE);
 
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 }
                 else if (injTechnique == "Syscall_CreateThread")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
                     string CSContents = SYSCALL_CT.BODY;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
 
-                    //Clear remaining trigger.
-                    regexPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regexPattern.Replace(CSContents, "");
                     regexPattern = new Regex("{{MODE}}");
                     CSContents = regexPattern.Replace(CSContents, SYSCALL_CT.DOWNLOAD);
                     regexPattern = new Regex("{{NAMESPACE}}");
@@ -974,17 +1067,14 @@ namespace SingleDose
                     regexPattern = new Regex("{{ARGS}}");
                     CSContents = regexPattern.Replace(CSContents, SYSCALL_CT.DOWNLOAD_ARGPARSE);
                     
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, true);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, true);
                 }
                 else if (injTechnique == "SRDI-Loader")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
                     string CSContents = sRDI.BODY;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
 
-                    //Clear remaining trigger.
-                    regexPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regexPattern.Replace(CSContents, "");
                     regexPattern = new Regex("{{MODE}}");
                     CSContents = regexPattern.Replace(CSContents, sRDI.DOWNLOADMODE);
                     regexPattern = new Regex("{{NAMESPACE}}");
@@ -992,18 +1082,15 @@ namespace SingleDose
                     regexPattern = new Regex("{{ARGS}}");
                     CSContents = regexPattern.Replace(CSContents, sRDI.DOWNLOADARGS);
 
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, true);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, true);
                 }
                 else if (injTechnique == "CreateFiber")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
                     string CSContents = FiberInject.Body;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
 
-                    
-                    //Clear remaining trigger.
-                    regexPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regexPattern.Replace(CSContents, "");
                     regexPattern = new Regex("{{MODE}}");
                     CSContents = regexPattern.Replace(CSContents, FiberInject.DOWNLOAD);
                     regexPattern = new Regex("{{NAMESPACE}}");
@@ -1011,18 +1098,15 @@ namespace SingleDose
                     regexPattern = new Regex("{{ARGS}}");
                     CSContents = regexPattern.Replace(CSContents, FiberInject.DOWNLOAD_ARGPARSE);
                     
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 }
                 else if (injTechnique == "EnumWindows")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
                     string CSContents = EnumWindows.Body;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
 
-                    
-                    //Clear remaining trigger.
-                    regexPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regexPattern.Replace(CSContents, "");
                     regexPattern = new Regex("{{MODE}}");
                     CSContents = regexPattern.Replace(CSContents, EnumWindows.DOWNLOAD);
                     regexPattern = new Regex("{{NAMESPACE}}");
@@ -1030,34 +1114,30 @@ namespace SingleDose
                     regexPattern = new Regex("{{ARGS}}");
                     CSContents = regexPattern.Replace(CSContents, EnumWindows.DOWNLOAD_ARGPARSE);
                     
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 }
                 else if (injTechnique == "EnumChildWindows")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
                     string CSContents = EnumChildWindows.Body;
-                    CSContents = ParseTriggers(CSContents);
-                    
-                    //Clear remaining trigger.
-                    regexPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regexPattern.Replace(CSContents, "");
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
+
                     regexPattern = new Regex("{{MODE}}");
                     CSContents = regexPattern.Replace(CSContents, EnumChildWindows.DOWNLOAD);
                     regexPattern = new Regex("{{NAMESPACE}}");
                     CSContents = regexPattern.Replace(CSContents, GenRandomString());
                     regexPattern = new Regex("{{ARGS}}");
                     CSContents = regexPattern.Replace(CSContents, EnumChildWindows.DOWNLOAD_ARGPARSE);
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 }
                 else if (injTechnique == "EnumDateFormatsEx")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
                     string CSContents = EnumDateFormatsEx.Body;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
 
-                    //Clear remaining trigger.
-                    regexPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regexPattern.Replace(CSContents, "");
                     regexPattern = new Regex("{{MODE}}");
                     CSContents = regexPattern.Replace(CSContents, EnumDateFormatsEx.DOWNLOAD);
                     regexPattern = new Regex("{{NAMESPACE}}");
@@ -1065,17 +1145,15 @@ namespace SingleDose
                     regexPattern = new Regex("{{ARGS}}");
                     CSContents = regexPattern.Replace(CSContents, EnumDateFormatsEx.DOWNLOAD_ARGPARSE);
                     
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 }
                 else if (injTechnique == "EnumDesktops")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
                     string CSContents = EnumDesktops.Body;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
 
-                    //Clear remaining trigger.
-                    regexPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regexPattern.Replace(CSContents, "");
                     regexPattern = new Regex("{{MODE}}");
                     CSContents = regexPattern.Replace(CSContents, EnumDesktops.DOWNLOAD);
                     regexPattern = new Regex("{{NAMESPACE}}");
@@ -1083,17 +1161,15 @@ namespace SingleDose
                     regexPattern = new Regex("{{ARGS}}");
                     CSContents = regexPattern.Replace(CSContents, EnumDesktops.DOWNLOAD_ARGPARSE);
                     
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 }
                 else if (injTechnique == "AddressOfEntryPoint")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
                     string CSContents = ADDRESSOFENTRYPOINT.BODY;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
 
-                    //Clear remaining trigger.
-                    regexPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regexPattern.Replace(CSContents, "");
                     regexPattern = new Regex("{{MODE}}");
                     CSContents = regexPattern.Replace(CSContents, ADDRESSOFENTRYPOINT.DOWNLOADMODE);
                     regexPattern = new Regex("{{SPAWN}}");
@@ -1103,17 +1179,15 @@ namespace SingleDose
                     regexPattern = new Regex("{{ARGS}}");
                     CSContents = regexPattern.Replace(CSContents, ADDRESSOFENTRYPOINT.DOWNLOADARGPARSE);
 
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, true);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, true);
                 }
                 else if (injTechnique == "KernelCallbackTable")
                 {
                     Program.WriteLog(injMode + ": " + injTechnique, true);
                     string CSContents = KernelCallbackTable.BODY;
-                    CSContents = ParseTriggers(CSContents);
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
 
-                    //Clear remaining trigger.
-                    regexPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regexPattern.Replace(CSContents, "");
                     regexPattern = new Regex("{{MODE}}");
                     CSContents = regexPattern.Replace(CSContents, KernelCallbackTable.DOWNLOADMODE);
                     regexPattern = new Regex("{{NAMESPACE}}");
@@ -1121,20 +1195,28 @@ namespace SingleDose
                     regexPattern = new Regex("{{ARGS}}");
                     CSContents = regexPattern.Replace(CSContents, KernelCallbackTable.DOWNLOADARGPARSE);
 
-                    WriteCS(CSContents, injTechnique, Settings.OutputDirectory, false);
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
+                }
+                else if (injTechnique == "NtCreateSection")
+                {
+                    Program.WriteLog(injMode + ": " + injTechnique, true);
+                    string CSContents = NtCreateSection_NtMapViewOfSection.BODY;
+                    CSContents = AddTriggers(CSContents);
+                    CSContents = AddPInvokes(CSContents);
+
+                    regexPattern = new Regex("{{MODE}}");
+                    CSContents = regexPattern.Replace(CSContents, NtCreateSection_NtMapViewOfSection.DOWNLOADMODE);
+                    regexPattern = new Regex("{{NAMESPACE}}");
+                    CSContents = regexPattern.Replace(CSContents, GenRandomString());
+                    regexPattern = new Regex("{{ARGS}}");
+                    CSContents = regexPattern.Replace(CSContents, NtCreateSection_NtMapViewOfSection.DOWNLOADARGPARSE);
+
+                    WriteCS(CSContents, injTechnique, Settings.szOutputDirectory, false);
                 }
 
             }
         }
 
-        /// <summary>
-        /// WriteCS takes the CSContents, and writes it to a .cs file for compilation by CompileCS.
-        /// </summary>
-        /// <param name="CSContents"> The massive string created by CSConstructor.</param>
-        /// <param name="injTechnique">Injection technique selected.</param>
-        /// <param name="outputDirectory"> Directory to store output.</param>
-        /// <param name="isUnsafe"> whether or not csc.exe's unsafe parameter should be used when passing data to CompileCS</param>
-        /// <returns></returns>
         public static void WriteCS(string CSContents, string injTechnique, string outputDirectory, bool isUnsafe)
         {
             string outputPath;
@@ -1144,14 +1226,14 @@ namespace SingleDose
                 {
                     Directory.CreateDirectory(outputDirectory + @"\" + injTechnique);
                 }
-                outputPath = outputDirectory + @"\" + Settings.SelectedTechnique + @"\" + Path.GetRandomFileName().Split('.')[0] + ".cs"; //File extension is randomly generated, but we just want the base filename.;
+                outputPath = outputDirectory + @"\" + Settings.szSelectedTechnique + @"\" + Path.GetRandomFileName().Split('.')[0] + ".cs"; //File extension is randomly generated, but we just want the base filename.;
                 File.WriteAllText(outputPath, CSContents);
                 if (File.Exists(outputPath))
                 {
                     string hash = BytesToString(CalculateSHA256(outputPath));
                     Console.WriteLine("|   [*] Wrote: {0}", outputPath);
                     WriteLog(String.Join(" ", new string[] { "Wrote", outputPath, "::", hash}), true);
-                    if (Settings.CompileBinary)
+                    if (Settings.bvCompileBinary)
                     {
                         CompileCS(outputPath, isUnsafe);
                     }
@@ -1170,22 +1252,15 @@ namespace SingleDose
             }
         }
 
-
-        /// <summary>
-        /// Spawns a new csc.exe process to compile the .cs file created by WriteCS;
-        /// </summary>
-        /// <param name="filepath">The path to the .cs file created by WriteCS</param>
-        /// <param name="unsafeCode">whether or not csc.exe's unsafe parameter should be used</param>
-        /// <returns></returns>
         public static bool CompileCS(string filepath, bool unsafeCode)
         {
-            if (File.Exists(Settings.SelectedCompilerPath))
+            if (File.Exists(Settings.szSelectedCompilerPath))
             {
                 try
                 {
                     string binPath = filepath.Split('.')[0] + ".exe";
                     var p = new System.Diagnostics.Process();
-                    p.StartInfo.FileName = Settings.SelectedCompilerPath;
+                    p.StartInfo.FileName = Settings.szSelectedCompilerPath;
                     if (!unsafeCode)
                     {
                         p.StartInfo.Arguments = string.Format(" -out:{0} {1}", binPath, filepath);
@@ -1218,7 +1293,7 @@ namespace SingleDose
             }
             else
             {
-                Console.WriteLine("|\n|   [!] Compile Error: {0} not found.", Settings.SelectedCompilerPath);
+                Console.WriteLine("|\n|   [!] Compile Error: {0} not found.", Settings.szSelectedCompilerPath);
                 return false;
             }
         }
@@ -1238,25 +1313,25 @@ namespace SingleDose
 
         public static void WriteLog(string entry, bool timestamp)
         {
-            if (!Settings.Logging)
+            if (!Settings.bvLogging)
             {
                 return;
             }
             DateTime today = DateTime.Now;
             string logName = "Single_Dose[" + today.Month.ToString() + "-" + today.Day.ToString()+"].log";
 
-            if (Settings.OutputDirectory == null)
+            if (Settings.szOutputDirectory == null)
             {
-                Settings.LogBuffer = Settings.LogBuffer + String.Join(" ", new string[] { DateTime.UtcNow.ToString(), ":", entry });
+                Settings.szLogBuffer = Settings.szLogBuffer + String.Join(" ", new string[] { DateTime.UtcNow.ToString(), ":", entry });
                 return;
             }
 
-            if (Settings.CurrentLogFile != Settings.OutputDirectory + "\\" + logName)
+            if (Settings.szCurrentLogFile != Settings.szOutputDirectory + "\\" + logName)
             {
-                Settings.CurrentLogFile = logName;
+                Settings.szCurrentLogFile = logName;
             }
             
-            using (StreamWriter writer = File.AppendText(Settings.OutputDirectory +"\\" + logName))
+            using (StreamWriter writer = File.AppendText(Settings.szOutputDirectory +"\\" + logName))
             {
                 if (timestamp)
                 {
@@ -1316,48 +1391,43 @@ namespace SingleDose
             return System.BitConverter.ToString(ba).Replace("-", ", 0x");
         }
 
-        private static string ParseTriggers(string CSContents)
+        private static string AddTriggers(string CSContents)
         {
-            Regex regPattern;
-            foreach (var trig in TriggersToUse)
-            {
-                if (trig == "REQUIRETRIGGER")
-                {
-                    regPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regPattern.Replace(CSContents, REQUIRETRIGGER);
-                    regPattern = new Regex("{{REQUIREMENTS}}");
-                    CSContents = regPattern.Replace(CSContents, REQUIREDPROCESSDETAILS);
-                }
+            Regex TriggerPattern = new Regex("{{TRIGGER}}");
+            Regex RequirementsPattern = new Regex("{{REQUIREMENTS}}");
+            Regex TimerPattern = new Regex("{{TRIGGER}}");
 
-                if (trig == "HIBERNATETRIGGER")
+            foreach (string trigger in TriggersToUse)
+            {
+                if (trigger == "REQUIRETRIGGER")
                 {
-                    regPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regPattern.Replace(CSContents, HIBERNATETRIGGER);
-                    regPattern = new Regex("{{REQUIREMENTS}}");
-                    CSContents = regPattern.Replace(CSContents, HIBERNATEPROCESSDETAILS);
+                    CSContents = TriggerPattern.Replace(CSContents, REQUIRETRIGGER);
+                    CSContents = RequirementsPattern.Replace(CSContents, REQUIREDPROCESSDETAILS);
                 }
-                if (trig == "AVOIDTRIGGER")
+                else if (trigger == "HIBERNATETRIGGER")
                 {
-                    regPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regPattern.Replace(CSContents, AVOIDTRIGGER);
-                    regPattern = new Regex("{{REQUIREMENTS}}");
-                    CSContents = regPattern.Replace(CSContents, AVOIDPROCESSDETAILS);
+                    CSContents = TriggerPattern.Replace(CSContents, HIBERNATETRIGGER);
+                    CSContents = RequirementsPattern.Replace(CSContents, HIBERNATEPROCESSDETAILS);
                 }
-                if (trig == "PERSISTTRIGGER")
+                else if (trigger == "AVOIDTRIGGER")
                 {
-                    regPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regPattern.Replace(CSContents, PERSISTTRIGGER);
-                    regPattern = new Regex("{{REQUIREMENTS}}");
-                    CSContents = regPattern.Replace(CSContents, PERSISTPROCESSDETAILS);
+                    CSContents = TriggerPattern.Replace(CSContents, AVOIDTRIGGER);
+                    CSContents = RequirementsPattern.Replace(CSContents, AVOIDPROCESSDETAILS);
                 }
-                if (trig == "TIMERTRIGGER")
+                else if (trigger == "PERSISTTRIGGER")
                 {
-                    regPattern = new Regex("{{TRIGGER}}");
-                    CSContents = regPattern.Replace(CSContents, TIMERTRIGGER);
-                    regPattern = new Regex("{{TIME}}");
-                    CSContents = regPattern.Replace(CSContents, TIMERSECONDS);
+                    CSContents = TriggerPattern.Replace(CSContents, PERSISTTRIGGER);
+                    CSContents = RequirementsPattern.Replace(CSContents, PERSISTPROCESSDETAILS);
+                }
+                else if (trigger == "TIMERTRIGGER")
+                {
+                    CSContents = TriggerPattern.Replace(CSContents, TIMERTRIGGER);
+                    CSContents = TimerPattern.Replace(CSContents, TIMERSECONDS);
                 }
             }
+
+            //Clear the remaining "{{TRIGGER}}"
+            CSContents = TriggerPattern.Replace(CSContents, "");
 
             return CSContents;
         }

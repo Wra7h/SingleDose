@@ -9,7 +9,7 @@ namespace SingleDose
         {
             string triggersInput = null;
             Console.WriteLine("\n       +---------------------------+\n ______|         TRIGGERS          |\n|      +---------------------------+");
-            if (Settings.helpBlurb)
+            if (Settings.bvHelpBlurb)
             {
                 Console.WriteLine("|\n|\tavoid      persist  require");
                 Console.WriteLine("|\thibernate  timer     blurb");
@@ -371,7 +371,7 @@ namespace SingleDose
                                 Console.WriteLine("|\t   | L3. CreateFiber          | R3. Suspend_QueueUserAPC          |");
                                 Console.WriteLine("|\t   | L4. EnumWindows          | R4. AddressOfEntryPoint           |");
                                 Console.WriteLine("|\t   | L5. EnumChildWindows     | R5. KernelCallbackTable           |");
-                                Console.WriteLine("|\t   | L6. EnumDateFormatsEx    |                                   |");
+                                Console.WriteLine("|\t   | L6. EnumDateFormatsEx    | R6. NtCreateSection               |");
                                 Console.WriteLine("|\t   | L7. EnumDesktops         |                                   |");
                                 Console.WriteLine("|\t   +--------------------------+-----------------------------------+");
                                 break;
@@ -383,14 +383,14 @@ namespace SingleDose
                     }
                     break;
                 case "BLURB":
-                    if (Settings.helpBlurb)
+                    if (Settings.bvHelpBlurb)
                     {
-                        Settings.helpBlurb = false;
+                        Settings.bvHelpBlurb = false;
                         Console.WriteLine("|\n|   [~] Help blurbs has been disabled.");
                     }
-                    else if (!Settings.helpBlurb)
+                    else if (!Settings.bvHelpBlurb)
                     {
-                        Settings.helpBlurb = true;
+                        Settings.bvHelpBlurb = true;
                         Console.WriteLine("|\n|\tavoid      persist  require");
                         Console.WriteLine("|\thibernate  timer     blurb");
                         Console.WriteLine("|\tsettings   clear    help");
@@ -403,9 +403,9 @@ namespace SingleDose
                         switch (command.Split()[1].ToUpper())
                         {
                             case "SETTINGS":
-                                Settings.InjectMode = null;
-                                Settings.OutputDirectory = null;
-                                Settings.CompileBinary = true;
+                                Settings.szInjectMode = null;
+                                Settings.szOutputDirectory = null;
+                                Settings.bvCompileBinary = true;
                                 Console.WriteLine("|   [~] Output and Mode have been cleared.");
                                 break;
                             case "TRIGGERS":
@@ -425,7 +425,7 @@ namespace SingleDose
                     {
                         Console.Clear();
                         Console.WriteLine("\n       +---------------------------+\n ______|         TRIGGERS          |\n|      +---------------------------+");
-                        if (Settings.helpBlurb)
+                        if (Settings.bvHelpBlurb)
                         {
                             Console.WriteLine("|\n|\tavoid      persist  require");
                             Console.WriteLine("|\thibernate  timer     blurb");

@@ -7,24 +7,26 @@ namespace SingleDose
 {
     class Settings
     {
-        public static string SelectedTechnique = null;
-        public static string InjectMode = null;
-        public static bool CompileBinary = true;
-        public static string OutputDirectory = null;
-        public static bool helpBlurb = true;
-        public static Dictionary<string,string> availableCSCVersions;
-        public static string SelectedCompilerPath = @"C:\Windows\Microsoft.NET\Framework64\v3.5\csc.exe";
-        public static string SelectedCscVersion = "v3.5";
-        public static bool Logging = true;
-        public static string CurrentLogFile = "";
-        public static string LogBuffer = "";
-        public static int MaxHistorySize = 3;
+        public static string szSelectedTechnique = null;
+        public static string szInjectMode = null;
+        public static bool bvCompileBinary = true;
+        public static string szOutputDirectory = null;
+        public static bool bvHelpBlurb = true;
+        public static Dictionary<string,string> dAvailableCSCVersions;
+        public static string szSelectedCompilerPath = @"C:\Windows\Microsoft.NET\Framework64\v3.5\csc.exe";
+        public static string szSelectedCscVersion = "v3.5";
+        public static bool bvLogging = true;
+        public static string szCurrentLogFile = "";
+        public static string szLogBuffer = "";
+        public static int cMaxHistorySize = 3;
+        public static List<string> listPInvokeRecipe = new List<string>();
+
 
         public static void SettingsMenu()
         {
             string settingsInput = null;
             Console.WriteLine("\n       +---------------------------+\n ______|         SETTINGS          |\n|      +---------------------------+");
-            if (helpBlurb)
+            if (bvHelpBlurb)
             {
                 Console.WriteLine("|\n|\tmode      output   show   ");
                 Console.WriteLine("|\tcompile   blurb    triggers");
@@ -54,24 +56,24 @@ namespace SingleDose
                     int element;
                     if (command.Split().Count() > 1)
                     {
-                        if (availableCSCVersions.Any(CSCVersions => CSCVersions.Key == command.Split()[1]))
+                        if (dAvailableCSCVersions.Any(CSCVersions => CSCVersions.Key == command.Split()[1]))
                         {
-                            if (availableCSCVersions.TryGetValue(command.Split()[1], out SelectedCompilerPath))
+                            if (dAvailableCSCVersions.TryGetValue(command.Split()[1], out szSelectedCompilerPath))
                             {
-                                SelectedCscVersion = command.Split()[1];
-                                Program.WriteLog("Set Compiler: " + SelectedCscVersion + " :: " + SelectedCompilerPath, true);
+                                szSelectedCscVersion = command.Split()[1];
+                                Program.WriteLog("Set Compiler: " + szSelectedCscVersion + " :: " + szSelectedCompilerPath, true);
                             }
                         }
-                        else if (int.TryParse(command.Split()[1], out element) && element <= availableCSCVersions.Count()) //int.TryParse() sets the value of the "element" variable which will be evaluated in the next if statement if necessary
+                        else if (int.TryParse(command.Split()[1], out element) && element <= dAvailableCSCVersions.Count()) //int.TryParse() sets the value of the "element" variable which will be evaluated in the next if statement if necessary
                         {
-                            SelectedCscVersion = availableCSCVersions.ElementAt(element - 1).Key;
-                            SelectedCompilerPath = availableCSCVersions.ElementAt(element - 1).Value;
+                            szSelectedCscVersion = dAvailableCSCVersions.ElementAt(element - 1).Key;
+                            szSelectedCompilerPath = dAvailableCSCVersions.ElementAt(element - 1).Value;
                             Console.WriteLine("|");
-                            Console.WriteLine("|   [~] Selected Version: {0}", SelectedCscVersion);
-                            Console.WriteLine("|   [~] Compiler Path: {0}", SelectedCompilerPath);
-                            Program.WriteLog("Set Compiler: " + SelectedCscVersion + " :: " + SelectedCompilerPath, true);
+                            Console.WriteLine("|   [~] Selected Version: {0}", szSelectedCscVersion);
+                            Console.WriteLine("|   [~] Compiler Path: {0}", szSelectedCompilerPath);
+                            Program.WriteLog("Set Compiler: " + szSelectedCscVersion + " :: " + szSelectedCompilerPath, true);
                         }
-                        else if (command.Split()[1].ToUpper() == "CUSTOM" || element == (availableCSCVersions.Count() + 1))
+                        else if (command.Split()[1].ToUpper() == "CUSTOM" || element == (dAvailableCSCVersions.Count() + 1))
                         {
                             Console.WriteLine("|");
                             string customPathInput = "";
@@ -89,14 +91,14 @@ namespace SingleDose
 
                             if (customPathInput.ToLower().EndsWith("csc.exe"))
                             {
-                                SelectedCscVersion = "Custom";
-                                SelectedCompilerPath = customPathInput;
+                                szSelectedCscVersion = "Custom";
+                                szSelectedCompilerPath = customPathInput;
                             }
                             else
                             {
                                 Console.WriteLine("|   [!] Path must point to a \"csc.exe\" ");
                             }
-                            Program.WriteLog("Set Compiler: " + SelectedCscVersion + " :: " + SelectedCompilerPath, true);
+                            Program.WriteLog("Set Compiler: " + szSelectedCscVersion + " :: " + szSelectedCompilerPath, true);
                         }
                         else
                         {
@@ -106,24 +108,24 @@ namespace SingleDose
                     else
                     {
                         Console.WriteLine("|");
-                        for (int i = 0; i < availableCSCVersions.Count(); i++)
+                        for (int i = 0; i < dAvailableCSCVersions.Count(); i++)
                         {
-                            Console.WriteLine("|\t{0}) {1}", (i + 1).ToString(), availableCSCVersions.ElementAt(i).Key);
+                            Console.WriteLine("|\t{0}) {1}", (i + 1).ToString(), dAvailableCSCVersions.ElementAt(i).Key);
                         }
-                        Console.WriteLine("|\t{0}) {1}", (availableCSCVersions.Count() + 1).ToString(), "Custom");
+                        Console.WriteLine("|\t{0}) {1}", (dAvailableCSCVersions.Count() + 1).ToString(), "Custom");
                     }
                     break;
                 case "LOG":
-                    if (Settings.Logging)
+                    if (Settings.bvLogging)
                     {
-                        Settings.Logging = false;
-                        Console.WriteLine("|\n|   [~] Logging Disabled");
+                        Settings.bvLogging = false;
+                        Console.WriteLine("|\n|   [~] bvLogging Disabled");
                     }
-                    else if (!Settings.Logging)
+                    else if (!Settings.bvLogging)
                     {
-                        Settings.Logging = true;
-                        Console.WriteLine("|\n|   [~] Logging Enabled");
-                        Program.WriteLog("Logging enabled", true);
+                        Settings.bvLogging = true;
+                        Console.WriteLine("|\n|   [~] bvLogging Enabled");
+                        Program.WriteLog("bvLogging enabled", true);
                     }
                     break;
                 case "HELP":
@@ -173,14 +175,14 @@ namespace SingleDose
                     Triggers.TriggersMenu();
                     break;
                 case "BLURB":
-                    if (Settings.helpBlurb)
+                    if (Settings.bvHelpBlurb)
                     {
-                        Settings.helpBlurb = false;
+                        Settings.bvHelpBlurb = false;
                         Console.WriteLine("|\n|   [~] Help blurbs has been disabled.");
                     } 
-                    else if (!Settings.helpBlurb)
+                    else if (!Settings.bvHelpBlurb)
                     {
-                        helpBlurb = true;
+                        bvHelpBlurb = true;
                         Console.WriteLine("|\n|\tmode      output   show   ");
                         Console.WriteLine("|\tcompile   blurb    triggers");
                         Console.WriteLine("|\tversion   clear    help");
@@ -194,26 +196,26 @@ namespace SingleDose
                         {
                             case "STATIC":
                                 Console.WriteLine("|\n|\t[*] Mode: Static. Injection content will be embedded in binary.");
-                                Settings.InjectMode = "STATIC";
+                                Settings.szInjectMode = "STATIC";
                                 break;
                             case "1":
                                 goto case "STATIC";
                             case "DYNAMIC":
                                 Console.WriteLine("|\n|\t[*] Mode: Dynamic. Injection content will be provided at execution with -PID and -DLL/-Bin.");
-                                Settings.InjectMode = "DYNAMIC";
+                                Settings.szInjectMode = "DYNAMIC";
                                 break;
                             case "2":
                                 goto case "DYNAMIC";
                             case "DOWNLOAD":
                                 Console.WriteLine("|\n|\t[*] Mode: Download. Injection content will be provided at execution with -PID and -URI.");
-                                Settings.InjectMode = "DOWNLOAD";
+                                Settings.szInjectMode = "DOWNLOAD";
                                 break;
                             case "3":
                                 goto case "DOWNLOAD";
                             default:
                                 break;
                         }
-                        if (Settings.OutputDirectory != null && Settings.InjectMode != null)
+                        if (Settings.szOutputDirectory != null && Settings.szInjectMode != null)
                         {
                             Console.WriteLine("|\n|\t[*] All required settings configured. Return to main menu to configure triggers or build binary.");
                         }
@@ -224,10 +226,10 @@ namespace SingleDose
                     {
                         if (command.Split()[1] != " " && command.Split()[1] != null)
                         {
-                            Settings.OutputDirectory = command.Split()[1];
+                            Settings.szOutputDirectory = command.Split()[1];
                             try
                             {
-                                Settings.OutputDirectory = Path.GetFullPath(Settings.OutputDirectory);
+                                Settings.szOutputDirectory = Path.GetFullPath(Settings.szOutputDirectory);
                             }
                             catch
                             {
@@ -236,68 +238,68 @@ namespace SingleDose
                             }
                         }
 
-                        if (!Directory.Exists(Settings.OutputDirectory))
+                        if (!Directory.Exists(Settings.szOutputDirectory))
                         {
                             try
                             {
-                                Directory.CreateDirectory(Settings.OutputDirectory);
+                                Directory.CreateDirectory(Settings.szOutputDirectory);
                             }
                             catch
                             {
                                 Console.WriteLine("|\n|\t[!] Error creating output directory. Please try again.");
                             }
 
-                            if (Directory.Exists(Settings.OutputDirectory))
+                            if (Directory.Exists(Settings.szOutputDirectory))
                             {
-                                Console.WriteLine("|\n|\t[*] Created directory: {0}", Settings.OutputDirectory);
+                                Console.WriteLine("|\n|\t[*] Created directory: {0}", Settings.szOutputDirectory);
                                 Program.WriteLog("### New Session Started ###",false);
-                                if (Settings.LogBuffer != "")
+                                if (Settings.szLogBuffer != "")
                                 {
-                                    Program.WriteLog(Settings.LogBuffer, false);
-                                    Settings.LogBuffer = "";
+                                    Program.WriteLog(Settings.szLogBuffer, false);
+                                    Settings.szLogBuffer = "";
                                 }
                             }
                             else
                             {
-                                Console.WriteLine("|\n|\t[!] Error creating directory: {0}", Settings.OutputDirectory);
+                                Console.WriteLine("|\n|\t[!] Error creating directory: {0}", Settings.szOutputDirectory);
                             }
                         }
                         else
                         {
                             Program.WriteLog("### New Session Started ###", false);
-                            if (Settings.LogBuffer != "") 
+                            if (Settings.szLogBuffer != "") 
                             {
-                                Program.WriteLog(Settings.LogBuffer, false);
-                                Settings.LogBuffer = "";
+                                Program.WriteLog(Settings.szLogBuffer, false);
+                                Settings.szLogBuffer = "";
                             } 
                         }
                     }
                     else
                     {
                         Console.Write("\n   [~] Please enter output directory: ");
-                        Settings.OutputDirectory = Console.ReadLine();
-                        Settings.OutputDirectory = Path.GetFullPath(Settings.OutputDirectory);
+                        Settings.szOutputDirectory = Console.ReadLine();
+                        Settings.szOutputDirectory = Path.GetFullPath(Settings.szOutputDirectory);
 
-                        if (Settings.OutputDirectory.ToLower() == "exit")
+                        if (Settings.szOutputDirectory.ToLower() == "exit")
                         {
                             break;
                         }
 
-                        if (!Directory.Exists(Settings.OutputDirectory))
+                        if (!Directory.Exists(Settings.szOutputDirectory))
                         {
-                            Directory.CreateDirectory(Settings.OutputDirectory);
-                            if (Directory.Exists(Settings.OutputDirectory))
+                            Directory.CreateDirectory(Settings.szOutputDirectory);
+                            if (Directory.Exists(Settings.szOutputDirectory))
                             {
-                                Console.WriteLine("   [*] Created directory: {0}", Settings.OutputDirectory);
+                                Console.WriteLine("   [*] Created directory: {0}", Settings.szOutputDirectory);
                                 Program.WriteLog("New Session Started", false);
                             }
                             else
                             {
-                                Console.WriteLine("   [!] Error creating directory: {0}", Settings.OutputDirectory);
+                                Console.WriteLine("   [!] Error creating directory: {0}", Settings.szOutputDirectory);
                             }
                         }
                     }
-                    if (Settings.OutputDirectory != null && Settings.InjectMode != null)
+                    if (Settings.szOutputDirectory != null && Settings.szInjectMode != null)
                     {
                         Console.WriteLine("|\n|\t[*] All required settings configured. Return to main menu to configure triggers or build binary.");
                     }
@@ -316,25 +318,25 @@ namespace SingleDose
                                 Console.WriteLine("|\t   | L3. CreateFiber          | R3. Suspend_QueueUserAPC          |");
                                 Console.WriteLine("|\t   | L4. EnumWindows          | R4. AddressOfEntryPoint           |");
                                 Console.WriteLine("|\t   | L5. EnumChildWindows     | R5. KernelCallbackTable           |");
-                                Console.WriteLine("|\t   | L6. EnumDateFormatsEx    |                                   |");
+                                Console.WriteLine("|\t   | L6. EnumDateFormatsEx    | R6. NtCreateSection               |");
                                 Console.WriteLine("|\t   | L7. EnumDesktops         |                                   |");
                                 Console.WriteLine("|\t   +--------------------------+-----------------------------------+");
                                 break;
                             case "VERSION":
                                 Console.WriteLine("|");
-                                for (int i = 0; i <availableCSCVersions.Count(); i++)
+                                for (int i = 0; i <dAvailableCSCVersions.Count(); i++)
                                 {
-                                    Console.WriteLine("|\t{0}) {1}", (i + 1).ToString(), availableCSCVersions.ElementAt(i).Key);
+                                    Console.WriteLine("|\t{0}) {1}", (i + 1).ToString(), dAvailableCSCVersions.ElementAt(i).Key);
                                 }
-                                Console.WriteLine("|\t{0}) {1}", (availableCSCVersions.Count() + 1).ToString(), "Custom");
+                                Console.WriteLine("|\t{0}) {1}", (dAvailableCSCVersions.Count() + 1).ToString(), "Custom");
                                 break;
                             case "VERSIONS":
                                 Console.WriteLine("|");
-                                for (int i = 0; i < availableCSCVersions.Count(); i++)
+                                for (int i = 0; i < dAvailableCSCVersions.Count(); i++)
                                 {
-                                    Console.WriteLine("|\t{0}) {1}", (i + 1).ToString(), availableCSCVersions.ElementAt(i).Key);
+                                    Console.WriteLine("|\t{0}) {1}", (i + 1).ToString(), dAvailableCSCVersions.ElementAt(i).Key);
                                 }
-                                Console.WriteLine("|\t{0}) {1}", (availableCSCVersions.Count() + 1).ToString(), "Custom");
+                                Console.WriteLine("|\t{0}) {1}", (dAvailableCSCVersions.Count() + 1).ToString(), "Custom");
                                 break;
                         }
                     }
@@ -344,15 +346,15 @@ namespace SingleDose
                     }
                     break;
                 case "COMPILE":
-                    if (Settings.CompileBinary)
+                    if (Settings.bvCompileBinary)
                     {
-                        Settings.CompileBinary = false;
+                        Settings.bvCompileBinary = false;
                         Console.WriteLine("|\n|   [~] Compile has been set to false.");
                         Program.WriteLog("Compiling Disabled", true);
                     }
-                    else if (!Settings.CompileBinary)
+                    else if (!Settings.bvCompileBinary)
                     {
-                        Settings.CompileBinary = true;
+                        Settings.bvCompileBinary = true;
                         Console.WriteLine("|\n|   [~] Compile has been set to true.");
                         Program.WriteLog("Compiling Enabled", true);
                     }
@@ -363,9 +365,9 @@ namespace SingleDose
                         switch (command.Split()[1].ToUpper())
                         {
                             case "SETTINGS":
-                                Settings.InjectMode = null;
-                                Settings.OutputDirectory = null;
-                                Settings.CompileBinary = true;
+                                Settings.szInjectMode = null;
+                                Settings.szOutputDirectory = null;
+                                Settings.bvCompileBinary = true;
                                 Console.WriteLine("|\n|   [~] Output and Mode have been cleared.");
                                 break;
                             case "TRIGGERS":
@@ -385,7 +387,7 @@ namespace SingleDose
                     {
                         Console.Clear();
                         Console.WriteLine("\n       +---------------------------+\n ______|         SETTINGS          |\n|      +---------------------------+");
-                        if (helpBlurb)
+                        if (bvHelpBlurb)
                         {
                             Console.WriteLine("|\n|\tmode      output   show   ");
                             Console.WriteLine("|\tcompile   blurb    triggers");
@@ -402,7 +404,7 @@ namespace SingleDose
                         if (success)
                         {
                             Console.WriteLine("|\n|\t[*] Max history count set to {0}", newMax);
-                            Settings.MaxHistorySize = newMax;
+                            Settings.cMaxHistorySize = newMax;
                         }
                     }
                     break;

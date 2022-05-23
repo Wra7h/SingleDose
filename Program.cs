@@ -14,7 +14,7 @@ namespace SingleDose
 
         static void Run()
         {
-            Settings.availableCSCVersions = Settings.FetchCSCVersions();
+            Settings.dAvailableCSCVersions = Settings.FetchCSCVersions();
 
             Console.WriteLine(@"
          _____ _____ _   _  _____ _      ______    _____   ____   _____ ______ 
@@ -37,15 +37,15 @@ namespace SingleDose
 
             Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.Write("[*] Total CSC Versions Found: ");
-            if (Settings.availableCSCVersions.Count > 0)
+            if (Settings.dAvailableCSCVersions.Count > 0)
             {
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("{0}", Settings.availableCSCVersions.Count);
+                Console.WriteLine("{0}", Settings.dAvailableCSCVersions.Count);
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("{0}", Settings.availableCSCVersions.Count);
+                Console.WriteLine("{0}", Settings.dAvailableCSCVersions.Count);
             }
             Console.ResetColor();
 
@@ -74,28 +74,28 @@ namespace SingleDose
             Console.WriteLine("|\n|\t      +----------------------+");
             Console.WriteLine("|\t      |   CURRENT SETTINGS   |   ");
             Console.WriteLine("|\t      +----------------------+  ");
-            Console.WriteLine("|\t   Output Directory = {0}", Settings.OutputDirectory);
-            Console.WriteLine("|\t   CSC Version      = {0}", Settings.SelectedCscVersion);
-            if (Settings.SelectedCscVersion.ToLower() == "custom")
+            Console.WriteLine("|\t   Output Directory = {0}", Settings.szOutputDirectory);
+            Console.WriteLine("|\t   CSC Version      = {0}", Settings.szSelectedCscVersion);
+            if (Settings.szSelectedCscVersion.ToLower() == "custom")
             {
-                Console.WriteLine("|\t   CSC Path         = {0}", Settings.SelectedCompilerPath);
+                Console.WriteLine("|\t   CSC Path         = {0}", Settings.szSelectedCompilerPath);
             }
 
-            if (Settings.CurrentLogFile != "")
+            if (Settings.szCurrentLogFile != "")
             {
-                Console.WriteLine("|\t   Log File         = {0}", Settings.CurrentLogFile);
+                Console.WriteLine("|\t   Log File         = {0}", Settings.szCurrentLogFile);
             }
 
-            if (Settings.Logging)
+            if (Settings.bvLogging)
             {
-                Console.WriteLine("|\t   Logging          = Enabled");
+                Console.WriteLine("|\t   bvLogging          = Enabled");
             }
-            else if (!Settings.Logging)
+            else if (!Settings.bvLogging)
             {
-                Console.WriteLine("|\t   Logging          = Disabled");
+                Console.WriteLine("|\t   bvLogging          = Disabled");
             }
-            Console.WriteLine("|\t   Compile          = {0}", Settings.CompileBinary);
-            Console.WriteLine("|\t   Mode             = {0}", Settings.InjectMode);
+            Console.WriteLine("|\t   Compile          = {0}", Settings.bvCompileBinary);
+            Console.WriteLine("|\t   Mode             = {0}", Settings.szInjectMode);
 
             Console.WriteLine("|\n|\t              Triggers");
             Console.WriteLine("|\t          +--------------+");
@@ -165,7 +165,7 @@ namespace SingleDose
                     Console.WriteLine("|             |  Exit      | Exit Single Dose                                         | > exit               |");
                     Console.WriteLine("|             +------------+----------------------------------------------------------+----------------------+\n|\n|");
                     Console.WriteLine("|                          +-----------------------------------------------------------------+");
-                    Console.WriteLine("|                          +                     AVAILABLE TECHNIQUES                        +");
+                    Console.WriteLine("|                          |                     AVAILABLE TECHNIQUES                        |");
                     Console.WriteLine("|                          +-----------------------------+-----------------------------------+");
                     Console.WriteLine("|                          |      Shellcode Loaders      |          Process Injects          |");
                     Console.WriteLine("|                          +-----------------------------+-----------------------------------+");
@@ -174,14 +174,14 @@ namespace SingleDose
                     Console.WriteLine("|                          |  L3. CreateFiber            | R3. Suspend_QueueUserAPC          |");
                     Console.WriteLine("|                          |  L4. EnumWindows            | R4. AddressOfEntryPoint           |");
                     Console.WriteLine("|                          |  L5. EnumChildWindows       | R5. KernelCallbackTable           |");
-                    Console.WriteLine("|                          |  L6. EnumDateFormatsEx      |                                   |");
+                    Console.WriteLine("|                          |  L6. EnumDateFormatsEx      | R6. NtCreateSection               |");
                     Console.WriteLine("|                          |  L7. EnumDesktops           |                                   |");
                     Console.WriteLine("|                          +-----------------------------+-----------------------------------+");
                     break;
                 case "SETTINGS":
                     Settings.SettingsMenu();
                     Console.WriteLine("\n       +---------------------------+\n ______|         MAIN MENU         |\n|      +---------------------------+");
-                    if (Settings.helpBlurb)
+                    if (Settings.bvHelpBlurb)
                     {
                         Console.WriteLine("|\n|\tsettings   triggers   build");
                         Console.WriteLine("|\tdescribe   show       blurb");
@@ -192,7 +192,7 @@ namespace SingleDose
                 case "TRIGGERS":
                     Triggers.TriggersMenu();
                     Console.WriteLine("\n       +---------------------------+\n ______|         MAIN MENU         |\n|      +---------------------------+");
-                    if (Settings.helpBlurb)
+                    if (Settings.bvHelpBlurb)
                     {
                         Console.WriteLine("|\n|\tsettings   triggers   build");
                         Console.WriteLine("|\tdescribe   show       blurb");
@@ -201,14 +201,14 @@ namespace SingleDose
                     }
                     break;
                 case "BLURB":
-                    if (Settings.helpBlurb)
+                    if (Settings.bvHelpBlurb)
                     {
-                        Settings.helpBlurb = false;
-                        Console.WriteLine("|\n|   [~] Help blurbs has been disabled.");
+                        Settings.bvHelpBlurb = false;
+                        Console.WriteLine("|\n|   [~] Help blurbs have been disabled.");
                     }
-                    else if (!Settings.helpBlurb)
+                    else if (!Settings.bvHelpBlurb)
                     {
-                        Settings.helpBlurb = true;
+                        Settings.bvHelpBlurb = true;
                         Console.WriteLine("|\n|\tsettings   triggers   build");
                         Console.WriteLine("|\tdescribe   show       blurb");
                         Console.WriteLine("|\thelp       clear      save");
@@ -216,7 +216,7 @@ namespace SingleDose
                     }
                     break;
                 case "BUILD":
-                    if (Settings.InjectMode != null && Settings.OutputDirectory != null)
+                    if (Settings.szInjectMode != null && Settings.szOutputDirectory != null)
                     {
                         if (command.Split().Count() > 1)
                         {
@@ -224,88 +224,168 @@ namespace SingleDose
                             {
                                 case "CREATEREMOTETHREAD-DLL":
                                     Console.WriteLine("|\n|   [*] Building technique: DLL CreateRemoteThread");
-                                    Settings.SelectedTechnique = "CreateRemoteThread-DLL";
+                                    Settings.szSelectedTechnique = "CreateRemoteThread-DLL";
+
+                                    //Memory Allocation Method
+                                    Settings.listPInvokeRecipe.Add("VirtualAllocEx");
+
+                                    //Remaining PInvokes needed
+                                    Settings.listPInvokeRecipe.AddRange(new string[] { "GetModuleHandle", "GetProcAddress", "WriteProcessMemory_ByteArray", "CreateRemoteThread" });
+
                                     break;
                                 case "R1":
                                     goto case "CREATEREMOTETHREAD-DLL";
                                 case "SRDI-LOADER":
                                     Console.WriteLine("|\n|   [*] Building technique: Shellcode Reflective DLL Injection (SRDI)");
-                                    Settings.SelectedTechnique = "SRDI-Loader";
+                                    Settings.szSelectedTechnique = "SRDI-Loader";
                                     break;
                                 case "L2":
                                     goto case "SRDI-LOADER";
                                 case "EARLYBIRD_QUEUEUSERAPC":
                                     Console.WriteLine("|\n|   [*] Building technique: EarlyBird_QueueUserAPC");
-                                    Settings.SelectedTechnique = "EarlyBird_QueueUserAPC";
+                                    Settings.szSelectedTechnique = "EarlyBird_QueueUserAPC";
+
+                                    //Memory Allocation Method
+                                    Settings.listPInvokeRecipe.AddRange(new string[] { "VirtualAllocEx", "VirtualProtectEx" });
+
+                                    //Remaining PInvokes needed
+                                    Settings.listPInvokeRecipe.AddRange(new string[] { "CreateProcess", "WriteProcessMemory_ByteArray", "OpenThread", "QueueUserAPC", "ResumeThread" });
                                     break;
                                 case "R2":
                                     goto case "EARLYBIRD_QUEUEUSERAPC";
                                 case "SUSPEND_QUEUEUSERAPC":
                                     Console.WriteLine("|\n|   [*] Building technique: Suspend_QueueUserAPC");
-                                    Settings.SelectedTechnique = "Suspend_QueueUserAPC";
+                                    Settings.szSelectedTechnique = "Suspend_QueueUserAPC";
+
+                                    //Memory Allocation Method
+                                    Settings.listPInvokeRecipe.AddRange(new string[] { "VirtualAllocEx", "VirtualProtectEx" });
+
+                                    //Remaining PInvokes needed
+                                    Settings.listPInvokeRecipe.AddRange(new string[] { "WriteProcessMemory_ByteArray", "OpenThread", "QueueUserAPC" });
+
                                     break;
                                 case "R3":
                                     goto case "SUSPEND_QUEUEUSERAPC";
                                 case "SYSCALL_CREATETHREAD":
                                     Console.WriteLine("|\n|   [*] Building technique: Syscall_CreateThread");
-                                    Settings.SelectedTechnique = "Syscall_CreateThread";
+                                    Settings.szSelectedTechnique = "Syscall_CreateThread";
                                     break;
                                 case "L1":
                                     goto case "SYSCALL_CREATETHREAD";
                                 case "CREATEFIBER":
                                     Console.WriteLine("|\n|   [*] Building technique: CREATEFIBER");
-                                    Settings.SelectedTechnique = "CreateFiber";
+                                    Settings.szSelectedTechnique = "CreateFiber";
+
+                                    //Memory Allocation Method
+                                    Settings.listPInvokeRecipe.AddRange(new string[] { "VirtualAlloc", "VirtualProtectEx" });
+
+                                    //Remaining PInvokes needed
+                                    Settings.listPInvokeRecipe.AddRange(new string[] { "ConvertThreadToFiber", "CreateFiber", "SwitchToFiber" });
+
                                     break;
                                 case "L3":
                                     goto case "CREATEFIBER";
                                 case "ENUMWINDOWS":
                                     Console.WriteLine("|\n|   [*] Building technique: EnumWindows");
-                                    Settings.SelectedTechnique = "EnumWindows";
+                                    Settings.szSelectedTechnique = "EnumWindows";
+
+                                    //Memory Allocation Method
+                                    Settings.listPInvokeRecipe.AddRange(new string[] { "VirtualAlloc", "VirtualProtectEx" });
+
+                                    //Remaining PInvokes needed
+                                    Settings.listPInvokeRecipe.Add("EnumWindows");
+
                                     break;
                                 case "L4":
                                     goto case "ENUMWINDOWS";
                                 case "ENUMCHILDWINDOWS":
                                     Console.WriteLine("|\n|   [*] Building technique: EnumChildWindows");
-                                    Settings.SelectedTechnique = "EnumChildWindows";
+                                    Settings.szSelectedTechnique = "EnumChildWindows";
+
+                                    //Memory Allocation Method
+                                    Settings.listPInvokeRecipe.AddRange(new string[] { "VirtualAlloc", "VirtualProtectEx" });
+
+                                    //Remaining PInvokes needed
+                                    Settings.listPInvokeRecipe.Add("EnumChildWindows");
                                     break;
                                 case "L5":
                                     goto case "ENUMCHILDWINDOWS";
                                 case "ENUMDATEFORMATSEX":
                                     Console.WriteLine("|\n|   [*] Building technique: EnumDateFormatsEx");
-                                    Settings.SelectedTechnique = "EnumDateFormatsEx";
+                                    Settings.szSelectedTechnique = "EnumDateFormatsEx";
+
+                                    //Memory Allocation Method
+                                    Settings.listPInvokeRecipe.AddRange(new string[] { "VirtualAlloc", "VirtualProtectEx" });
+
+                                    //Remaining PInvokes needed
+                                    Settings.listPInvokeRecipe.Add("EnumDateFormatsEx");
                                     break;
                                 case "L6":
                                     goto case "ENUMDATEFORMATSEX";
                                 case "ENUMDESKTOPS":
                                     Console.WriteLine("|\n|   [*] Building technique: EnumDesktops");
-                                    Settings.SelectedTechnique = "EnumDesktops";
+                                    Settings.szSelectedTechnique = "EnumDesktops";
+
+                                    //Memory Allocation Method
+                                    Settings.listPInvokeRecipe.AddRange(new string[] { "VirtualAlloc", "VirtualProtectEx" });
+
+                                    //Remaining PInvokes needed
+                                    Settings.listPInvokeRecipe.AddRange(new string[] { "GetProcessWindowStation", "EnumDesktops" });
+
                                     break;
                                 case "L7":
                                     goto case "ENUMDESKTOPS";
                                 case "ADDRESSOFENTRYPOINT":
                                     Console.WriteLine("|\n|   [*] Building technique: AddressOfEntryPoint");
-                                    Settings.SelectedTechnique = "AddressOfEntryPoint";
+                                    Settings.szSelectedTechnique = "AddressOfEntryPoint";
+
+                                    //Memory Allocation Method
+                                    Settings.listPInvokeRecipe.Add("VirtualAllocEx");
+
+                                    //Remaining PInvokes needed
+                                    Settings.listPInvokeRecipe.AddRange(new string[] { "CreateProcess", "NtQueryInformationProcess", "ReadProcessMemory" , "WriteProcessMemory_ByteArray", "ResumeThread"});
+
                                     break;
                                 case "R4":
                                     goto case "ADDRESSOFENTRYPOINT";
                                 case "KERNELCALLBACKTABLE":
                                     Console.WriteLine("|\n|   [*] Building technique: KernelCallbackTable");
-                                    Settings.SelectedTechnique = "KernelCallbackTable";
+                                    Settings.szSelectedTechnique = "KernelCallbackTable";
+
+                                    //Memory Allocation Method
+                                    Settings.listPInvokeRecipe.Add("VirtualAllocEx");
+
+                                    //Remaining PInvokes needed
+                                    Settings.listPInvokeRecipe.AddRange(new string[] { "NtQueryInformationProcess", "ReadProcessMemory", "WriteProcessMemory_IntPtr", "SendMessage" });
+
                                     break;
                                 case "R5":
                                     goto case "KERNELCALLBACKTABLE";
+                                case "NTCREATESECTION":
+                                    Console.WriteLine("|\n|   [*] Building technique: NtCreateSection");
+                                    Settings.szSelectedTechnique = "NtCreateSection";
+
+                                    //Memory Allocation Method
+                                    Settings.listPInvokeRecipe.Add("");
+
+                                    //Remaining PInvokes needed
+                                    Settings.listPInvokeRecipe.AddRange(new string[] { "NtCreateSection", "NtMapViewOfSection", "RtlCreateUserThread"});
+                                    break;
+                                case "R6":
+                                    goto case "NTCREATESECTION";
                                 default:
                                     Console.WriteLine("|\n|   [!] Unknown technique. Techniques can be found in help.");
                                     break;
                             }
 
                             
-                            if (Settings.SelectedTechnique != null)
+                            if (Settings.szSelectedTechnique != null)
                             {
                                 //Build the .cs 
-                                CSConstructor(Settings.InjectMode, Settings.SelectedTechnique);
+                                CSConstructor(Settings.szInjectMode, Settings.szSelectedTechnique);
                                 //then clear the selected technique
-                                Settings.SelectedTechnique = null;
+                                Settings.szSelectedTechnique = null;
+                                Settings.listPInvokeRecipe.Clear();
                             }
                         }
                     }
@@ -320,9 +400,9 @@ namespace SingleDose
                         switch (command.Split()[1].ToUpper())
                         {
                             case "SETTINGS":
-                                Settings.InjectMode = null;
-                                Settings.OutputDirectory = null;
-                                Settings.CompileBinary = true;
+                                Settings.szInjectMode = null;
+                                Settings.szOutputDirectory = null;
+                                Settings.bvCompileBinary = true;
                                 Console.WriteLine("|\n|   [~] Output and Mode have been cleared.");
                                 break;
                             case "TRIGGERS":
@@ -340,7 +420,7 @@ namespace SingleDose
                     {
                         Console.Clear();
                         Console.WriteLine("\n       +---------------------------+\n ______|         MAIN MENU         |\n|      +---------------------------+");
-                        if (Settings.helpBlurb)
+                        if (Settings.bvHelpBlurb)
                         {
                             Console.WriteLine("|\n|\tsettings   triggers   build");
                             Console.WriteLine("|\tdescribe   show       blurb");
@@ -362,7 +442,7 @@ namespace SingleDose
                                 Console.WriteLine("|\t   | L3. CreateFiber          | R3. Suspend_QueueUserAPC          |");
                                 Console.WriteLine("|\t   | L4. EnumWindows          | R4. AddressOfEntryPoint           |");
                                 Console.WriteLine("|\t   | L5. EnumChildWindows     | R5. KernelCallbackTable           |");
-                                Console.WriteLine("|\t   | L6. EnumDateFormatsEx    |                                   |");
+                                Console.WriteLine("|\t   | L6. EnumDateFormatsEx    | R6. NtCreateSection               |");
                                 Console.WriteLine("|\t   | L7. EnumDesktops         |                                   |");
                                 Console.WriteLine("|\t   +--------------------------+-----------------------------------+");
                                 break;
@@ -414,7 +494,7 @@ namespace SingleDose
                         }
                     }
 
-                    string payloadDirectory = Settings.OutputDirectory + @"\Payloads";
+                    string payloadDirectory = Settings.szOutputDirectory + @"\Payloads";
                     if (!System.IO.Directory.Exists(payloadDirectory))
                     {
                         try
@@ -594,6 +674,17 @@ namespace SingleDose
                                 break;
                             case "R5":
                                 goto case "KERNELCALLBACKTABLE";
+                            case "NTCREATESECTION":
+                                Console.WriteLine("|\n|\t     NtCreateSection");
+                                Console.WriteLine("|\t   -------------------\n|");
+                                Console.WriteLine("|   Inject Source: Shellcode");
+                                Console.WriteLine("|   P/Invoke APIs: NtCreateSection, NtMapViewOfSection, RtlCreateUserThread\n|");
+                                Console.WriteLine("|   Summary: Create a remote thread in the target process after mapping a new");
+                                Console.WriteLine("|   section containing shellcode\n|");
+                                Console.WriteLine("|   References: https://www.ired.team/offensive-security/code-injection-process-injection/ntcreatesection-+-ntmapviewofsection-code-injection");
+                                break;
+                            case "R6":
+                                goto case "NTCREATESECTION";
                             default:
                                 Console.WriteLine("|\n|   [!] Unknown technique. Techniques can be found with \"help\" or \"show techniques\".");
                                 break;

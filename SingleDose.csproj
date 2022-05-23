@@ -41,21 +41,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Misc\ShellcodeFormats.cs" />
+    <Compile Include="PInvoke\Kernel32.cs" />
+    <Compile Include="PInvoke\Ntdll.cs" />
+    <Compile Include="PInvoke\User32.cs" />
     <Compile Include="SubMenus\Triggers.cs" />
     <Compile Include="SubMenus\Settings.cs" />
     <Compile Include="Misc\TriggerValues_Misc.cs" />
     <Compile Include="Techniques\AddressOfEntryPoint.cs" />
+    <Compile Include="Techniques\CreateRemoteThread-Dll.cs" />
     <Compile Include="Techniques\EnumDesktops.cs" />
     <Compile Include="Techniques\EnumDateFormatsEx.cs" />
     <Compile Include="Techniques\EnumWindows.cs" />
     <Compile Include="Techniques\EnumChildWindows.cs" />
     <Compile Include="Techniques\FiberInject.cs" />
     <Compile Include="Techniques\KernelCallbackTable.cs" />
+    <Compile Include="Techniques\NtCreateSection_NtMapViewOfSection.cs" />
     <Compile Include="Techniques\Suspend_QueueUserAPC.cs" />
     <Compile Include="Techniques\SRDI.cs" />
     <Compile Include="Techniques\SC_Syscall_CT.cs" />
     <Compile Include="Techniques\EB_QueueUserAPC.cs" />
-    <Compile Include="Techniques\Dll_CRT.cs" />
     <Compile Include="Misc\CSBuilder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
