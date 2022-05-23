@@ -60,6 +60,7 @@ The next 2 commands are from this submenu. "Output" tells Single Dose where to s
 | EnumDesktops | Execute Shellcode via Callback. | Shellcode |
 | AddressOfEntryPoint | Inject Shellcode into a suspended process's entrypoint. | Shellcode |
 | KernelCallbackTable | Used by the FinFisher/FinSpy surveillance spyware. | Shellcode |
+| NtCreateSection | Create a remote thread in the target process after mapping a new section containing shellcode. | Shellcode |
 
 
 ## Settings Commands:  
