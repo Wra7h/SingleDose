@@ -1,59 +1,32 @@
-```
-         _____ _____ _   _  _____ _      ______    _____   ____   _____ ______
-        / ____|_   _| \ | |/ ____| |    |  ____|  |  __ \ / __ \ / ____|  ____|
-       | (___   | | |  \| | |  __| |    | |__     | |  | | |  | | (___ | |__
-        \___ \  | | | . ` | | |_ | |    |  __|    | |  | | |  | |\___ \|  __|
-        ____) |_| |_| |\  | |__| | |____| |____   | |__| | |__| |____) | |____
-       |_____/|_____|_| \_|\_____|______|______|  |_____/ \____/|_____/|______|
-        _______________________________________________________________________
-       |_______________________________________________________________________|
-                                                                 [GitHub: Wra7h]
-```
-Configure and create process injection binaries. 
+# Single Dose
 
-Single Dose was built to run using .NET Framework v3.5. Binaries generated with Single Dose are also built for .NET Framework 3.5+. Available techniques will inject either DLL or Shellcode (raw format) depending on the technique.
+Single Dose is a .NET console application containing collection of shellcode loaders and process injection techniques. Single Dose doesn't actually perform the load or inject, instead it takes your configuration and technique, then compiles an executable that only contains the technique you specified. This is the main difference between this tool and similar collections of injects like PInjectra where every technique is within the same binary doing the execution. The executables are C#, which gives users the flexibility to execute in-memory with `execute-assembly`. 
 
-Each technique has been tested with either :  
-1. MessageBox64.dll: https://github.com/enigma0x3/MessageBox
-2. Raw shellcode - MSFVenom Pop Calc and Mythic C2 Apollo Agent
+There are 3 different modes: Static, Dynamic, and Download.
+ - Static: Embeds the shellcode and other target information (i.e. Process ID, Process Name) into the executable. 
+ - Dynamic: This mode compiles the executable to accept flags on the commandline with `-PID` and `-DLL`/`-BIN`
+ - Download: This mode compiles the executable to accept flags on the commandline with `-PID` and `URI`. (HTTP only)
 
-## Basic Usage:  
-Creating the first binary can be accomplished using the commands below. Just enter the commands below and fill in the brackets as you see fit.  
-```
-  +--> settings
-  +-->> output [output directory]
-  +-->> mode [mode #] (1. Static, 2. Dynamic, or 3. Download)
-  +-->> exit
-  +--> show techniques
-  +--> build [technique name/number]
-```
+\**Static mode allows users to specify a path on disk to Raw Shellcode OR a DLL. Using SRDI, Single Dose converts the DLL to shellcode before it is embedded into the executable.
 
-### "What's going on here?"    
-When you first execute Single Dose, you are at the Main Menu. Entering "settings" takes you to the settings submenu where you can configure how Single Dose builds your binary. 
-The next 2 commands are from this submenu. "Output" tells Single Dose where to store your .cs and .exe, and the "mode" command will tell Single Dose whether you plan on embedding injection data or providing data at the time of execution. The "Static" mode will embed all injection data into the binary, "Dynamic" and "Download" will require the user specify flags at execution. **Important: Download mode only supports downloads over http, and not https at this time.** Entering "exit" from the Settings submenu will take you back to Main Menu. "Output" and "Mode" are the only required settings in order to successfully build a technique. Lastly, "show techniques" will display all of the techniques supported, and "build" will start the build process for a binary.  
+There are 3 different menus: Main, Settings, and Triggers.
+ - Main Menu: This menu contains a few commands, but the most important being `describe` and `build`.
+ - Settings Menu: This menu is used to configure how the technique is built. The only required commands before building can be found here. They are `mode` and `output`. 
+ - Triggers Menu: The triggers menu allows you to configure "checks" or conditions to meet before continuing the technique's execution. All of these are optional, may be useful in various scenarios.
 
-## Main Menu Commands:  
-| Command       | Action             | Example Usage  |
-|:-------------:|:-------------:|:-------------:|
-| Settings      | Enter Settings submenu | `settings`|
-| Triggers      | Enter Triggers submenu | `triggers`|
-| Show          | Display techniques, current settings | `show` or `show techniques` |
-| Build         | Build a technique      | `build 2` or ` build SRDI` |
-| Save          | Save a payload from history. Useful after a dll has been converted to shellcode. Payloads are saved to a "payload" folder under the specified output directory.      | `save` or `save h1` |
-| Describe      | Describe a technique   | `describe 4` or `describe Suspend_QueueUserAPC` |
-| Clear         | Clear the console, settings, or triggers | `clear`, `clear settings`, or `clear triggers` |
-| Blurb         | Enable/Disable the display of available commands when switching between menus | `blurb` |
-| Help          | Display the help for this menu | `help` |
+You start in Main Menu, but to access the other menus you just type `settings` or `triggers`. To return back to Main Menu when you are ready to build, you just type `exit` to exit the Settings or Triggers menu.
+
+I am not the original author for most of these techniques, I just rewrote or translated them into C# to make them compatible with Single Dose's building. Please check out the description for each technique for links to the original author or blog. This is done with `describe <technique>` in the Main Menu. To see the available techniques type `show techniques` from any menu.
 
 ## Available Techniques:  
 | Technique       | Description             | Inject Data |
 |:-------------:|:-------------:|:-------------:|
-| CreateRemoteThread | Inject a DLL into a remote process and execute with CreateRemoteThread. | DLL |
-| SRDI | Convert DLL into shellcode and inject. | DLL |
+| CreateRemoteThread-DLL | Inject a DLL into a remote process and execute with CreateRemoteThread. | DLL |
+| SRDI-Loader | Convert DLL into shellcode and inject. | DLL |
 | EarlyBird_QueueUserAPC | Inject Shellcode into a new spawned process. | Shellcode |
 | Suspend_QueueUserAPC | Inject Shellcode into a process currently running. | Shellcode |
 | Syscall_CreateThread | Inject Shellcode using direct syscalls. | Shellcode |
-| Fiber_Execution | Execute Shellcode via Fibers. | Shellcode |
+| CreateFiber | Execute Shellcode via Fibers. | Shellcode |
 | EnumWindows | Execute Shellcode via Callback. | Shellcode |
 | EnumChildWindows | Execute Shellcode via Callback. | Shellcode |
 | EnumDateFormatsEx | Execute Shellcode via Callback. | Shellcode |
@@ -62,77 +35,8 @@ The next 2 commands are from this submenu. "Output" tells Single Dose where to s
 | KernelCallbackTable | Used by the FinFisher/FinSpy surveillance spyware. | Shellcode |
 | NtCreateSection | Create a remote thread in the target process after mapping a new section containing shellcode. | Shellcode |
 
-
-## Settings Commands:  
-
-| Command       | Action             | Example Usage  |
-|:-------------:|:-------------:|:-------------:|
-| Mode          | Required. Select the execution mode. \[Static, Dynamic or Download] | `mode 1` or `mode static` | 
-| Output        | Required. Set the output directory for logs and binaries | `output C:\users\users\Desktop\Single_Dose` |
-| Compile       | Enable/Disable compilation. If disabled, only a .cs will be generated \[Default: enabled]| `compile` |
-| Log           | Enable/Disable logging. If enabled, a .log file will be in your output directory \[Default: enabled] | `log` |
-| Blurb         | Enable/Disable the display of available commands when switching between menus | `blurb` |
-| Show          | Display techniques, current settings | `show` or `show techniques` |
-| Version       | Display/Set available versions of csc.exe on the host. This allows you to compile binaries for various versions of the .NET Framework. If the version is not displayed, the user can specify the absolute path with the "Custom" option. \[Default: v3.5] | `version`, `version #`, `version Roslyn`, or `version Custom` |
-| History       | change the max entries kept in history | `history 5`|
-| Clear         | Clear the console, settings, or triggers | `clear`, `clear settings`, or `clear triggers` |
-| Triggers      | Enter Triggers submenu | `triggers`|
-| Exit          | Return to Main Menu | `exit` |
-| Help          | Display the help for this menu | `help` |
-
-| Mode          | Description   |
-|:-------------:|:-------------:|
-| Static        | Embed all data into the executable |
-| Dynamic       | Specify data at runtime with flags in the commandline. `-PID, -DLL/-Bin` |
-| Download      | Specify data at runtime with flags in the commandline. HTTP only. `-PID, -URI` |
-
-## Triggers Commands:
-The triggers tells the binary to only inject under certain conditions. Triggers are not required but need to be configured before building the binary if you choose to use them.  
- 
-| Command      | Action         | Example Usage |
-|:-------------:|:-------------:|:-------------:|
-| Avoid         | Do not execute if condition is met. Binary will exit if condition is met. Accepts PID, Module (DLL), or Process name (EXE). | `avoid notepad.exe`, `avoid *` |
-| Require       | Only execute if all conditions are met. Binary will exit if conditions are not met. Accepts PID, Module (DLL), or Process name (EXE). | `require calc.exe`, `require *` |
-| Hibernate     | Similar to the require trigger, but the binary will sleep instead of exit while the condition is not met. The sleep value is a random value between 90 seconds and 5 min. Accepts PID, Module (DLL), or Process name (EXE). | `hibernate ntdll.dll`, `hibernate *` |
-| Persist       | Similar to the avoid trigger, but the binary will sleep instead of exit while the condition is met. The sleep value is a random value between 90 seconds and 5 min. Accepts PID, Module (DLL), or Process name (EXE). | `persist spoolsv.exe`, `persist *` |
-| Timer         | Set a timer to pause execution temporarily | `timer 5` |
-| Show          | Display techniques, current settings | `show` or `show techniques` |
-| Blurb         | Enable/Disable the display of available commands when switching between menus | `blurb` |
-| Clear         | Clear the console, settings, or triggers | `clear`, `clear settings`, or `clear triggers` |
-| Settings      | Enter Settings submenu | `settings`|
-| Exit          | Return to Main Menu    | `exit` |
-| Help          | Display the help for this menu | `help` |
-
-Example Scenarios:
-  1. "I want my binary to exit if notepad.exe is not currently running on the system."  
-     - For this you would use the `avoid` trigger. Command: `avoid notepad.exe`  
-     
-  2. "My binary should _only_ execute if notepad.exe and pid 2048 are running on the system."  
-     - This would be the `require` trigger. Command:
-     ``` 
-     require notepad.exe
-     require 2048
-     ```
-     
-  3. "I want my binary to pause execution, *but not exit* while notepad.exe is not running on the system."  
-     - Check out the `hibernate` trigger. Hibernate will sleep until the condition is met. The sleep time is randomly generated.  
-       The console will remain open during sleep, with status messages provided every time the binary checks the system for the conditions.  
-       If you only want to inject when notepad is running, the command is: `hibernate notepad.exe`  
-       
-  4. "I want my binary to pause execution, *but not exit* while explorer.exe is running on the system."
-     - This is the `persist` trigger. Persist will sleep while the condintion is met. The sleep time is randomly generated. Like, `hibernate`  
-       the console will remain open during sleep, and status messages provided every time the binary checks the system for the conditions.  
-       Command: `persist explorer.exe`. This means the binary will only inject, if explorer.exe is _not_ running on the system when the conditions
-       are reevaluated.   
-
-### Check these awesome references out:  
-  - https://github.com/monoxgas/sRDI
-  - https://3xpl01tc0d3r.blogspot.com/2019/12/process-injection-part-v.html
-  - https://sevrosecurity.com/2020/04/13/process-injection-part-2-queueuserapc/
-  - https://jhalon.github.io/utilizing-syscalls-in-csharp-1/
-  - https://jhalon.github.io/utilizing-syscalls-in-csharp-2/
-  - https://www.solomonsklash.io/syscalls-for-shellcode-injection.html  
-  - https://www.ired.team/offensive-security/code-injection-process-injection/
-  - https://graphitemaster.github.io/fibers/  
-  - https://vx-underground.org/papers.html -> Windows VX -> Injection
-  
+### References:
+ - https://github.com/SafeBreach-Labs/pinjectra
+ - https://github.com/monoxgas/sRDI
+ - https://www.ired.team/offensive-security/code-injection-process-injection/
+ - https://vx-underground.org/papers.html -> Windows VX -> Injection
