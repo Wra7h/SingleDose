@@ -1395,7 +1395,7 @@ namespace SingleDose
         {
             Regex TriggerPattern = new Regex("{{TRIGGER}}");
             Regex RequirementsPattern = new Regex("{{REQUIREMENTS}}");
-            Regex TimerPattern = new Regex("{{TRIGGER}}");
+            Regex TimerPattern = new Regex("{{TIME}}");
 
             foreach (string trigger in TriggersToUse)
             {

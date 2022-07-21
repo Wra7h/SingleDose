@@ -119,13 +119,13 @@ namespace SingleDose
                     if (Settings.bvLogging)
                     {
                         Settings.bvLogging = false;
-                        Console.WriteLine("|\n|   [~] bvLogging Disabled");
+                        Console.WriteLine("|\n|   [~] Logging Disabled");
                     }
                     else if (!Settings.bvLogging)
                     {
                         Settings.bvLogging = true;
-                        Console.WriteLine("|\n|   [~] bvLogging Enabled");
-                        Program.WriteLog("bvLogging enabled", true);
+                        Console.WriteLine("|\n|   [~] Logging Enabled");
+                        Program.WriteLog("Logging enabled", true);
                     }
                     break;
                 case "HELP":

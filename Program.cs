@@ -88,11 +88,11 @@ namespace SingleDose
 
             if (Settings.bvLogging)
             {
-                Console.WriteLine("|\t   bvLogging          = Enabled");
+                Console.WriteLine("|\t   Logging          = Enabled");
             }
             else if (!Settings.bvLogging)
             {
-                Console.WriteLine("|\t   bvLogging          = Disabled");
+                Console.WriteLine("|\t   Logging          = Disabled");
             }
             Console.WriteLine("|\t   Compile          = {0}", Settings.bvCompileBinary);
             Console.WriteLine("|\t   Mode             = {0}", Settings.szInjectMode);
