@@ -1,0 +1,41 @@
+# SingleDose
+
+SingleDose is a .NET console application containing collection of shellcode loaders and process injection techniques. SingleDose doesn't actually perform the load or inject, instead it takes your configuration and technique, then compiles an executable whic will only contain the technique you specified. This is the main difference between this tool and similar collections of injects like PInjectra where every technique is within the same binary doing the execution. The executables are C#, which gives users the flexibility to execute in-memory with `execute-assembly`.
+
+I am not the original author for most of these techniques, I just rewrote them using C# to make them compatible with SingleDose's build process. Please check out the description for each technique for links to the author or blog I referenced. This is done with `describe <technique>` from the Main menu. To see the available techniques type `show techniques` the main menu.
+
+## Basic Usage:  
+
+A tutorial is included for basic building without triggers. Just run SingleDose with `-t` to start the tutorial mode.
+
+Note: To see all available options, type `help` in each menu.
+
+1. Enter the Settings menu with: `settings`  
+2. Select the mode: `mode static`  
+3. Set the output directory: `output C:\path\to\output\directory`  
+4. If both of these modes have been successfully set, exit the settings menu to go back to Main Menu. Type `exit`  
+5. To see what techniques are available. In Main Menu, type `show techniques`  
+&nbsp;&nbsp;- The left column is for shellcode loaders, and the right column is for the process injection techniques.  
+6. Start a build with: `build L3`
+7. It will ask you for the path to your shellcode, so just type the path and SingleDose will format it and embed it as a byte array in the .cs file.
+
+## Example using Triggers:
+Triggers allow you to configure "checks" or conditions to meet before continuing the technique's execution. We'll use the `persist` trigger.  
+
+1. Complete steps 1-4 of the Basic Usage.  
+2. Enter the Triggers menu with: `triggers`
+3. Type `help` to see the available triggers. The next few steps will walk through the "procwatch" trigger.
+4. Type `use procwatch` you will be prompted to enter a process id and/or name.  
+5. Type `notepad.exe`. This will prevent the technique from being executed while a "notepad.exe" is a process. Procwatch supports CSV format when specifying multiple items.   
+6. Once you see that `ProcWatch` is set in the panel as the trigger, type `exit` in the Triggers Menu to return to Main Menu.
+7. From here, you can build like step 6 in Basic Usage.
+8. If you try to execute the technique with a notepad.exe process running, the technique will enter a "sleep" before checking if notepad.exe is running again. The sleep time is randomly generated between 90 - 300 seconds, and the exact time will be displayed in the console window.
+
+Note: Triggers are not erased after a build. Type `clear triggers` to clear the triggers you've set.  
+
+### References:
+ - https://github.com/SafeBreach-Labs/pinjectra
+ - https://github.com/monoxgas/sRDI
+ - https://www.ired.team/offensive-security/code-injection-process-injection/
+ - https://vx-underground.org/papers.html -> Windows VX -> Injection
+ - References per technique can be seen with `describe <technique>`
