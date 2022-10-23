@@ -33,6 +33,9 @@ Triggers allow you to configure pre-execution checks or conditions to meet befor
 
 Note: Triggers are not erased after a build. Type `clear triggers` to clear the triggers you've set.  
 
+## Compile
+Open the .sln in Visual Studio, select Debug or Release at the top and build.
+
 ### References:
  - https://github.com/SafeBreach-Labs/pinjectra
  - https://github.com/monoxgas/sRDI
