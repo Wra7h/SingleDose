@@ -20,7 +20,7 @@ Note: To see all available options, type `help` in each menu.
 7. It will ask you for the path to your shellcode, so just type the path and SingleDose will format it and embed it as a byte array in the .cs file.
 
 ## Example using Triggers:
-Triggers allow you to configure "checks" or conditions to meet before continuing the technique's execution. We'll use the `persist` trigger.  
+Triggers allow you to configure pre-execution checks or conditions to meet before continuing the technique's execution. We'll use the `ProcWatch` trigger.  
 
 1. Complete steps 1-4 of the Basic Usage.  
 2. Enter the Triggers menu with: `triggers`
