@@ -1,4 +1,4 @@
-namespace SingleDose.PInvoke
+﻿namespace SingleDose.PInvoke
 {
     internal class Ntdll
     {
@@ -13,7 +13,7 @@ namespace SingleDose.PInvoke
             IntPtr FileHandle);
 
         {{PINVOKE}}";
-        
+
         public static string NtMapViewOfSection = @"[DllImport(""ntdll.dll"", SetLastError = true)]
         static extern uint NtMapViewOfSection(
             IntPtr SectionHandle,
@@ -26,6 +26,11 @@ namespace SingleDose.PInvoke
             uint InheritDisposition,
             uint AllocationType,
             uint Win32Protect);
+
+        {{PINVOKE}}";
+
+        public static string NtTestAlert = @"[DllImport(""ntdll.dll"", SetLastError = true)]
+        public static extern uint NtTestAlert();
 
         {{PINVOKE}}";
 

