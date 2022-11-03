@@ -10,7 +10,7 @@ namespace SingleDose
         public static string sCurrentMenu = "Main";
         static void Main(string[] args)
         {
-            Console.SetWindowSize(Console.WindowWidth + Console.WindowWidth/5 + 5, Console.WindowHeight + Console.WindowHeight/5);
+            Console.SetWindowSize(149, 36);
             Console.Clear();
             // Get csc.exe filepaths
             SettingsMenu.dAvailableCSCVersions = SettingsMenu.FetchCSCVersions();
