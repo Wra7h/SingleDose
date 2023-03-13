@@ -66,7 +66,6 @@ namespace SingleDose.Menus
                     Console.WriteLine("");
                     SDConsole.iConsoleLineNum += 2;
                     break;
-                    break;
                 case "SETTINGS":
                     Program.sCurrentMenu = "Settings";
                     int cLineHolder = SDConsole.iConsoleLineNum;

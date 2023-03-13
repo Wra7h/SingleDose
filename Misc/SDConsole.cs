@@ -142,20 +142,7 @@ namespace SingleDose.Misc
             ClearCommandPanel(iStartPrint, iLine);
 
             List<string> AvailableCommands = new List<string>();
-            switch (sMenu)
-            {
-                case "Main":
-                    AvailableCommands.AddRange(new string[] { "settings", "triggers", "build", "describe", "reconfig", "show", "help", "clear", "save", "exit"});
-                    break;
-                case "Settings":
-                    AvailableCommands.AddRange(new string[] { "mode", "output", "triggers", "compile", "version", "memset", "clear", "help", "history", "log", "exit" });
-                    break;
-                case "Triggers":
-                    AvailableCommands.AddRange(new string[] { "use", "reconfig", "settings", "help", "clear", "exit"});
-                    break;
-                default:
-                    break;
-            }
+            AvailableCommands = GetMenuCommands(sMenu).ToList();
 
             Console.SetCursorPosition(iStartPrint, iLine);
 
@@ -343,6 +330,27 @@ namespace SingleDose.Misc
                 }
             }
             return finalString;
+        }
+
+        public static string[] GetMenuCommands(string sMenu)
+        {
+            List<string> AvailableCommands = new List<string>();
+            switch (sMenu)
+            {
+                case "Main":
+                    AvailableCommands.AddRange(new string[] { "settings", "triggers", "build", "describe", "reconfig", "show", "help", "clear", "save", "exit" });
+                    break;
+                case "Settings":
+                    AvailableCommands.AddRange(new string[] { "mode", "output", "triggers", "compile", "version", "memset", "clear", "help", "history", "log", "exit" });
+                    break;
+                case "Triggers":
+                    AvailableCommands.AddRange(new string[] { "use", "reconfig", "settings", "help", "clear", "exit" });
+                    break;
+                default:
+                    break;
+            }
+
+            return AvailableCommands.ToArray();
         }
     }
 }

@@ -92,14 +92,12 @@ namespace SingleDose.Menus
                     if (SettingsMenu.UseLogging)
                     {
                         SettingsMenu.UseLogging = false;
-                        Console.WriteLine("  [~] Logging Disabled");
-                        SDConsole.iConsoleLineNum++;
+                        SDConsole.WriteWarning("Logging Disabled");
                     }
                     else if (!SettingsMenu.UseLogging)
                     {
                         SettingsMenu.UseLogging = true;
-                        Console.WriteLine("  [~] Logging Enabled");
-                        SDConsole.iConsoleLineNum++;
+                        SDConsole.WriteSuccess("Logging Enabled");
                     }
                     SDConsole.RefreshConfigPanel();
                     break;
@@ -277,7 +275,8 @@ namespace SingleDose.Menus
                     }
                     else
                     {
-                        SDConsole.Write("       Please enter output directory: ");
+                        SDConsole.Write("Please enter output directory: ");
+                        Console.Write("       > ");
                         SettingsMenu.OutputDirectory = Console.ReadLine();
                         SDConsole.iConsoleLineNum++;
                         SettingsMenu.OutputDirectory = Path.GetFullPath(SettingsMenu.OutputDirectory);
@@ -386,7 +385,7 @@ namespace SingleDose.Menus
                                 SettingsMenu.CompileBinary = true;
                                 SettingsMenu.UseLogging = true;
                                 SettingsMenu.szMemAlloc = "RWX";
-                                SDConsole.WriteSuccess("Default settings restored.");
+                                SDConsole.WriteInfo("Default settings restored.");
                                 SDConsole.RefreshConfigPanel();
                                 break;
                             case "TRIGGER":
@@ -394,8 +393,10 @@ namespace SingleDose.Menus
                                 TriggersMenu.TriggerBody = null;
                                 SDConsole.RefreshConfigPanel();
                                 Console.SetCursorPosition(0, SDConsole.iConsoleLineNum + 1);
-                                SDConsole.WriteSuccess("Triggers have been cleared.");
+                                SDConsole.WriteInfo("Triggers have been cleared.");
                                 break;
+                            case "TRIGGERS":
+                                goto case "TRIGGER";
                             default:
                                 break;
                         }

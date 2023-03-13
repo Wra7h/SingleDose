@@ -1,6 +1,7 @@
 ﻿using SingleDose.Menus;
 using SingleDose.Misc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SingleDose
@@ -29,30 +30,43 @@ namespace SingleDose
 
         static void Start()
         {
-            string Command = null;
 
             SDConsole.PrintHeader();
             SDConsole.PrintSettings(Console.WindowWidth - 59, SDConsole.iConsoleLineNum);
             SDConsole.PrintCommandHelp(Console.WindowWidth - 59, SDConsole.iConsoleLineNum+9, sCurrentMenu);
             SDConsole.iConsoleLineNum = 0;
+
+            List<string> CommandHistory = new List<string>();
+
             while (true)
             {
-                Console.SetCursorPosition(0, SDConsole.iConsoleLineNum);
-                Console.Write("["+sCurrentMenu+"]-> ");
-                Command = Console.ReadLine();
-                switch(sCurrentMenu)
+                string Command = null;
+
+                //Getting the command used to just be Console.ReadLine(), but tab complete seems
+                //to need a significant amount of code. So it is being implemented from it's own
+                //dedicated file: SDTabComplete.cs.
+                Command = SDTabComplete.UseTabComplete(sCurrentMenu, CommandHistory);
+
+                if (!String.IsNullOrEmpty(Command))
+                    CommandHistory.Add(Command);
+
+                if (!String.IsNullOrEmpty(Command))
                 {
-                    case "Main":
-                        MainMenu.CommandHandler(Command);
-                        break;
-                    case "Settings":
-                        SettingsMenu.CommandHandler(Command);
-                        break;
-                    case "Triggers":
-                        TriggersMenu.CommandHandler(Command);
-                        break;
-                    default:
-                        break;
+                    Console.SetCursorPosition(0, SDConsole.iConsoleLineNum + 1);
+                    switch (sCurrentMenu)
+                    {
+                        case "Main":
+                            MainMenu.CommandHandler(Command);
+                            break;
+                        case "Settings":
+                            SettingsMenu.CommandHandler(Command);
+                            break;
+                        case "Triggers":
+                            TriggersMenu.CommandHandler(Command);
+                            break;
+                        default:
+                            break;
+                    }
                 }
 
                 SDConsole.iConsoleLineNum++;

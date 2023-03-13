@@ -49,6 +49,7 @@
     <Compile Include="Misc\MemConfig.cs" />
     <Compile Include="Misc\MiscFuncs.cs" />
     <Compile Include="Misc\SDConsole.cs" />
+    <Compile Include="Misc\SDTabComplete.cs" />
     <Compile Include="Misc\Shellcode.cs" />
     <Compile Include="Misc\Tutorial.cs" />
     <Compile Include="PInvoke\Comdlg32.cs" />
