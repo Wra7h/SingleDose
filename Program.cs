@@ -22,6 +22,9 @@ namespace SingleDose
             // Identify the techniques that are available
             Reflect.InitializeTechniques();
 
+            // Identify the APIs that are available
+            Reflect.InitializeInvokes();
+
             if (args.Contains("-t"))
                 Tutorial.StartTutorial();
             else
