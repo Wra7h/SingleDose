@@ -2,6 +2,8 @@
 
 SingleDose is a framework to build shellcode load/process injection techniques. SingleDose doesn't actually perform the load or inject, but rather it takes your configuration and technique and will compile an `.exe` which will only contain the technique you specified. The executables are C#, which gives users the flexibility to execute in-memory with `execute-assembly` or the like.
 
+<img src="/Images/Demo.gif" width="90%"/>
+
 I am not the original author for most of these techniques, I just rewrote them using C# to make them compatible with SingleDose's build process. Please check out the description for each technique for links to the author or blog I referenced. This is done with `describe <technique>` from the Main menu. To see the available techniques type `show techniques` the main menu.
 
 ## Basic Usage:  
