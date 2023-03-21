@@ -16,7 +16,7 @@ namespace SingleDose.Techniques.Injects
         bool ITechnique.IsUnsafe => false;
 
         bool ITechnique.IsLoader => false;
-        List<string> ITechnique.PInvokeRecipe => new List<string>() { "NtCreateSection", "NtMapViewOfSection", "RtlCreateUserThread" };
+        List<string> ITechnique.Invokes => new List<string>() { "NtCreateSection", "NtMapViewOfSection", "RtlCreateUserThread" };
         List<string> ITechnique.Prerequisites => new List<string>() { "ProcessID" };
         string ITechnique.Base => @"
 using System;
@@ -121,7 +121,7 @@ namespace {{NAMESPACE}}
         static uint SECTION_MAP_EXECUTE = 0x0008;
         static uint SECTION_ALL_ACCESS = SECTION_MAP_WRITE | SECTION_MAP_READ | SECTION_MAP_EXECUTE;
         {{ARGS}}
-        {{PINVOKE}}
+        {{INVOKE}}
     }
 }";
 

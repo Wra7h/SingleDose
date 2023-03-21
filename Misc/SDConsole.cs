@@ -76,6 +76,13 @@ namespace SingleDose.Misc
             iLine++;
             Console.SetCursorPosition(iStartPrint, iLine);
 
+            Console.Write("| Invoke: ");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.Write("{0}\n", SettingsMenu.szInvokeMethod);
+            Console.ResetColor();
+            iLine++;
+            Console.SetCursorPosition(iStartPrint, iLine);
+
             Console.Write("| Version: ");
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.Write("{0}\n", SettingsMenu.SelectedCscVersion);
@@ -229,12 +236,12 @@ namespace SingleDose.Misc
                 Console.Write("{0}{1}", "+", String.Concat(Enumerable.Repeat("-", 58).ToArray()));
                 SDConsole.iConsoleLineNum = 1;
                 SDConsole.PrintSettings(Console.WindowWidth - 59, SDConsole.iConsoleLineNum);
-                SDConsole.PrintCommandHelp(Console.WindowWidth - 59, 10, Program.sCurrentMenu);   
+                SDConsole.PrintCommandHelp(Console.WindowWidth - 59, 11, Program.sCurrentMenu);   
             }
             else
             {
                 SDConsole.PrintSettings(Console.WindowWidth - 59, 6);
-                SDConsole.PrintCommandHelp(Console.WindowWidth - 59, 15, Program.sCurrentMenu);
+                SDConsole.PrintCommandHelp(Console.WindowWidth - 59, 16, Program.sCurrentMenu);
             }
             
             SDConsole.iConsoleLineNum = cLineHolder;
@@ -341,7 +348,7 @@ namespace SingleDose.Misc
                     AvailableCommands.AddRange(new string[] { "settings", "triggers", "build", "describe", "reconfig", "show", "help", "clear", "save", "exit" });
                     break;
                 case "Settings":
-                    AvailableCommands.AddRange(new string[] { "mode", "output", "triggers", "compile", "version", "memset", "clear", "help", "history", "log", "exit" });
+                    AvailableCommands.AddRange(new string[] { "mode", "output", "triggers", "compile", "version", "invoke", "memset", "clear", "help", "history", "log", "exit" });
                     break;
                 case "Triggers":
                     AvailableCommands.AddRange(new string[] { "use", "reconfig", "settings", "help", "clear", "exit" });

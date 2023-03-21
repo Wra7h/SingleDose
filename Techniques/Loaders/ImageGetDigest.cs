@@ -18,7 +18,7 @@ namespace SingleDose.Techniques.Loaders
 
         bool ITechnique.IsLoader => true;
         
-        List<string> ITechnique.PInvokeRecipe => new List<string>() { "VirtualAlloc", "CreateFile", "ImageGetDigestStream", "CloseHandle" };
+        List<string> ITechnique.Invokes => new List<string>() { "VirtualAlloc", "CreateFile", "ImageGetDigestStream", "CloseHandle" };
         
         List<string> ITechnique.Prerequisites => null;
         
@@ -46,7 +46,7 @@ namespace {{NAMESPACE}}
             CloseHandle(hImage);
         }
         {{ARGS}}
-        {{PINVOKE}}
+        {{INVOKE}}
     }
 }";
 

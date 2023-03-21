@@ -1,10 +1,10 @@
-﻿using SingleDose.Techniques;
+﻿using SingleDose.Invokes;
+using SingleDose.Techniques;
 using SingleDose.Triggers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace SingleDose.Misc
 {
@@ -12,6 +12,7 @@ namespace SingleDose.Misc
     {
         public static List<ITechnique> TechniquesFound = new List<ITechnique>();
         public static List<ITrigger> TriggersFound = new List<ITrigger>();
+        public static List<IInvoke> InvokesFound = new List<IInvoke>();
 
         public static void InitializeTriggers()
         {
@@ -43,5 +44,19 @@ namespace SingleDose.Misc
             return;
         }
 
+        public static void InitializeInvokes()
+        {
+            //https://stackoverflow.com/questions/10732933/can-i-use-activator-createinstance-with-an-interface
+            Type[] InvokeInterfaces = (from t in Assembly.GetExecutingAssembly().GetTypes()
+                                        where !t.IsInterface && !t.IsAbstract
+                                        where typeof(IInvoke).IsAssignableFrom(t)
+                                        select t).ToArray();
+
+            InvokesFound.AddRange(InvokeInterfaces.Select(t => (IInvoke)Activator.CreateInstance(t)).ToArray());
+
+            InvokesFound = InvokesFound.OrderBy(c => c.Name).ToList();
+
+            return;
+        }
     }
 }

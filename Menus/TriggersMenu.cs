@@ -154,7 +154,7 @@ namespace SingleDose.Menus
                         SDConsole.bvShowHeader = false;
                         Console.Write("{0," + (Console.WindowWidth - 58) + "}{1}", "+", String.Concat(Enumerable.Repeat("-", 58).ToArray()));
                         SDConsole.PrintSettings(Console.WindowWidth - 59, 1);
-                        SDConsole.PrintCommandHelp(Console.WindowWidth - 59, 10, Program.sCurrentMenu);
+                        SDConsole.PrintCommandHelp(Console.WindowWidth - 59, 11, Program.sCurrentMenu);
                         SDConsole.iConsoleLineNum = -1; //This will increment before the next prompt for command making it 0 for the next prompt ( 0 = the top of the console)
                     }
                     break;

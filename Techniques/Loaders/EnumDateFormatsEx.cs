@@ -16,7 +16,7 @@ namespace SingleDose.Techniques.Loaders
 
         bool ITechnique.IsLoader => true;
         
-        List<string> ITechnique.PInvokeRecipe => new List<string>() { "VirtualAlloc", "EnumDateFormatsEx" };
+        List<string> ITechnique.Invokes => new List<string>() { "VirtualAlloc", "EnumDateFormatsEx" };
         
         List<string> ITechnique.Prerequisites => null;
         
@@ -42,7 +42,7 @@ namespace {{NAMESPACE}}
             EnumDateFormatsEx(hAlloc, 0x0800, 0);
         }
         {{ARGS}}
-        {{PINVOKE}}
+        {{INVOKE}}
     }
 }";
 

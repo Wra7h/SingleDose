@@ -18,7 +18,7 @@ namespace SingleDose.Techniques.Loaders
 
         bool ITechnique.IsLoader => true;
         
-        List<string> ITechnique.PInvokeRecipe => new List<string>() { "VirtualAlloc", "QueueUserAPC", "GetCurrentThread", "NtTestAlert" };
+        List<string> ITechnique.Invokes => new List<string>() { "VirtualAlloc", "QueueUserAPC", "GetCurrentThread", "NtTestAlert" };
         
         List<string> ITechnique.Prerequisites => null;
         
@@ -47,7 +47,7 @@ namespace {{NAMESPACE}}
         }
 
         {{ARGS}}
-        {{PINVOKE}}
+        {{INVOKE}}
     }
 }";
 

@@ -25,8 +25,8 @@ namespace SingleDose.Techniques
         // Are there any references where users can get more information on the technique?
         List<string> TechniqueReferences { get; }
 
-        // What PInvokes are used? *Needs to be defined under PInvoke folder, and added to Build.AddPInvokes() if necessary.
-        List<string> PInvokeRecipe { get; }
+        // What PInvokes are used? *Needs to be defined under PInvoke folder, and added to Build.AddInvokes() if necessary.
+        List<string> Invokes { get; }
 
         //What additional information needs to be set before building? ProcessID? Executable path?
         List<string> Prerequisites { get; }

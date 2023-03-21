@@ -19,7 +19,7 @@ namespace SingleDose.Techniques.Injects
         bool ITechnique.IsUnsafe => false;
 
         bool ITechnique.IsLoader => false;
-        List<string> ITechnique.PInvokeRecipe => new List<string>() { "BeginUpdateResource", "UpdateResource", "EndUpdateResource", "CreateProcess", "NtQueryInformationProcess",
+        List<string> ITechnique.Invokes => new List<string>() { "BeginUpdateResource", "UpdateResource", "EndUpdateResource", "CreateProcess", "NtQueryInformationProcess",
             "ReadProcessMemory", "VirtualProtectEx", "GetThreadContext", "SetThreadContext", "ResumeThread", "CloseHandle" };
         List<string> ITechnique.Prerequisites => new List<string>() { "SpawnProcess" };
         string ITechnique.Base => @"using System;
@@ -595,7 +595,7 @@ namespace {{NAMESPACE}}
             public byte[] Reserved4;
         }
 
-        {{PINVOKE}}
+        {{INVOKE}}
     }
 }";
         string ITechnique.VProtect => null;
