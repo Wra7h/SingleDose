@@ -1,5 +1,3 @@
-using System;
-
 namespace SingleDose.Invokes.Kernel32
 {
     internal class ConvertThreadToFiber : IInvoke
@@ -9,8 +7,17 @@ namespace SingleDose.Invokes.Kernel32
         string IInvoke.PInvoke => @"[DllImport(""kernel32.dll"")]
         static extern IntPtr ConvertThreadToFiber(IntPtr lpParameter);
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"static IntPtr ConvertThreadToFiber(IntPtr lpParameter)
+        {
+            Type[] paramTypes = { typeof(IntPtr) };
+            Object[] args = { lpParameter };
+
+            object res = DynamicPInvokeBuilder(typeof(IntPtr), ""Kernel32.dll"", ""ConvertThreadToFiber"", ref args, paramTypes);
+            return (IntPtr)res;
+        }
+
+        {{INVOKE}}";
     }
 }

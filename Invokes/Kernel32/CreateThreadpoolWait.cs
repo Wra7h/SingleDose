@@ -1,5 +1,3 @@
-using System;
-
 namespace SingleDose.Invokes.Kernel32
 {
     internal class CreateThreadpoolWait : IInvoke
@@ -10,8 +8,17 @@ namespace SingleDose.Invokes.Kernel32
         static extern IntPtr CreateThreadpoolWait(
             IntPtr pfnwa, IntPtr pv, IntPtr pcbe);
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"static IntPtr CreateThreadpoolWait(IntPtr pfnwa, IntPtr pv, IntPtr pcbe)
+        {
+            Type[] paramTypes = { typeof(IntPtr), typeof(IntPtr), typeof(IntPtr) };
+            Object[] args = { pfnwa, pv, pcbe };
+
+            object res = DynamicPInvokeBuilder(typeof(IntPtr), ""Kernel32.dll"", ""CreateThreadpoolWait"", ref args, paramTypes);
+            return (IntPtr)res;
+        }
+
+        {{INVOKE}}";
     }
 }

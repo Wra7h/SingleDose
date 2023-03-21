@@ -483,7 +483,7 @@ namespace SingleDose.Misc
 
         public static string GenRandomString()
         {
-            Random random = new Random();
+            Random random = new Random(Guid.NewGuid().GetHashCode());
             int length = random.Next(3, 9);
             var rString = "";
             for (var i = 0; i < length; i++)

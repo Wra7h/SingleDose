@@ -16,7 +16,7 @@ namespace SingleDose.Techniques.Loaders
 
         bool ITechnique.IsLoader => true;
 
-        List<string> ITechnique.PInvokeRecipe => new List<string>() { "VirtualAlloc", "ClusWorkerCreate", "ClusWorkerTerminateEx"};
+        List<string> ITechnique.Invokes => new List<string>() { "VirtualAlloc", "ClusWorkerCreate", "ClusWorkerTerminateEx"};
 
         List<string> ITechnique.Prerequisites => null;
         string ITechnique.Base => @"
@@ -51,7 +51,7 @@ namespace {{NAMESPACE}}
             public bool Terminate;
         }
 
-        {{PINVOKE}}
+        {{INVOKE}}
     }
 }";
 

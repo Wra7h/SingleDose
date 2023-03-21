@@ -16,7 +16,7 @@ namespace SingleDose.Techniques.Loaders
 
         bool ITechnique.IsLoader => true;
         
-        List<string> ITechnique.PInvokeRecipe => new List<string>() { "VirtualAlloc", "CreateThread", "WaitForSingleObject" };
+        List<string> ITechnique.Invokes => new List<string>() { "VirtualAlloc", "CreateThread", "WaitForSingleObject" };
         
         List<string> ITechnique.Prerequisites => null;
         
@@ -43,7 +43,7 @@ namespace {{NAMESPACE}}
             WaitForSingleObject(hThread, 0xFFFFFFFF);
         }
         {{ARGS}}
-        {{PINVOKE}}
+        {{INVOKE}}
     }
 }";
 

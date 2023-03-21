@@ -1,16 +1,23 @@
-﻿using System;
-
-namespace SingleDose.Invokes.Kernel32
+﻿namespace SingleDose.Invokes.Kernel32
 {
     internal class BeginUpdateResource : IInvoke
     {
-        string IInvoke.Name => @"[DllImport(""kernel32.dll"", SetLastError = true)]
+        string IInvoke.Name => "BeginUpdateResource";
+
+        string IInvoke.PInvoke => @"[DllImport(""kernel32.dll"", SetLastError = true)]
         public static extern IntPtr BeginUpdateResource(string pFileName, bool bDeleteExistingResources);
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.PInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"public static IntPtr BeginUpdateResource(string pFileName, bool bDeleteExistingResources)
+        {
+            Type[] paramTypes = { typeof(string), typeof(bool) };
+            Object[] args = { pFileName, bDeleteExistingResources };
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+            object res = DynamicPInvokeBuilder(typeof(IntPtr), ""Kernel32.dll"", ""BeginUpdateResource"", ref args, paramTypes);
+            return (IntPtr)res;
+        }
+
+        {{INVOKE}}";
     }
 }

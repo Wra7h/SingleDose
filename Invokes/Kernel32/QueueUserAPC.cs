@@ -1,5 +1,3 @@
-using System;
-
 namespace SingleDose.Invokes.Kernel32
 {
     internal class QueueUserAPC : IInvoke
@@ -9,8 +7,17 @@ namespace SingleDose.Invokes.Kernel32
         string IInvoke.PInvoke => @"[DllImport(""kernel32.dll"", SetLastError = true)]
         public static extern IntPtr QueueUserAPC(IntPtr pfnAPC, IntPtr hThread, IntPtr dwData);
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"public static IntPtr QueueUserAPC(IntPtr pfnAPC, IntPtr hThread, IntPtr dwData)
+        {
+            Type[] paramTypes = { typeof(IntPtr), typeof(IntPtr), typeof(IntPtr) };
+            Object[] args = { pfnAPC, hThread, dwData };
+
+            object res = DynamicPInvokeBuilder(typeof(IntPtr), ""Kernel32.dll"", ""QueueUserAPC"", ref args, paramTypes);
+            return (IntPtr)res;
+        }
+
+        {{INVOKE}}";
     }
 }

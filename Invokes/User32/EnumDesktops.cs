@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SingleDose.Invokes.User32
+﻿namespace SingleDose.Invokes.User32
 {
     internal class EnumDesktops : IInvoke
     {
@@ -11,8 +9,16 @@ namespace SingleDose.Invokes.User32
             IntPtr hwinsta, IntPtr lpEnumFunc,
             IntPtr lParam);
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"public static bool EnumDesktops(IntPtr hwinsta, IntPtr lpEnumFunc, IntPtr lParam)
+        {
+            Type[] paramTypes = { typeof(IntPtr), typeof(IntPtr), typeof(IntPtr) };
+            Object[] args = { hwinsta, lpEnumFunc, lParam };
+            object res = DynamicPInvokeBuilder(typeof(bool), ""User32.dll"", ""EnumDesktops"", ref args, paramTypes);
+            return (bool)res;
+        }
+
+        {{INVOKE}}";
     }
 }

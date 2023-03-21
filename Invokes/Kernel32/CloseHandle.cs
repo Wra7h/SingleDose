@@ -1,5 +1,3 @@
-using System;
-
 namespace SingleDose.Invokes.Kernel32
 {
     internal class CloseHandle : IInvoke
@@ -9,8 +7,17 @@ namespace SingleDose.Invokes.Kernel32
         string IInvoke.PInvoke => @"[DllImport(""kernel32.dll"")]
         static extern bool CloseHandle(IntPtr hObject);
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"static bool CloseHandle(IntPtr hObject)
+        {
+            Type[] paramTypes = { typeof(IntPtr) };
+            Object[] args = { hObject };
+
+            object res = DynamicPInvokeBuilder(typeof(bool), ""Kernel32.dll"", ""CloseHandle"", ref args, paramTypes);
+            return (bool)res;
+        }
+
+        {{INVOKE}}";
     }
 }

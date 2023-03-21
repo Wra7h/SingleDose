@@ -17,7 +17,7 @@ namespace SingleDose.Techniques.Loaders
 
         bool ITechnique.IsLoader => true;
         
-        List<string> ITechnique.PInvokeRecipe => new List<string>() { "VirtualAlloc", "EnumWindows" };
+        List<string> ITechnique.Invokes => new List<string>() { "VirtualAlloc", "EnumWindows" };
         
         List<string> ITechnique.Prerequisites => null;
         
@@ -43,7 +43,7 @@ namespace {{NAMESPACE}}
             EnumWindows(hAlloc, IntPtr.Zero);
         }
         {{ARGS}}
-        {{PINVOKE}}
+        {{INVOKE}}
     }
 }";
 

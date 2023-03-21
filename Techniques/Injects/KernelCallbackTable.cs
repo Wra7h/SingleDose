@@ -17,7 +17,7 @@ namespace SingleDose.Techniques.Injects
 
         bool ITechnique.IsLoader => false;
 
-        List<string> ITechnique.PInvokeRecipe => new List<string>() { "VirtualAllocEx","NtQueryInformationProcess", "ReadProcessMemory", "WriteProcessMemory_IntPtr", "SendMessage" };
+        List<string> ITechnique.Invokes => new List<string>() { "VirtualAllocEx","NtQueryInformationProcess", "ReadProcessMemory", "WriteProcessMemory_IntPtr", "SendMessage" };
         
         List<string> ITechnique.Prerequisites => new List<string>() { "ProcessID" };
         
@@ -292,7 +292,7 @@ namespace {{NAMESPACE}}
             public string lpData;
         }
         #endregion
-        {{PINVOKE}}
+        {{INVOKE}}
     }
 }";
 

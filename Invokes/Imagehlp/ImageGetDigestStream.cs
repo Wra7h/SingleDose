@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SingleDose.Invokes.Imagehlp
+﻿namespace SingleDose.Invokes.Imagehlp
 {
     internal class ImageGetDigestStream : IInvoke
     {
@@ -11,8 +9,17 @@ namespace SingleDose.Invokes.Imagehlp
             IntPtr FileHandle, uint DigestLevel, 
             IntPtr DigestFunction, IntPtr DigestHandle);
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"static bool ImageGetDigestStream(IntPtr FileHandle, uint DigestLevel,
+            IntPtr DigestFunction, IntPtr DigestHandle)
+        {
+            Type[] paramTypes = { typeof(IntPtr), typeof(uint), typeof(IntPtr), typeof(IntPtr) };
+            Object[] args = { FileHandle, DigestLevel, DigestFunction, DigestHandle };
+            object res = DynamicPInvokeBuilder(typeof(bool), ""Imagehlp.dll"", ""ImageGetDigestStream"", ref args, paramTypes);
+            return (bool)res;
+        }
+
+        {{INVOKE}}";
     }
 }

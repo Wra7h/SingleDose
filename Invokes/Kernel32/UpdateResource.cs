@@ -1,5 +1,3 @@
-using System;
-
 namespace SingleDose.Invokes.Kernel32
 {
     internal class UpdateResource : IInvoke
@@ -12,8 +10,17 @@ namespace SingleDose.Invokes.Kernel32
             IntPtr lpName, ushort wLanguage,
              byte[] lpData, uint cb);
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"public static bool UpdateResource(IntPtr hUpdate, IntPtr lpType, IntPtr lpName, ushort wLanguage, byte[] lpData, uint cb)
+        {
+            Type[] paramTypes = { typeof(IntPtr), typeof(IntPtr), typeof(IntPtr), typeof(ushort), typeof(byte[]), typeof(uint) };
+            Object[] args = { hUpdate, lpType, lpName, wLanguage, lpData, cb };
+
+            object res = DynamicPInvokeBuilder(typeof(bool), ""Kernel32.dll"", ""UpdateResource"", ref args, paramTypes);
+            return (bool)res;
+        }
+
+        {{INVOKE}}";
     }
 }

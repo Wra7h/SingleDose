@@ -17,7 +17,7 @@ namespace SingleDose.Techniques.Injects
         bool ITechnique.IsUnsafe => false;
 
         bool ITechnique.IsLoader => false;
-        List<string> ITechnique.PInvokeRecipe => new List<string>() { "VirtualAllocEx", "WriteProcessMemory_ByteArray", "CreateRemoteThread"};
+        List<string> ITechnique.Invokes => new List<string>() { "VirtualAllocEx", "WriteProcessMemory_ByteArray", "CreateRemoteThread"};
         List<string> ITechnique.Prerequisites => new List<string>() { "ProcessID" };
         string ITechnique.Base => @"
 using System;
@@ -43,7 +43,7 @@ namespace {{NAMESPACE}}
             CreateRemoteThread(target.Handle, IntPtr.Zero, 0, hAlloc, IntPtr.Zero, 0, IntPtr.Zero);
         }
         {{ARGS}}
-        {{PINVOKE}}
+        {{INVOKE}}
     }
 }";
 

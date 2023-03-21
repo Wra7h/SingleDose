@@ -1,5 +1,3 @@
-using System;
-
 namespace SingleDose.Invokes.Kernel32
 {
     internal class SleepEx : IInvoke
@@ -7,11 +5,19 @@ namespace SingleDose.Invokes.Kernel32
         string IInvoke.Name => "SleepEx";
 
         string IInvoke.PInvoke => @"[DllImport(""kernel32.dll"")]
-        static extern int SleepEx(
-             UInt32 dwMilliseconds,bool bAlertable);
+        static extern int SleepEx( UInt32 dwMilliseconds, bool bAlertable);
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"public static int SleepEx(UInt32 dwMilliseconds, bool bAlertable)
+        {
+            Type[] paramTypes = { typeof(UInt32), typeof(bool) };
+            Object[] args = { dwMilliseconds, bAlertable };
+
+            object res = DynamicPInvokeBuilder(typeof(int), ""Kernel32.dll"", ""SleepEx"", ref args, paramTypes);
+            return (int)res;
+        }
+
+        {{INVOKE}}";
     }
 }

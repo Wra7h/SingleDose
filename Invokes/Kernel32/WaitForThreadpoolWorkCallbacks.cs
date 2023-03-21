@@ -1,5 +1,3 @@
-using System;
-
 namespace SingleDose.Invokes.Kernel32
 {
     internal class WaitForThreadpoolWorkCallbacks : IInvoke
@@ -10,8 +8,17 @@ namespace SingleDose.Invokes.Kernel32
         static extern void WaitForThreadpoolWorkCallbacks(
             IntPtr pwk, bool fCancelPendingCallbacks);
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"public static void WaitForThreadpoolWorkCallbacks(IntPtr pwk, bool fCancelPendingCallbacks)
+        {
+            Type[] paramTypes = { typeof(IntPtr), typeof(bool) };
+            Object[] args = { pwk, fCancelPendingCallbacks };
+
+            object res = DynamicPInvokeBuilder(typeof(void), ""Kernel32.dll"", ""WaitForThreadpoolWorkCallbacks"", ref args, paramTypes);
+            return;
+        }
+
+        {{INVOKE}}";
     }
 }

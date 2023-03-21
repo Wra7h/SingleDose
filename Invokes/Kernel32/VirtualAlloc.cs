@@ -1,5 +1,3 @@
-using System;
-
 namespace SingleDose.Invokes.Kernel32
 {
     internal class VirtualAlloc : IInvoke
@@ -11,8 +9,17 @@ namespace SingleDose.Invokes.Kernel32
             IntPtr lpAddress, uint dwSize, 
             uint flAllocationType, uint flProtect);
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"public static IntPtr VirtualAlloc(IntPtr lpAddress, uint dwSize, uint flAllocationType, uint flProtect)
+        {
+            Type[] paramTypes = { typeof(IntPtr), typeof(uint), typeof(uint), typeof(uint) };
+            Object[] args = { lpAddress, dwSize, flAllocationType, flProtect };
+
+            object res = DynamicPInvokeBuilder(typeof(IntPtr), ""Kernel32.dll"", ""VirtualAlloc"", ref args, paramTypes);
+            return (IntPtr)res;
+        }
+
+        {{INVOKE}}";
     }
 }

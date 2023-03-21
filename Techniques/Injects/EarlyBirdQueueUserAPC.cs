@@ -19,7 +19,7 @@ namespace SingleDose.Techniques.Injects
 
         bool ITechnique.IsLoader => false;
 
-        List<string> ITechnique.PInvokeRecipe => new List<string>() { "VirtualAllocEx", "CreateProcess", "WriteProcessMemory_ByteArray", "OpenThread", "QueueUserAPC", "ResumeThread"};
+        List<string> ITechnique.Invokes => new List<string>() { "VirtualAllocEx", "CreateProcess", "WriteProcessMemory_ByteArray", "OpenThread", "QueueUserAPC", "ResumeThread"};
         
         List<string> ITechnique.Prerequisites => new List<string>() { "SpawnProcess" };
         
@@ -51,7 +51,7 @@ namespace {{NAMESPACE}}
             ResumeThread(sPI.hThread);
         }
         {{ARGS}}
-        {{PINVOKE}}
+        {{INVOKE}}
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         public struct PROCESS_INFORMATION

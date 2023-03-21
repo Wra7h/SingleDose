@@ -43,6 +43,7 @@
     <Compile Include="Invokes\Comdlg32\ChooseColor.cs" />
     <Compile Include="Invokes\Comdlg32\GetOpenFileName.cs" />
     <Compile Include="Invokes\Crypt32\CertEnumSystemStore.cs" />
+    <Compile Include="Invokes\DInvoke.cs" />
     <Compile Include="Invokes\IInvoke.cs" />
     <Compile Include="Invokes\Imagehlp\ImageGetDigestStream.cs" />
     <Compile Include="Invokes\Kernel32\BeginUpdateResource.cs" />

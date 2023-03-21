@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SingleDose.Invokes.Setupapi
+﻿namespace SingleDose.Invokes.Setupapi
 {
     internal class SetupOpenFileQueue : IInvoke
     {
@@ -9,8 +7,16 @@ namespace SingleDose.Invokes.Setupapi
         string IInvoke.PInvoke => @"[DllImport(""Setupapi.dll"")]
         static extern IntPtr SetupOpenFileQueue();
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"public static IntPtr SetupOpenFileQueue()
+        {
+            Type[] paramTypes = { };
+            Object[] args = { };
+            object res = DynamicPInvokeBuilder(typeof(IntPtr), ""Setupapi.dll"", ""SetupOpenFileQueue"", ref args, paramTypes);
+            return (IntPtr)res;
+        }
+
+        {{INVOKE}}";
     }
 }

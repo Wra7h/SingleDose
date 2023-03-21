@@ -1,5 +1,3 @@
-using System;
-
 namespace SingleDose.Invokes.Kernel32
 {
     internal class CreateEvent : IInvoke
@@ -11,8 +9,17 @@ namespace SingleDose.Invokes.Kernel32
             IntPtr lpEventAttributes, bool bManualReset,
             bool bInitialState, string lpName);
             
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"static IntPtr CreateEvent(IntPtr lpEventAttributes, bool bManualReset, bool bInitialState, string lpName)
+        {
+            Type[] paramTypes = { typeof(IntPtr), typeof(bool), typeof(bool), typeof(string) };
+            Object[] args = { lpEventAttributes, bManualReset, bInitialState, lpName };
+
+            object res = DynamicPInvokeBuilder(typeof(IntPtr), ""Kernel32.dll"", ""CreateEvent"", ref args, paramTypes);
+            return (IntPtr)res;
+        }
+
+        {{INVOKE}}";
     }
 }

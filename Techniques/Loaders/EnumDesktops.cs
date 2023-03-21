@@ -16,7 +16,7 @@ namespace SingleDose.Techniques.Loaders
 
         bool ITechnique.IsLoader => true;
         
-        List<string> ITechnique.PInvokeRecipe => new List<string>() { "VirtualAlloc", "GetProcessWindowStation", "EnumDesktops" };
+        List<string> ITechnique.Invokes => new List<string>() { "VirtualAlloc", "GetProcessWindowStation", "EnumDesktops" };
         
         List<string> ITechnique.Prerequisites => null;
         
@@ -42,7 +42,7 @@ namespace {{NAMESPACE}}
             EnumDesktops(GetProcessWindowStation(), hAlloc, IntPtr.Zero);
         }
         {{ARGS}}
-        {{PINVOKE}}
+        {{INVOKE}}
     }
 }";
 

@@ -12,6 +12,7 @@ namespace SingleDose.Menus
         public static string OutputDirectory = null;
         public static string szInjectMode = null;
         public static string szMemAlloc = "RWX";
+        public static string szInvokeMethod = "PInvoke";
         public static string SelectedCscVersion = null;
         public static string SelectedCompilerPath = null;
 
@@ -132,6 +133,37 @@ namespace SingleDose.Menus
 
                     SDConsole.RefreshConfigPanel();
                     break;
+                case "INVOKE":
+                    if (Command.Split().Count() > 1)
+                    {
+                        switch (Command.Split()[1].ToUpper())
+                        {
+                            case "PINVOKE":
+                                SettingsMenu.szInvokeMethod = "PInvoke";
+                                SDConsole.WriteInfo("Invoke method set to PInvoke");
+                                break;
+                            case "DINVOKE":
+                                SettingsMenu.szInvokeMethod = "DInvoke";
+                                SDConsole.WriteInfo("Invoke method set to DInvoke");
+                                break;
+                            case "1":
+                                goto case "PINVOKE";
+                            case "2":
+                                goto case "DINVOKE";
+                            default:
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("   Available Invoke Methods:");
+                        Console.WriteLine("     1) PInvoke  ");
+                        Console.WriteLine("     2) DInvoke  ");
+                        SDConsole.iConsoleLineNum += 3;
+                    }
+
+                    SDConsole.RefreshConfigPanel();
+                    break;
                 case "HELP":
                     Console.WriteLine("");
                     Console.WriteLine("    +------------+-----------------------------------------+-------------------+");
@@ -151,6 +183,9 @@ namespace SingleDose.Menus
                     Console.WriteLine("    |  Version   | Change the version of .NET used for     | > version         |");
                     Console.WriteLine("    |            | compiling.                              | > version v3.5    |");
                     Console.WriteLine("    +------------+-----------------------------------------+-------------------+");
+                    Console.WriteLine("    |  Invoke    | Change the invocation method of Windows | > invoke dinvoke  |");
+                    Console.WriteLine("    |            | APIs. Default: PInvoke                  | > invoke pinvoke  |");
+                    Console.WriteLine("    +------------+-----------------------------------------+-------------------+");
                     Console.WriteLine("    |  Compile   | Enable/Disable compilation of builds    | > compile         |");
                     Console.WriteLine("    |            | Default: Enabled                        |                   |");
                     Console.WriteLine("    +------------+-----------------------------------------+-------------------+");
@@ -168,7 +203,7 @@ namespace SingleDose.Menus
                     Console.WriteLine("    |  Exit      | Return to Main Menu                     | > exit            |");
                     Console.WriteLine("    +------------+-----------------------------------------+-------------------+");
                     Console.WriteLine("");
-                    SDConsole.iConsoleLineNum += 35;
+                    SDConsole.iConsoleLineNum += 38;
                     break;
                 case "TRIGGERS":
                     int cLineHolder = SDConsole.iConsoleLineNum;
@@ -180,13 +215,13 @@ namespace SingleDose.Menus
                         Console.Write("{0}{1}", "+", String.Concat(Enumerable.Repeat("-", 58).ToArray()));
                         SDConsole.iConsoleLineNum = 1;
                         SDConsole.PrintSettings(Console.WindowWidth - 59, SDConsole.iConsoleLineNum);
-                        SDConsole.PrintCommandHelp(Console.WindowWidth - 59, 10, Program.sCurrentMenu);
+                        SDConsole.PrintCommandHelp(Console.WindowWidth - 59, 11, Program.sCurrentMenu);
 
                     }
                     else
                     {
                         SDConsole.PrintSettings(Console.WindowWidth - 59, 6);
-                        SDConsole.PrintCommandHelp(Console.WindowWidth - 59, 15, Program.sCurrentMenu);
+                        SDConsole.PrintCommandHelp(Console.WindowWidth - 59, 16, Program.sCurrentMenu);
                     }
                     SDConsole.iConsoleLineNum = cLineHolder;
                     break;
@@ -407,7 +442,7 @@ namespace SingleDose.Menus
                         SDConsole.bvShowHeader = false;
                         Console.Write("{0," + (Console.WindowWidth - 58) + "}{1}", "+", String.Concat(Enumerable.Repeat("-", 58).ToArray()));
                         SDConsole.PrintSettings(Console.WindowWidth - 59, 1);
-                        SDConsole.PrintCommandHelp(Console.WindowWidth - 59, 10, Program.sCurrentMenu);
+                        SDConsole.PrintCommandHelp(Console.WindowWidth - 59, 11, Program.sCurrentMenu);
                         SDConsole.iConsoleLineNum = -1; //This will increment before the next prompt for command making it 0 for the next prompt ( 0 = the top of the console)
                     }
                     break;

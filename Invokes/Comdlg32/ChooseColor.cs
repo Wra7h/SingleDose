@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace SingleDose.Invokes.Comdlg32
+﻿namespace SingleDose.Invokes.Comdlg32
 {
     internal class ChooseColor : IInvoke
     {
@@ -12,8 +7,16 @@ namespace SingleDose.Invokes.Comdlg32
         string IInvoke.PInvoke => @"[DllImport(""comdlg32.dll"", SetLastError = true, CharSet = CharSet.Auto)]
         public extern static bool ChooseColor(ref CHOOSECOLOR lpcc);
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"public static bool ChooseColor(ref CHOOSECOLOR lpcc)
+        {
+            Type[] paramTypes = { Type.GetType(typeof(CHOOSECOLOR)+ ""&"") };
+            Object[] args = { lpcc };
+            object res = DynamicPInvokeBuilder(typeof(bool), ""Comdlg32.dll"", ""ChooseColor"", ref args, paramTypes);
+            return (bool)res;
+        }
+
+        {{INVOKE}}";
     }
 }

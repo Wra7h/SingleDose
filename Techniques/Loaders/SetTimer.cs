@@ -17,7 +17,7 @@ namespace SingleDose.Techniques.Loaders
 
         bool ITechnique.IsLoader => true;
         
-        List<string> ITechnique.PInvokeRecipe => new List<string>() { "VirtualAlloc", "SetTimer", "GetMessage", "DispatchMessage" };
+        List<string> ITechnique.Invokes => new List<string>() { "VirtualAlloc", "SetTimer", "GetMessage", "DispatchMessage" };
         
         List<string> ITechnique.Prerequisites => null;
         
@@ -47,7 +47,7 @@ namespace {{NAMESPACE}}
             DispatchMessage(ref pMSG);
         }
         {{ARGS}}
-        {{PINVOKE}}
+        {{INVOKE}}
 
         public struct MSG
         {

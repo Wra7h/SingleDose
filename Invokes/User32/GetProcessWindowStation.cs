@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SingleDose.Invokes.User32
+﻿namespace SingleDose.Invokes.User32
 {
     internal class GetProcessWindowStation : IInvoke
     {
@@ -9,8 +7,16 @@ namespace SingleDose.Invokes.User32
         string IInvoke.PInvoke => @"[DllImport(""User32.dll"", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern IntPtr GetProcessWindowStation();
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"public static IntPtr GetProcessWindowStation()
+        {
+            Type[] paramTypes = { };
+            Object[] args = { };
+            object res = DynamicPInvokeBuilder(typeof(IntPtr), ""User32.dll"", ""GetProcessWindowStation"", ref args, paramTypes);
+            return (IntPtr)res;
+        }
+
+        {{INVOKE}}";
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SingleDose.Invokes.ResUtils
+﻿namespace SingleDose.Invokes.ResUtils
 {
     internal class ClusWorkerCreate : IInvoke
     {
@@ -10,8 +8,19 @@ namespace SingleDose.Invokes.ResUtils
         static extern IntPtr ClusWorkerCreate(out CLUS_WORKER lpWorker,
             IntPtr lpStartAddress, IntPtr lpParameter);
         
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"static IntPtr ClusWorkerCreate(out CLUS_WORKER lpWorker, IntPtr lpStartAddress, IntPtr lpParameter)
+        {
+            lpWorker = new CLUS_WORKER();
+            Type[] paramTypes = { Type.GetType(typeof(CLUS_WORKER) + ""&""), typeof(IntPtr), typeof(IntPtr) };
+            Object[] args = { lpWorker, lpStartAddress, lpParameter };
+
+            object res = DynamicPInvokeBuilder(typeof(IntPtr), ""ResUtils.dll"", ""ClusWorkerCreate"", ref args, paramTypes);
+            lpWorker = (CLUS_WORKER)args[0];
+            return (IntPtr)res;
+        }
+
+        {{INVOKE}}";
     }
 }

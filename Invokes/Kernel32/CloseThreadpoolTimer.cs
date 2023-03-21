@@ -1,5 +1,3 @@
-using System;
-
 namespace SingleDose.Invokes.Kernel32
 {
     internal class CloseThreadpoolTimer : IInvoke
@@ -9,8 +7,17 @@ namespace SingleDose.Invokes.Kernel32
         string IInvoke.PInvoke => @"[DllImport(""kernel32.dll"")]
         static extern void CloseThreadpoolTimer(IntPtr pti);
         
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"static void CloseThreadpoolTimer(IntPtr pti)
+        {
+            Type[] paramTypes = { typeof(IntPtr) };
+            Object[] args = { pti };
+
+            object res = DynamicPInvokeBuilder(typeof(void), ""Kernel32.dll"", ""CloseThreadpoolTimer"", ref args, paramTypes);
+            return;
+        }
+
+        {{INVOKE}}";
     }
 }

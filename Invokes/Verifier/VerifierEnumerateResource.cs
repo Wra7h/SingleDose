@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SingleDose.Invokes.Verifier
+﻿namespace SingleDose.Invokes.Verifier
 {
     internal class VerifierEnumerateResource : IInvoke
     {
@@ -12,8 +10,17 @@ namespace SingleDose.Invokes.Verifier
             ulong ResourceType, IntPtr ResourceCallback,
             IntPtr EnumerationContext);
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"public static ulong VerifierEnumerateResource(IntPtr hProcess, ulong flags, 
+            ulong ResourceType, IntPtr ResourceCallback, IntPtr EnumerationContext)
+        {
+            Type[] paramTypes = { typeof(IntPtr), typeof(ulong) , typeof(ulong) , typeof(IntPtr) , typeof(IntPtr)};
+            Object[] args = { hProcess, flags, ResourceType, ResourceCallback, EnumerationContext };
+            object res = DynamicPInvokeBuilder(typeof(ulong), ""Verifier.dll"", ""VerifierEnumerateResource"", ref args, paramTypes);
+            return (ulong)res;
+        }
+
+        {{INVOKE}}";
     }
 }

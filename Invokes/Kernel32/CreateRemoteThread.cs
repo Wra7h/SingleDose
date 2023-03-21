@@ -1,5 +1,3 @@
-using System;
-
 namespace SingleDose.Invokes.Kernel32
 {
     internal class CreateRemoteThread : IInvoke
@@ -13,8 +11,21 @@ namespace SingleDose.Invokes.Kernel32
             IntPtr lpParameter, uint dwCreationFlags,
             IntPtr lpThreadId);
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"static IntPtr CreateRemoteThread(
+            IntPtr hProcess, IntPtr lpThreadAttributes,
+            uint dwStackSize, IntPtr lpStartAddress,
+            IntPtr lpParameter, uint dwCreationFlags,
+            IntPtr lpThreadId)
+        {
+            Type[] paramTypes = { typeof(IntPtr), typeof(IntPtr), typeof(uint), typeof(IntPtr), typeof(IntPtr), typeof(uint), typeof(IntPtr) };
+            Object[] args = { hProcess, lpThreadAttributes, dwStackSize, lpStartAddress, lpParameter, dwCreationFlags, lpThreadId };
+
+            object res = DynamicPInvokeBuilder(typeof(IntPtr), ""Kernel32.dll"", ""CreateRemoteThread"", ref args, paramTypes);
+            return (IntPtr)res;
+        }
+
+        {{INVOKE}}";
     }
 }

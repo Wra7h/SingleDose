@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SingleDose.Invokes.ResUtils
+﻿namespace SingleDose.Invokes.ResUtils
 {
     internal class ClusWorkerTerminateEx : IInvoke
     {
@@ -10,8 +8,17 @@ namespace SingleDose.Invokes.ResUtils
         static extern IntPtr ClusWorkerTerminateEx(ref CLUS_WORKER ClusWorker,
             uint TimeoutInMilliseconds, bool WaitOnly);
         
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"static IntPtr ClusWorkerTerminateEx(ref CLUS_WORKER ClusWorker, uint TimeoutInMilliseconds, bool WaitOnly)
+        {
+            Type[] paramTypes = { Type.GetType(typeof(CLUS_WORKER) + ""&""), typeof(uint), typeof(bool) };
+            Object[] args = { ClusWorker, TimeoutInMilliseconds, WaitOnly };
+
+            object res = DynamicPInvokeBuilder(typeof(IntPtr), ""ResUtils.dll"", ""ClusWorkerTerminateEx"", ref args, paramTypes);
+            return (IntPtr)res;
+        }
+
+        {{INVOKE}}";
     }
 }

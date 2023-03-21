@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SingleDose.Invokes.User32
+﻿namespace SingleDose.Invokes.User32
 {
     internal class EnumWindows : IInvoke
     {
@@ -10,8 +8,16 @@ namespace SingleDose.Invokes.User32
         static extern bool EnumWindows(
             IntPtr lpEnumFunc, IntPtr lParam);
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"public static bool EnumWindows(IntPtr lpEnumFunc, IntPtr lParam)
+        {
+            Type[] paramTypes = { typeof(IntPtr), typeof(IntPtr) };
+            Object[] args = { lpEnumFunc, lParam };
+            object res = DynamicPInvokeBuilder(typeof(bool), ""User32.dll"", ""EnumWindows"", ref args, paramTypes);
+            return (bool)res;
+        }
+
+        {{INVOKE}}";
     }
 }

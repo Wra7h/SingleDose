@@ -20,7 +20,7 @@ namespace SingleDose.Techniques.Loaders
 
         bool ITechnique.IsLoader => true;
         
-        List<string> ITechnique.PInvokeRecipe => new List<string>() { "VirtualAlloc", "FlsAlloc", "FlsSetValue" };
+        List<string> ITechnique.Invokes => new List<string>() { "VirtualAlloc", "FlsAlloc", "FlsSetValue" };
         
         List<string> ITechnique.Prerequisites => null;
         
@@ -47,7 +47,7 @@ namespace {{NAMESPACE}}
             FlsSetValue(dwIndex, String.Empty);
         }
         {{ARGS}}
-        {{PINVOKE}}
+        {{INVOKE}}
     }
 }";
 

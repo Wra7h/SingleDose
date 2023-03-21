@@ -1,5 +1,3 @@
-using System;
-
 namespace SingleDose.Invokes.Kernel32
 {
     internal class CreateWaitableTimer : IInvoke
@@ -11,8 +9,17 @@ namespace SingleDose.Invokes.Kernel32
             IntPtr lpTimerAttributes, bool bManualReset,
             string lpTimerName);
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"public static IntPtr CreateWaitableTimer(IntPtr lpTimerAttributes, bool bManualReset, string lpTimerName)
+        {
+            Type[] paramTypes = { typeof(IntPtr), typeof(bool), typeof(string) };
+            Object[] args = { lpTimerAttributes, bManualReset, lpTimerName };
+
+            object res = DynamicPInvokeBuilder(typeof(IntPtr), ""Kernel32.dll"", ""CreateWaitableTimer"", ref args, paramTypes);
+            return (IntPtr)res;
+        }
+
+        {{INVOKE}}";
     }
 }

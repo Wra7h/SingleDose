@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SingleDose.Invokes.User32
+﻿namespace SingleDose.Invokes.User32
 {
     internal class SendMessage : IInvoke
     {
@@ -11,8 +9,18 @@ namespace SingleDose.Invokes.User32
             IntPtr hWnd, uint Msg,
             IntPtr wParam, ref COPYDATASTRUCT lParam);
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"static int SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, ref COPYDATASTRUCT lParam)
+        {
+            Type[] paramTypes = { typeof(IntPtr), typeof(uint) , typeof(IntPtr) , Type.GetType(typeof(COPYDATASTRUCT) + ""&"")};
+            Object[] args = { hWnd, Msg, wParam, lParam };
+            object res = DynamicPInvokeBuilder(typeof(int), ""User32.dll"", ""SendMessage"", ref args, paramTypes);
+
+            lParam = (COPYDATASTRUCT)args[3];
+            return (int)res;
+        }
+
+        {{INVOKE}}";
     }
 }

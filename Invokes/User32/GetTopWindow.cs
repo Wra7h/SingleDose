@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SingleDose.Invokes.User32
+﻿namespace SingleDose.Invokes.User32
 {
     internal class GetTopWindow : IInvoke
     {
@@ -9,8 +7,16 @@ namespace SingleDose.Invokes.User32
         string IInvoke.PInvoke => @"[DllImport(""user32.dll"")]
         static extern IntPtr GetTopWindow(IntPtr hWnd);
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"public static IntPtr GetTopWindow(IntPtr hWnd)
+        {
+            Type[] paramTypes = { typeof(IntPtr) };
+            Object[] args = { hWnd };
+            object res = DynamicPInvokeBuilder(typeof(IntPtr), ""User32.dll"", ""GetTopWindow"", ref args, paramTypes);
+            return (IntPtr)res;
+        }
+
+        {{INVOKE}}";
     }
 }

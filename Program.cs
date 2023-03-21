@@ -36,7 +36,7 @@ namespace SingleDose
 
             SDConsole.PrintHeader();
             SDConsole.PrintSettings(Console.WindowWidth - 59, SDConsole.iConsoleLineNum);
-            SDConsole.PrintCommandHelp(Console.WindowWidth - 59, SDConsole.iConsoleLineNum+9, sCurrentMenu);
+            SDConsole.PrintCommandHelp(Console.WindowWidth - 59, SDConsole.iConsoleLineNum+10, sCurrentMenu);
             SDConsole.iConsoleLineNum = 0;
 
             List<string> CommandHistory = new List<string>();

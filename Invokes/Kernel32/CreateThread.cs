@@ -1,5 +1,3 @@
-using System;
-
 namespace SingleDose.Invokes.Kernel32
 {
     internal class CreateThread : IInvoke
@@ -12,8 +10,20 @@ namespace SingleDose.Invokes.Kernel32
             IntPtr lpStartAddress, IntPtr lpParameter,
             uint dwCreationFlags, IntPtr lpThreadId);
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"public static IntPtr CreateThread(
+            IntPtr lpThreadAttributes, uint dwStackSize,
+            IntPtr lpStartAddress, IntPtr lpParameter,
+            uint dwCreationFlags, IntPtr lpThreadId)
+        {
+            Type[] paramTypes = { typeof(IntPtr), typeof(uint), typeof(IntPtr), typeof(IntPtr), typeof(uint), typeof(IntPtr) };
+            Object[] args = { lpThreadAttributes, dwStackSize, lpStartAddress, lpParameter, dwCreationFlags, lpThreadId };
+
+            object res = DynamicPInvokeBuilder(typeof(IntPtr), ""Kernel32.dll"", ""CreateThread"", ref args, paramTypes);
+            return (IntPtr)res;
+        }
+
+        {{INVOKE}}";
     }
 }

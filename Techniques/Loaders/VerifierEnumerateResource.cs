@@ -17,7 +17,7 @@ namespace SingleDose.Techniques.Loaders
 
         bool ITechnique.IsLoader => true;
         
-        List<string> ITechnique.PInvokeRecipe => new List<string>() { "VirtualAlloc", "VerifierEnumerateResource" };
+        List<string> ITechnique.Invokes => new List<string>() { "VirtualAlloc", "VerifierEnumerateResource" };
         
         List<string> ITechnique.Prerequisites => null;
         
@@ -43,7 +43,7 @@ namespace {{NAMESPACE}}
             VerifierEnumerateResource(Process.GetCurrentProcess().Handle, 0, 0, hAlloc, IntPtr.Zero);
         }
         {{ARGS}}
-        {{PINVOKE}}
+        {{INVOKE}}
     }
 }";
 

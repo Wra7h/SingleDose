@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SingleDose.Invokes.Setupapi
+﻿namespace SingleDose.Invokes.Setupapi
 {
     internal class SetupQueueCopy : IInvoke
     {
@@ -15,8 +13,21 @@ namespace SingleDose.Invokes.Setupapi
             uint CopyStyle);
 
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"public static bool SetupQueueCopy(IntPtr QueueHandle, string SourceRootPath, 
+            string SourcePath, string SourceFilename, string SourceDescription, string SourceTagFile, 
+            string TargetDirectory, string TargetFilename, uint CopyStyle)
+        {
+            Type[] paramTypes = { typeof(IntPtr), typeof(string), typeof(string), typeof(string), 
+                    typeof(string), typeof(string), typeof(string), typeof(string), typeof(uint) };
+            Object[] args = { QueueHandle, SourceRootPath, SourcePath, SourceFilename, SourceDescription,
+                SourceTagFile, TargetDirectory, TargetFilename, CopyStyle };
+
+            object res = DynamicPInvokeBuilder(typeof(bool), ""Setupapi.dll"", ""SetupQueueCopy"", ref args, paramTypes);
+            return (bool)res;
+        }
+
+        {{INVOKE}}";
     }
 }

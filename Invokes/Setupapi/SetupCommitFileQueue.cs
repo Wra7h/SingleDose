@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SingleDose.Invokes.Setupapi
+﻿namespace SingleDose.Invokes.Setupapi
 {
     internal class SetupCommitFileQueue : IInvoke
     {
@@ -11,8 +9,17 @@ namespace SingleDose.Invokes.Setupapi
             IntPtr hWndOwner, IntPtr QueueHandle,
             IntPtr MsgHandler, IntPtr pContext);
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"public static bool SetupCommitFileQueue(IntPtr hWndOwner, IntPtr QueueHandle, IntPtr MsgHandler, IntPtr pContext)
+        {
+            Type[] paramTypes = { typeof(IntPtr), typeof(IntPtr), typeof(IntPtr), typeof(IntPtr) };
+            Object[] args = { hWndOwner, QueueHandle, MsgHandler, pContext };
+
+            object res = DynamicPInvokeBuilder(typeof(bool), ""Setupapi.dll"", ""SetupCommitFileQueue"", ref args, paramTypes);
+            return (bool)res;
+        }
+
+        {{INVOKE}}";
     }
 }

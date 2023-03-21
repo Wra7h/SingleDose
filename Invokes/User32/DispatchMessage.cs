@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SingleDose.Invokes.User32
+﻿namespace SingleDose.Invokes.User32
 {
     internal class DispatchMessage : IInvoke
     {
@@ -9,8 +7,16 @@ namespace SingleDose.Invokes.User32
         string IInvoke.PInvoke => @"[DllImport(""user32.dll"")]
         static extern IntPtr DispatchMessage([In] ref MSG lpmsg);
         
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"public static IntPtr DispatchMessage([In] ref MSG lpmsg)
+        {
+            Type[] paramTypes = { typeof(MSG) };
+            Object[] args = { lpmsg };
+            object res = DynamicPInvokeBuilder(typeof(IntPtr), ""User32.dll"", ""DispatchMessage"", ref args, paramTypes);
+            return (IntPtr)res;
+        }
+
+        {{INVOKE}}";
     }
 }

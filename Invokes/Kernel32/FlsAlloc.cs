@@ -1,5 +1,3 @@
-using System;
-
 namespace SingleDose.Invokes.Kernel32
 {
     internal class FlsAlloc : IInvoke
@@ -9,8 +7,17 @@ namespace SingleDose.Invokes.Kernel32
         string IInvoke.PInvoke => @"[DllImport(""kernel32.dll"", SetLastError = true)]
         static extern uint FlsAlloc(IntPtr callback);
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"public static uint FlsAlloc(IntPtr callback)
+        {
+            Type[] paramTypes = { typeof(IntPtr) };
+            Object[] args = { callback };
+
+            object res = DynamicPInvokeBuilder(typeof(uint), ""Kernel32.dll"", ""FlsAlloc"", ref args, paramTypes);
+            return (uint)res;
+        }
+
+        {{INVOKE}}";
     }
 }

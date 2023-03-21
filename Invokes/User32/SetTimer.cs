@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SingleDose.Invokes.User32
+﻿namespace SingleDose.Invokes.User32
 {
     internal class SetTimer : IInvoke
     {
@@ -11,8 +9,16 @@ namespace SingleDose.Invokes.User32
             IntPtr hWnd, IntPtr nIDEvent, 
             uint uElapse, IntPtr lpTimerFunc);
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"static IntPtr SetTimer(IntPtr hWnd, IntPtr nIDEvent, uint uElapse, IntPtr lpTimerFunc)
+        {
+            Type[] paramTypes = { typeof(IntPtr), typeof(IntPtr) , typeof(uint) , typeof(IntPtr)};
+            Object[] args = { hWnd, nIDEvent, uElapse, lpTimerFunc };
+            object res = DynamicPInvokeBuilder(typeof(IntPtr), ""User32.dll"", ""SetTimer"", ref args, paramTypes);
+            return (IntPtr)res;
+        }
+
+        {{INVOKE}}";
     }
 }

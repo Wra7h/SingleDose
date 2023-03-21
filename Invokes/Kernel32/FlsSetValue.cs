@@ -1,5 +1,3 @@
-using System;
-
 namespace SingleDose.Invokes.Kernel32
 {
     internal class FlsSetValue : IInvoke
@@ -9,8 +7,17 @@ namespace SingleDose.Invokes.Kernel32
         string IInvoke.PInvoke => @"[DllImport(""kernel32.dll"", SetLastError = true)]
         static extern bool FlsSetValue(uint dwFlsIndex, string lpFlsData);
 
-        {{PINVOKE}}";
+        {{INVOKE}}";
 
-        string IInvoke.DInvoke => throw new NotImplementedException();
+        string IInvoke.DInvoke => @"public static bool FlsSetValue(uint dwFlsIndex, string lpFlsData)
+        {
+            Type[] paramTypes = { typeof(uint), typeof(string) };
+            Object[] args = { dwFlsIndex, lpFlsData };
+
+            object res = DynamicPInvokeBuilder(typeof(bool), ""Kernel32.dll"", ""FlsSetValue"", ref args, paramTypes);
+            return (bool)res;
+        }
+
+        {{INVOKE}}";
     }
 }

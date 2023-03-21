@@ -75,13 +75,13 @@ namespace SingleDose.Menus
                         Console.Write("{0}{1}", "+", String.Concat(Enumerable.Repeat("-", 58).ToArray()));
                         SDConsole.iConsoleLineNum = 1;
                         SDConsole.PrintSettings(Console.WindowWidth - 59, SDConsole.iConsoleLineNum);
-                        SDConsole.PrintCommandHelp(Console.WindowWidth - 59, 10, Program.sCurrentMenu);
+                        SDConsole.PrintCommandHelp(Console.WindowWidth - 59, 11, Program.sCurrentMenu);
 
                     }
                     else
                     {
                         SDConsole.PrintSettings(Console.WindowWidth - 59, 6);
-                        SDConsole.PrintCommandHelp(Console.WindowWidth - 59, 15, Program.sCurrentMenu);
+                        SDConsole.PrintCommandHelp(Console.WindowWidth - 59, 16, Program.sCurrentMenu);
                     }
                     SDConsole.iConsoleLineNum = cLineHolder;
                     break;
@@ -94,13 +94,13 @@ namespace SingleDose.Menus
                         Console.Write("{0}{1}", "+", String.Concat(Enumerable.Repeat("-", 58).ToArray()));
                         SDConsole.iConsoleLineNum = 1;
                         SDConsole.PrintSettings(Console.WindowWidth - 59, SDConsole.iConsoleLineNum);
-                        SDConsole.PrintCommandHelp(Console.WindowWidth - 59, 10, Program.sCurrentMenu);
+                        SDConsole.PrintCommandHelp(Console.WindowWidth - 59, 11, Program.sCurrentMenu);
                     
                     }
                     else
                     {
                         SDConsole.PrintSettings(Console.WindowWidth - 59, 6);
-                        SDConsole.PrintCommandHelp(Console.WindowWidth - 59, 15, Program.sCurrentMenu);
+                        SDConsole.PrintCommandHelp(Console.WindowWidth - 59, 16, Program.sCurrentMenu);
                     }
                     SDConsole.iConsoleLineNum = cLineHolder;
                     break;
@@ -187,7 +187,7 @@ namespace SingleDose.Menus
                         SDConsole.bvShowHeader = false;
                         Console.Write("{0," + (Console.WindowWidth - 58) + "}{1}", "+", String.Concat(Enumerable.Repeat("-", 58).ToArray()));
                         SDConsole.PrintSettings(Console.WindowWidth - 59, 1);
-                        SDConsole.PrintCommandHelp(Console.WindowWidth - 59, 10, Program.sCurrentMenu);
+                        SDConsole.PrintCommandHelp(Console.WindowWidth - 59, 11, Program.sCurrentMenu);
                         SDConsole.iConsoleLineNum = -1; //This will increment before the next prompt for command making it 0 for the next prompt ( 0 = the top of the console)
                     }
                     break;
@@ -373,7 +373,7 @@ namespace SingleDose.Menus
                         Console.ForegroundColor = ConsoleColor.Cyan;
                         Console.Write("   APIs: ");
                         Console.ResetColor();
-                        List<string> APIs = technique.PInvokeRecipe;
+                        List<string> APIs = technique.Invokes;
 
                         if (SettingsMenu.szMemAlloc == "RW/RX" && technique.VProtect != null)
                         {
