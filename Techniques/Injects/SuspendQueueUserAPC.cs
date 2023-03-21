@@ -17,7 +17,7 @@ namespace SingleDose.Techniques.Injects
 
         bool ITechnique.IsLoader => false;
 
-        List<string> ITechnique.PInvokeRecipe => new List<string>() { "VirtualAllocEx", "WriteProcessMemory_ByteArray", "OpenThread", "QueueUserAPC", "CloseHandle"};
+        List<string> ITechnique.Invokes => new List<string>() { "VirtualAllocEx", "WriteProcessMemory_ByteArray", "OpenThread", "QueueUserAPC", "CloseHandle"};
 
         List<string> ITechnique.Prerequisites => new List<string>() { "ProcessID" };
 
@@ -58,7 +58,7 @@ namespace {{NAMESPACE}}
             }
         }
         {{ARGS}}
-        {{PINVOKE}}
+        {{INVOKE}}
     }
 }";
 

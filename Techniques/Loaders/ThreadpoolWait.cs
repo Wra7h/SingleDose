@@ -4,7 +4,7 @@ namespace SingleDose.Techniques.Loaders
 {
     internal class ThreadpoolWait : ITechnique
     {
-        string ITechnique.TechniqueName => "ThreadPoolWait";
+        string ITechnique.TechniqueName => "ThreadpoolWait";
 
         string ITechnique.TechniqueDescription => null;
         
@@ -18,7 +18,7 @@ namespace SingleDose.Techniques.Loaders
 
         bool ITechnique.IsLoader => true;
         
-        List<string> ITechnique.PInvokeRecipe => new List<string>() { "VirtualAlloc", "CreateEvent", "CreateThreadpoolWait", "SetThreadpoolWait", "WaitForSingleObject"};
+        List<string> ITechnique.Invokes => new List<string>() { "VirtualAlloc", "CreateEvent", "CreateThreadpoolWait", "SetThreadpoolWait", "WaitForSingleObject"};
         
         List<string> ITechnique.Prerequisites => null;
         
@@ -49,7 +49,7 @@ namespace {{NAMESPACE}}
         }
 
         {{ARGS}}
-        {{PINVOKE}}
+        {{INVOKE}}
     }
 }";
 

@@ -16,7 +16,7 @@ namespace SingleDose.Techniques.Loaders
 
         bool ITechnique.IsLoader => true;
         
-        List<string> ITechnique.PInvokeRecipe => new List<string>() { "VirtualAlloc","ConvertThreadToFiber", "CreateFiber", "SwitchToFiber" };
+        List<string> ITechnique.Invokes => new List<string>() { "VirtualAlloc","ConvertThreadToFiber", "CreateFiber", "SwitchToFiber" };
         
         List<string> ITechnique.Prerequisites => null;
         
@@ -44,7 +44,7 @@ namespace {{NAMESPACE}}
             SwitchToFiber(shellcodeFiber);
         }
         {{ARGS}}
-        {{PINVOKE}}
+        {{INVOKE}}
     }
 }";
 

@@ -64,6 +64,10 @@ namespace SingleDose.Misc
                             {
                                 listszCommands = new List<string>() { "triggers", "settings" };
                             }
+                            else if (szCommand.StartsWith("invoke "))
+                            {
+                                listszCommands = new List<string>() { "pinvoke", "dinvoke" };
+                            }
                         }
                         else if (szCurrentMenu == "Triggers")
                         {

@@ -16,7 +16,7 @@ namespace SingleDose.Techniques.Loaders
 
         bool ITechnique.IsLoader => true;
 
-        List<string> ITechnique.PInvokeRecipe => new List<string>() { "VirtualAlloc", "CreateWaitableTimer", "SetWaitableTimer", "SleepEx" };
+        List<string> ITechnique.Invokes => new List<string>() { "VirtualAlloc", "CreateWaitableTimer", "SetWaitableTimer", "SleepEx" };
 
         List<string> ITechnique.Prerequisites => null;
         string ITechnique.Base => @"
@@ -55,7 +55,7 @@ namespace {{NAMESPACE}}
             [FieldOffset(4)] public Int32 HighPart;
         }
 
-        {{PINVOKE}}
+        {{INVOKE}}
     }
 }";
 

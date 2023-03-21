@@ -58,7 +58,7 @@ namespace SingleDose.Misc
             
             SDConsole.PrintHeader();
             SDConsole.PrintSettings(Console.WindowWidth - 59, SDConsole.iConsoleLineNum);
-            SDConsole.PrintCommandHelp(Console.WindowWidth - 59, SDConsole.iConsoleLineNum + 9, Program.sCurrentMenu);
+            SDConsole.PrintCommandHelp(Console.WindowWidth - 59, SDConsole.iConsoleLineNum + 10, Program.sCurrentMenu);
             SDConsole.iConsoleLineNum = 0;
 
             foreach (TutorialReqs req in Reqs)

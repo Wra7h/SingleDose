@@ -4,7 +4,7 @@ namespace SingleDose.Techniques.Loaders
 {
     internal class ThreadpoolTimer : ITechnique
     {
-        string ITechnique.TechniqueName => "ThreadPoolTimer";
+        string ITechnique.TechniqueName => "ThreadpoolTimer";
 
         string ITechnique.TechniqueDescription => null;
 
@@ -17,7 +17,7 @@ namespace SingleDose.Techniques.Loaders
 
         bool ITechnique.IsLoader => true;
         
-        List<string> ITechnique.PInvokeRecipe => new List<string>() { "VirtualAlloc", "CreateThreadpoolTimer", "SetThreadpoolTimer", "WaitForThreadpoolTimerCallbacks", "CloseThreadpoolTimer" };
+        List<string> ITechnique.Invokes => new List<string>() { "VirtualAlloc", "CreateThreadpoolTimer", "SetThreadpoolTimer", "WaitForThreadpoolTimerCallbacks", "CloseThreadpoolTimer" };
         
         List<string> ITechnique.Prerequisites => null;
         
@@ -89,7 +89,7 @@ namespace {{NAMESPACE}}
                 };
             }
         }
-        {{PINVOKE}}
+        {{INVOKE}}
     }
 }";
 

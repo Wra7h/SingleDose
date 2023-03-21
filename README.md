@@ -1,6 +1,6 @@
 # SingleDose
 
-SingleDose is a .NET console application containing collection of shellcode loaders and process injection techniques. SingleDose doesn't actually perform the load or inject, instead it takes your configuration and technique, then compiles an executable whic will only contain the technique you specified. This is the main difference between this tool and similar collections of injects like PInjectra where every technique is within the same binary doing the execution. The executables are C#, which gives users the flexibility to execute in-memory with `execute-assembly`.
+SingleDose is a framework to build shellcode load/process injection techniques. SingleDose doesn't actually perform the load or inject, but rather it takes your configuration and technique and will compile an `.exe` which will only contain the technique you specified. The executables are C#, which gives users the flexibility to execute in-memory with `execute-assembly` or the like.
 
 I am not the original author for most of these techniques, I just rewrote them using C# to make them compatible with SingleDose's build process. Please check out the description for each technique for links to the author or blog I referenced. This is done with `describe <technique>` from the Main menu. To see the available techniques type `show techniques` the main menu.
 
@@ -40,5 +40,6 @@ Open the .sln in Visual Studio, select Debug or Release at the top and build.
  - https://github.com/SafeBreach-Labs/pinjectra
  - https://github.com/monoxgas/sRDI
  - https://www.ired.team/offensive-security/code-injection-process-injection/
- - https://vx-underground.org/papers.html -> Windows VX -> Injection
+ - https://vx-underground.org/papers.html -> Windows VX -> Injection  
+ - https://bohops.com/2022/04/02/unmanaged-code-execution-with-net-dynamic-pinvoke/
  - References per technique can be seen with `describe <technique>`

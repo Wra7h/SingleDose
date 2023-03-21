@@ -16,7 +16,7 @@ namespace SingleDose.Techniques.Injects
         bool ITechnique.IsUnsafe => false;
 
         bool ITechnique.IsLoader => false;
-        List<string> ITechnique.PInvokeRecipe => new List<string>() { "CreateProcess", "VirtualAllocEx", "WriteProcessMemory_ByteArray", "GetThreadContext", "SetThreadContext",
+        List<string> ITechnique.Invokes => new List<string>() { "CreateProcess", "VirtualAllocEx", "WriteProcessMemory_ByteArray", "GetThreadContext", "SetThreadContext",
             "ResumeThread", "CloseHandle" };
         List<string> ITechnique.Prerequisites => new List<string>() { "SpawnProcess" };
         string ITechnique.Base => @"
@@ -231,7 +231,7 @@ namespace {{NAMESPACE}}
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 96)]
             public byte[] Reserved4;
         }
-        {{PINVOKE}}
+        {{INVOKE}}
     }
 }";
         string ITechnique.VProtect => @"uint oldProtect;

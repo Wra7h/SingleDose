@@ -186,7 +186,7 @@ namespace SingleDose.Misc
             Contents = AddTriggers(Contents);
 
             //Add any necessary PInvoke signatures based
-            Contents = PInvokeHandler.AddPInvokes(technique, Contents);
+            Contents = InvokeHandler.AddInvokes(technique, Contents);
 
             //Make sure the payload allocation can be modified.
             if (technique.VProtect == null)
@@ -483,7 +483,7 @@ namespace SingleDose.Misc
 
         public static string GenRandomString()
         {
-            Random random = new Random();
+            Random random = new Random(Guid.NewGuid().GetHashCode());
             int length = random.Next(3, 9);
             var rString = "";
             for (var i = 0; i < length; i++)

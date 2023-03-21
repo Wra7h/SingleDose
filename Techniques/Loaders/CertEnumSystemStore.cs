@@ -16,7 +16,7 @@ namespace SingleDose.Techniques.Loaders
 
         bool ITechnique.IsLoader => true;
         
-        List<string> ITechnique.PInvokeRecipe => new List<string>() { "VirtualAlloc", "CertEnumSystemStore" };
+        List<string> ITechnique.Invokes => new List<string>() { "VirtualAlloc", "CertEnumSystemStore" };
         
         List<string> ITechnique.Prerequisites => null;
         string ITechnique.Base => @"
@@ -41,7 +41,7 @@ namespace {{NAMESPACE}}
             CertEnumSystemStore(0x00010000, IntPtr.Zero, IntPtr.Zero, hAlloc);
         }
         {{ARGS}}
-        {{PINVOKE}}
+        {{INVOKE}}
     }
 }";
 

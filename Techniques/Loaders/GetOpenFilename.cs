@@ -16,7 +16,7 @@ namespace SingleDose.Techniques.Loaders
 
         bool ITechnique.IsLoader => true;
         
-        List<string> ITechnique.PInvokeRecipe => new List<string>() { "VirtualAlloc", "GetOpenFileName" };
+        List<string> ITechnique.Invokes => new List<string>() { "VirtualAlloc", "GetOpenFileName" };
         
         List<string> ITechnique.Prerequisites => null;
         
@@ -49,7 +49,7 @@ namespace {{NAMESPACE}}
             GetOpenFileName(sOpenFileName);
         }
         {{ARGS}}
-        {{PINVOKE}}
+        {{INVOKE}}
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         public struct OpenFileName
         {
