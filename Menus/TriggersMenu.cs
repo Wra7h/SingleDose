@@ -1,6 +1,7 @@
 ﻿using SingleDose.Misc;
 using SingleDose.Triggers;
 using System;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -26,10 +27,12 @@ namespace SingleDose.Menus
                         Console.WriteLine("   Available triggers:");
                         Console.ResetColor();
                         SDConsole.iConsoleLineNum++;
+
+                        int i = 1;
                         foreach (ITrigger t in Reflect.TriggersFound)
                         {
-                            string description = SDConsole.SpliceText(t.TriggerDescription, 65);
-                            SDConsole.Write(String.Format("- {0}: {1}", t.TriggerName, description));
+                            string description = SDConsole.SpliceText(t.TriggerDescription, 60);
+                            SDConsole.Write(String.Format("{0}) {1}: {2}", i++, t.TriggerName, description.TrimEnd()));
                         }
                         break;
                     }
@@ -174,6 +177,8 @@ namespace SingleDose.Menus
                     Console.WriteLine("    |  Use       | Configure and apply a new trigger      | > use             |");
                     Console.WriteLine("    |            |                                        | > use timer       |");
                     Console.WriteLine("    +------------+----------------------------------------+-------------------+");
+                    Console.WriteLine("    |  Load      | Load a booster                         | > load <path>     |");
+                    Console.WriteLine("    +------------+----------------------------------------+-------------------+");
                     Console.WriteLine("    |  Reconfig  | Reconfigure the settings for the       | > reconfig        |");
                     Console.WriteLine("    |            | current trigger                        |                   |");
                     Console.WriteLine("    +------------+----------------------------------------+-------------------+");
@@ -185,7 +190,7 @@ namespace SingleDose.Menus
                     Console.WriteLine("    |  Exit      | Return to Main Menu                    | > exit            |");
                     Console.WriteLine("    +------------+----------------------------------------+-------------------+");
                     Console.WriteLine("");
-                    SDConsole.iConsoleLineNum += 18;
+                    SDConsole.iConsoleLineNum += 20;
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.WriteLine("                           Available Triggers");
                     Console.ResetColor();
@@ -194,6 +199,28 @@ namespace SingleDose.Menus
                     {
                         string description = SDConsole.SpliceText(t.TriggerDescription, 65);
                         SDConsole.Write(String.Format("- {0}: {1}", t.TriggerName, description));
+                    }
+                    break;
+                case "LOAD":
+                    if (Command.Split().Count() > 1)
+                    {
+                        if (File.Exists(Command.Split()[1]))
+                        {
+                            string szFullPath = Path.GetFullPath(Command.Split()[1]);
+                            bool bRet = Reflect.LoadBoosterFromPath(szFullPath);
+                            if (bRet)
+                            {
+                                SDConsole.WriteSuccess(String.Format("Loaded module: {0}", Path.GetFileName(szFullPath)));
+                            }
+                            else
+                            {
+                                SDConsole.WriteError("Module load failed.");
+                            }
+                        }
+                        else
+                        {
+                            SDConsole.WriteError(String.Format("File not found: {0}", Command.Split()[1]));
+                        }
                     }
                     break;
                 default:

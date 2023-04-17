@@ -15,15 +15,9 @@ namespace SingleDose
             Console.Clear();
             // Get csc.exe filepaths
             SettingsMenu.dAvailableCSCVersions = SettingsMenu.FetchCSCVersions();
-            
-            // Identify the triggers that are available
-            Reflect.InitializeTriggers();
 
-            // Identify the techniques that are available
-            Reflect.InitializeTechniques();
-
-            // Identify the APIs that are available
-            Reflect.InitializeInvokes();
+            // Identify the techniques/APIs/triggers that are available
+            Reflect.InitializeInterfaces();
 
             if (args.Contains("-t"))
                 Tutorial.StartTutorial();

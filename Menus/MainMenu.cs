@@ -38,6 +38,8 @@ namespace SingleDose.Menus
                     Console.WriteLine("    +------------+----------------------------------------+-------------------+");
                     Console.WriteLine("    |  Describe  | See a description for a technique      | > describe r5     |");
                     Console.WriteLine("    +------------+----------------------------------------+-------------------+");
+                    Console.WriteLine("    |  Load      | Load a booster                         | > load <path>     |");
+                    Console.WriteLine("    +------------+----------------------------------------+-------------------+");
                     Console.WriteLine("    |  Reconfig  | Reconfigure the current trigger in use | > reconfig        |");
                     Console.WriteLine("    +------------+----------------------------------------+-------------------+");
                     Console.WriteLine("    |  Clear     | Clear the terminal, settings, or       | > clear           |");
@@ -46,7 +48,7 @@ namespace SingleDose.Menus
                     Console.WriteLine("    |  Exit      | Exit Single Dose                       | > exit            |");
                     Console.WriteLine("    +------------+----------------------------------------+-------------------+");
                     Console.WriteLine("");
-                    SDConsole.iConsoleLineNum += 26;
+                    SDConsole.iConsoleLineNum += 28;
                     Console.WriteLine("                   LOADERS                          INJECTS            ");
                     Console.WriteLine("     +---------------------------------+-------------------------------+");
                     SDConsole.iConsoleLineNum += 2;
@@ -455,6 +457,28 @@ namespace SingleDose.Menus
                     {
                         Console.Clear();
                         Environment.Exit(0);
+                    }
+                    break;
+                case "LOAD":
+                    if (Command.Split().Count() > 1)
+                    {
+                        if (File.Exists(Command.Split()[1]))
+                        {
+                            string szFullPath = Path.GetFullPath(Command.Split()[1]);
+                            bool bRet = Reflect.LoadBoosterFromPath(szFullPath);
+                            if (bRet)
+                            {
+                                SDConsole.WriteSuccess(String.Format("Loaded module: {0}", Path.GetFileName(szFullPath)));
+                            }
+                            else
+                            {
+                                SDConsole.WriteError("Module load failed.");
+                            }
+                        }
+                        else
+                        {
+                            SDConsole.WriteError(String.Format("File not found: {0}", Command.Split()[1]));
+                        }
                     }
                     break;
                 default:

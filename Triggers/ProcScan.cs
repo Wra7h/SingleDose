@@ -6,7 +6,7 @@ namespace SingleDose.Triggers
     {
         string ITrigger.TriggerName => "ProcScan";
 
-        string ITrigger.TriggerDescription => "Check running process names and ids once. If you're specified criteria is found, the inject exits.";
+        string ITrigger.TriggerDescription => "Check running process names and ids once. If your specified criteria is found, the inject exits.";
 
         string ITrigger.Base => @"
             int match = 0;
