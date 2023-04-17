@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4D7AEF0B-5AA6-4AE5-971E-7141AA1FDAFC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PoisonTendy</RootNamespace>
+    <AssemblyName>PoisonTendy</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Invokes\Advapi32\PerfStartProviderEx.cs" />
+    <Compile Include="Invokes\Advapi32\PerfStopProvider.cs" />
+    <Compile Include="Invokes\Comdlg32\ChooseFont.cs" />
+    <Compile Include="Invokes\Crypt32\CertCreateContext.cs" />
+    <Compile Include="Invokes\Ddraw\DirectDrawEnumerateExA.cs" />
+    <Compile Include="Invokes\Imagehlp\BindImageEx.cs" />
+    <Compile Include="Invokes\Kernel32\CopyFileTransacted.cs" />
+    <Compile Include="Invokes\KtmW32\CreateTransaction.cs" />
+    <Compile Include="Invokes\Msacm32\acmDriverEnum.cs" />
+    <Compile Include="Invokes\OleDlg\OleUIBusy.cs" />
+    <Compile Include="Invokes\Shell32\CDefFolderMenu_Create2.cs" />
+    <Compile Include="Invokes\Wscapi\WscRegisterForChanges.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Techniques\Loaders\AcmDriverEnum.cs" />
+    <Compile Include="Techniques\Loaders\BindImageEx.cs" />
+    <Compile Include="Techniques\Loaders\CDefFolderMenu_Create2.cs" />
+    <Compile Include="Techniques\Loaders\CertCreateContext.cs" />
+    <Compile Include="Techniques\Loaders\ChooseFont.cs" />
+    <Compile Include="Techniques\Loaders\CopyFileTransacted.cs" />
+    <Compile Include="Techniques\Loaders\DirectDrawEnumerateEx.cs" />
+    <Compile Include="Techniques\Loaders\OleUIBusy.cs" />
+    <Compile Include="Techniques\Loaders\PerfStartProviderEx.cs" />
+    <Compile Include="Techniques\Loaders\WscRegisterForChanges.cs" />
+    <Compile Include="Triggers\PortBind.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\SingleDose.csproj">
+      <Project>{5fac3991-d4fd-4227-b73d-bee34eb89987}</Project>
+      <Name>SingleDose</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

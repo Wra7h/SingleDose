@@ -6,6 +6,12 @@ SingleDose is a framework to build shellcode load/process injection techniques. 
 
 I am not the original author for most of these techniques, I just rewrote them using C# to make them compatible with SingleDose's build process. Please check out the description for each technique for links to the author or blog I referenced. This is done with `describe <technique>` from the Main menu. To see the available techniques type `show techniques` the main menu.
 
+## Boosters
+
+Boosters are just plugins for SingleDose. They implement additional techniques or triggers without overwhelming the basic framework. These can be loaded from the `Main` or `Triggers` menus.  
+
+Usage:&nbsp;&nbsp;&nbsp;&nbsp;`[Main]-> load .\PoisonTendy.dll`  
+
 ## Basic Usage:  
 
 A tutorial is included for basic building without triggers. Just run SingleDose with `-t` to start the tutorial mode.

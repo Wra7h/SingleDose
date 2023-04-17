@@ -345,13 +345,13 @@ namespace SingleDose.Misc
             switch (sMenu)
             {
                 case "Main":
-                    AvailableCommands.AddRange(new string[] { "settings", "triggers", "build", "describe", "reconfig", "show", "help", "clear", "save", "exit" });
+                    AvailableCommands.AddRange(new string[] { "settings", "triggers", "build", "describe", "reconfig", "show", "load", "help", "clear", "save", "exit" });
                     break;
                 case "Settings":
                     AvailableCommands.AddRange(new string[] { "mode", "output", "triggers", "compile", "version", "invoke", "memset", "clear", "help", "history", "log", "exit" });
                     break;
                 case "Triggers":
-                    AvailableCommands.AddRange(new string[] { "use", "reconfig", "settings", "help", "clear", "exit" });
+                    AvailableCommands.AddRange(new string[] { "use", "reconfig", "load", "settings", "help", "clear", "exit" });
                     break;
                 default:
                     break;
