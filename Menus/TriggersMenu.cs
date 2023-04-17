@@ -207,10 +207,16 @@ namespace SingleDose.Menus
                         if (File.Exists(Command.Split()[1]))
                         {
                             string szFullPath = Path.GetFullPath(Command.Split()[1]);
+
+                            int cTechniques = Reflect.TechniquesFound.Count();
+                            int cTriggers = Reflect.TriggersFound.Count();
+
                             bool bRet = Reflect.LoadBoosterFromPath(szFullPath);
                             if (bRet)
                             {
                                 SDConsole.WriteSuccess(String.Format("Loaded module: {0}", Path.GetFileName(szFullPath)));
+                                SDConsole.Write(String.Format("+{0} techniques", (Reflect.TechniquesFound.Count() - cTechniques).ToString()));
+                                SDConsole.Write(String.Format("+{0} triggers", (Reflect.TriggersFound.Count() - cTriggers).ToString()));
                             }
                             else
                             {
